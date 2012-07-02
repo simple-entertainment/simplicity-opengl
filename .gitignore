@@ -1,0 +1,7 @@
+# Eclipse project management
+*.metadata
+*.settings
+simplicity-opengl/Debug
+simplicity-opengl-demo/Debug
+simplicity-opengl-test/Debug
+

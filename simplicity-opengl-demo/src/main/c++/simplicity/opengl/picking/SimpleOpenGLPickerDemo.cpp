@@ -19,10 +19,10 @@
 #include <boost/math/constants/constants.hpp>
 
 #include <simplicity/engine/SimpleCompositeEngine.h>
-#include <simplicity/input/InputEvent.h>
+#include <simplicity/Events.h>
+#include <simplicity/input/MouseButtonEvent.h>
 #include <simplicity/math/MathFactory.h>
 #include <simplicity/scene/SceneFactory.h>
-#include <simplicity/SimpleEvents.h>
 #include <simplicity/Simplicity.h>
 
 #include <simplicity/opengl/picking/engine/SimpleOpenGLPickingEngine.h>
@@ -66,7 +66,8 @@ namespace simplicity
 		{
 			engine->destroy();
 
-			Simplicity::deregisterObserver(INPUT_EVENT, bind(&SimpleOpenGLPickerDemo::onMouse, this, placeholders::_1));
+			Simplicity::deregisterObserver(MOUSE_BUTTON_EVENT,
+				bind(&SimpleOpenGLPickerDemo::onMouse, this, placeholders::_1));
 			Simplicity::deregisterObserver(PICK_EVENT, bind(&SimpleOpenGLPickerDemo::onPick, this, placeholders::_1));
 		}
 
@@ -101,7 +102,8 @@ namespace simplicity
 			scene->addLight(light);
 
 			sceneRoot->addChild(createTitle()->getNode());
-			for (shared_ptr<Model> descriptionLine : createDescription()) {
+			for (shared_ptr<Model> descriptionLine : createDescription())
+			{
 				sceneRoot->addChild(descriptionLine->getNode());
 			}
 
@@ -141,10 +143,11 @@ namespace simplicity
 
 			shared_ptr<SimpleOpenGLPicker> picker(new SimpleOpenGLPicker);
 			picker->setRenderingEngine(pickerRenderingEngine);
-			static_pointer_cast < SimpleOpenGLPickingEngine > (pickingEngine)->setRenderingEngine(renderingEngine);
+			static_pointer_cast<SimpleOpenGLPickingEngine>(pickingEngine)->setRenderingEngine(renderingEngine);
 			pickingEngine->setPicker(picker);
 
-			Simplicity::registerObserver(INPUT_EVENT, bind(&SimpleOpenGLPickerDemo::onMouse, this, placeholders::_1));
+			Simplicity::registerObserver(MOUSE_BUTTON_EVENT,
+				bind(&SimpleOpenGLPickerDemo::onMouse, this, placeholders::_1));
 			Simplicity::registerObserver(PICK_EVENT, bind(&SimpleOpenGLPickerDemo::onPick, this, placeholders::_1));
 
 			engine->init();
@@ -152,9 +155,9 @@ namespace simplicity
 
 		void SimpleOpenGLPickerDemo::onMouse(const boost::any data)
 		{
-			const InputEvent& event = boost::any_cast<InputEvent>(data);
+			const MouseButtonEvent& event = boost::any_cast<MouseButtonEvent>(data);
 
-			if (event.buttonState == InputEvent::ButtonState::UP)
+			if (event.buttonState == Button::State::UP)
 			{
 				pickingEngine->pickViewport(800, 800, event.x, event.y, 2.0f, 2.0f);
 			}

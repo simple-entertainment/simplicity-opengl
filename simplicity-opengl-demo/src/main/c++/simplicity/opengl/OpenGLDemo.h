@@ -19,6 +19,7 @@
 
 #include <boost/any.hpp>
 
+#include <simplicity/input/Button.h>
 #include <simplicity/rendering/Light.h>
 
 #include <simplicity/Demo.h>
@@ -107,6 +108,8 @@ namespace simplicity
 				void init();
 
 			private:
+				Button::State leftButtonState;
+
 				/**
 				 * <p>
 				 * The root node of the scene (excluding the camera, light(s) and text).
@@ -134,12 +137,9 @@ namespace simplicity
 
 				virtual void onInit() = 0;
 
-				/**
-				 * <p>
-				 * Responds to motion events.
-				 * </p>
-				 */
-				void onMotion(const boost::any data);
+				void onMouseButton(const boost::any data);
+
+				void onMouseMove(const boost::any data);
 		};
 	}
 }

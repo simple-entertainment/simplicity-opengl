@@ -19,12 +19,13 @@
 
 #include <boost/math/constants/constants.hpp>
 
-#include <simplicity/input/InputEvent.h>
+#include <simplicity/Events.h>
+#include <simplicity/input/MouseButtonEvent.h>
+#include <simplicity/input/MouseMoveEvent.h>
 #include <simplicity/math/MathFactory.h>
 #include <simplicity/model/ModelFactory.h>
 #include <simplicity/scene/SceneFactory.h>
 #include <simplicity/Simplicity.h>
-#include <simplicity/SimpleEvents.h>
 
 #include <simplicity/opengl/model/OpenGLText.h>
 #include <simplicity/opengl/rendering/SimpleOpenGLCamera.h>
@@ -40,7 +41,7 @@ namespace simplicity
 	namespace opengl
 	{
 		OpenGLDemo::OpenGLDemo() :
-			modelsRoot(SceneFactory::getInstance().createNode())
+			leftButtonState(Button::State::UNKNOWN_STATE), modelsRoot(SceneFactory::getInstance().createNode())
 		{
 		}
 
@@ -96,7 +97,7 @@ namespace simplicity
 
 		vector<shared_ptr<Model> > OpenGLDemo::createDescription()
 		{
-			vector <shared_ptr<Model> > description;
+			vector < shared_ptr<Model> > description;
 			string text(getDescription());
 
 			unsigned int lineNum = 0;
@@ -230,7 +231,9 @@ namespace simplicity
 
 		void OpenGLDemo::dispose()
 		{
-			Simplicity::deregisterObserver(INPUT_EVENT, bind(&OpenGLDemo::onMotion, this, placeholders::_1));
+			Simplicity::deregisterObserver(MOUSE_BUTTON_EVENT,
+				bind(&OpenGLDemo::onMouseButton, this, placeholders::_1));
+			Simplicity::deregisterObserver(MOUSE_MOVE_EVENT, bind(&OpenGLDemo::onMouseMove, this, placeholders::_1));
 
 			onDispose();
 		}
@@ -242,19 +245,30 @@ namespace simplicity
 
 		void OpenGLDemo::init()
 		{
-			Simplicity::registerObserver(INPUT_EVENT, bind(&OpenGLDemo::onMotion, this, placeholders::_1));
+			Simplicity::registerObserver(MOUSE_BUTTON_EVENT, bind(&OpenGLDemo::onMouseButton, this, placeholders::_1));
+			Simplicity::registerObserver(MOUSE_MOVE_EVENT, bind(&OpenGLDemo::onMouseMove, this, placeholders::_1));
 
 			onInit();
 		}
 
-		void OpenGLDemo::onMotion(const boost::any data)
+		void OpenGLDemo::onMouseButton(const boost::any data)
 		{
-			const InputEvent& event= boost::any_cast<InputEvent>(data);
+			const MouseButtonEvent& event = boost::any_cast<MouseButtonEvent>(data);
 
-			if (event.type != InputEvent::Type::MOUSE_MOVE)
+			if (event.button == Mouse::Button::LEFT)
+			{
+				leftButtonState = event.buttonState;
+			}
+		}
+
+		void OpenGLDemo::onMouseMove(const boost::any data)
+		{
+			if (leftButtonState != Button::State::DOWN)
 			{
 				return;
 			}
+
+			const MouseMoveEvent& event = boost::any_cast<MouseMoveEvent>(data);
 
 			float angleX = (mouseX - event.x) / 10.0f;
 			float angleY = (event.y - mouseY) / 10.0f;

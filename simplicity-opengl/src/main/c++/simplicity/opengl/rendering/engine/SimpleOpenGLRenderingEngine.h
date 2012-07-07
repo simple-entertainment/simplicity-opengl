@@ -80,6 +80,8 @@ namespace simplicity
 
 				int getViewportWidth() const;
 
+				void removeEntity(const Entity& entity);
+
 				void removeRenderer(const Renderer& renderer);
 
 				void renderSceneGraph(Renderer& renderer, const Node& root);

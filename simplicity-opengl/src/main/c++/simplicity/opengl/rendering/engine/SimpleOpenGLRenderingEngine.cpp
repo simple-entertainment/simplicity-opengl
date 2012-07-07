@@ -34,8 +34,8 @@ namespace simplicity
 			"simplicity::opengl::SimpleOpenGLRenderingEngine");
 
 		SimpleOpenGLRenderingEngine::SimpleOpenGLRenderingEngine() :
-			clearingColour(MathFactory::getInstance().createColourVector()), clearsBuffers(true), initialised(
-				false), viewportHeight(600), viewportWidth(800)
+			clearingColour(MathFactory::getInstance().createColourVector()), clearsBuffers(true), initialised(false), viewportHeight(
+				600), viewportWidth(800)
 		{
 		}
 
@@ -207,6 +207,14 @@ namespace simplicity
 		void SimpleOpenGLRenderingEngine::onReset()
 		{
 			init();
+		}
+
+		void SimpleOpenGLRenderingEngine::removeEntity(const Entity& entity)
+		{
+			for (std::shared_ptr<Model> model : entity.getComponents<Model>())
+			{
+				scene->removeNode(*model->getNode());
+			}
 		}
 
 		void SimpleOpenGLRenderingEngine::removeRenderer(const Renderer& renderer)

@@ -84,6 +84,8 @@ namespace simplicity
 
 				void pickViewport(const int viewportWidth, const int viewportHeight, const Pick pick);
 
+				void removeEntity(const Entity& entity);
+
 				void setCamera(std::shared_ptr<Camera> camera);
 
 				void setPicker(std::shared_ptr<Picker> picker);

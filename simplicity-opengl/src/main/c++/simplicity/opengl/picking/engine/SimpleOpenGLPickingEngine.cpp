@@ -157,6 +157,10 @@ namespace simplicity
 			picks.push_back(convertPickCoordinatesFromViewportToSceneGraph(viewportWidth, viewportHeight, pick));
 		}
 
+		void SimpleOpenGLPickingEngine::removeEntity(const Entity& entity)
+		{
+		}
+
 		void SimpleOpenGLPickingEngine::setCamera(shared_ptr<Camera> camera)
 		{
 			this->camera = camera;

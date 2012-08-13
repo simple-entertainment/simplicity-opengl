@@ -48,7 +48,7 @@ namespace simplicity
 				 *
 				 * @return The standard camera.
 				 */
-				std::shared_ptr<Camera> addStandardCamera(std::shared_ptr<Node> parentNode);
+				std::shared_ptr<Camera> addStandardCamera(Node& parentNode);
 
 				/**
 				 * <p>
@@ -59,7 +59,7 @@ namespace simplicity
 				 *
 				 * @return The standard light.
 				 */
-				std::shared_ptr<Light> addStandardLight(std::shared_ptr<Node> parentNode);
+				std::shared_ptr<Light> addStandardLight(Node& parentNode);
 
 				std::vector<std::shared_ptr<Model> > createDescription();
 
@@ -103,7 +103,7 @@ namespace simplicity
 
 				void dispose();
 
-				shared_ptr<Node> getModelsRoot();
+				Node* getModelsRoot();
 
 				void init();
 

@@ -16,7 +16,6 @@
  */
 #include <log4cpp/Category.hh>
 
-#include <simplicity/common/shared_equals_raw.h>
 #include <simplicity/Events.h>
 #include <simplicity/Simplicity.h>
 

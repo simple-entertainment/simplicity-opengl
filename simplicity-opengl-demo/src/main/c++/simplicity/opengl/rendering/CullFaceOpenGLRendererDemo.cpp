@@ -73,11 +73,11 @@ namespace simplicity
 			shared_ptr<Node> sceneRoot(SceneFactory::getInstance().createNode());
 			scene->addNode(sceneRoot);
 
-			shared_ptr<Camera> camera = addStandardCamera(sceneRoot);
+			shared_ptr<Camera> camera = addStandardCamera(*sceneRoot);
 			scene->addCamera(camera);
 			renderingEngine->setCamera(camera);
 
-			shared_ptr<Light> light = addStandardLight(sceneRoot);
+			shared_ptr<Light> light = addStandardLight(*sceneRoot);
 			scene->addLight(light);
 
 			sceneRoot->addChild(createTitle()->getNode());
@@ -85,7 +85,7 @@ namespace simplicity
 				sceneRoot->addChild(descriptionLine->getNode());
 			}
 
-			sceneRoot->addChild(getModelsRoot());
+			sceneRoot->addChild(getModelsRoot()->getThisShared());
 			shared_ptr<Model> capsule(createStandardCapsule());
 			getModelsRoot()->addChild(capsule->getNode());
 			shared_ptr<Model> cylinder(createStandardCylinder());

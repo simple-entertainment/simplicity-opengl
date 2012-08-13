@@ -41,7 +41,7 @@ namespace simplicity
 		SimpleOpenGLCamera::SimpleOpenGLCamera() :
 			farClippingDistance(DEFAULT_FAR_CLIPPING_PLANE), frameAspectRatio(DEFAULT_FRAME_ASPECT_RATIO), frameWidth(
 				DEFAULT_FRAME_WIDTH), frameX(0.0f), frameY(0.0f), initialised(false), nearClippingDistance(
-				DEFAULT_NEAR_CLIPPING_PLANE), projectionMode(Camera::PERSPECTIVE)
+				DEFAULT_NEAR_CLIPPING_PLANE), node(NULL), projectionMode(Camera::PERSPECTIVE)
 		{
 		}
 
@@ -94,7 +94,7 @@ namespace simplicity
 			return nearClippingDistance;
 		}
 
-		std::shared_ptr<Node> SimpleOpenGLCamera::getNode() const
+		Node* SimpleOpenGLCamera::getNode() const
 		{
 			return node;
 		}
@@ -123,7 +123,7 @@ namespace simplicity
 		{
 			transformation = MathFactory::getInstance().createTransformationMatrix();
 
-			if (node.get() == NULL)
+			if (node == NULL)
 			{
 				return *transformation;
 			}
@@ -231,7 +231,7 @@ namespace simplicity
 			initialised = false;
 		}
 
-		void SimpleOpenGLCamera::setNode(std::shared_ptr<Node> node)
+		void SimpleOpenGLCamera::setNode(Node* node)
 		{
 			this->node = node;
 		}

@@ -77,11 +77,11 @@ namespace simplicity
 			shared_ptr<Node> sceneRoot(SceneFactory::getInstance().createNode());
 			scene->addNode(sceneRoot);
 
-			shared_ptr<Camera> camera = addStandardCamera(sceneRoot);
+			shared_ptr<Camera> camera = addStandardCamera(*sceneRoot);
 			scene->addCamera(camera);
 			renderingEngine->setCamera(camera);
 
-			shared_ptr<Light> light = addStandardLight(sceneRoot);
+			shared_ptr<Light> light = addStandardLight(*sceneRoot);
 			scene->addLight(light);
 
 			shared_ptr<Node> textRoot(SceneFactory::getInstance().createNode());
@@ -92,7 +92,7 @@ namespace simplicity
 				textRoot->addChild(descriptionLine->getNode());
 			}
 
-			sceneRoot->addChild(getModelsRoot());
+			sceneRoot->addChild(getModelsRoot()->getThisShared());
 
 			shared_ptr<Node> renderingPass1Root(SceneFactory::getInstance().createNode());
 			getModelsRoot()->addChild(renderingPass1Root);
@@ -113,15 +113,15 @@ namespace simplicity
 			shared_ptr<SimpleOpenGLRenderer> renderer(new SimpleOpenGLRenderer);
 
 			renderingEngine->addRenderer(renderer);
-			renderingEngine->setRendererRoot(*renderer, textRoot);
+			renderingEngine->setRendererRoot(*renderer, textRoot.get());
 
 			shared_ptr<AlwaysStencilOpenGLRenderer> firstRenderer(new AlwaysStencilOpenGLRenderer(renderer));
 			renderingEngine->addRenderer(firstRenderer);
-			renderingEngine->setRendererRoot(*firstRenderer, renderingPass1Root);
+			renderingEngine->setRendererRoot(*firstRenderer, renderingPass1Root.get());
 
 			shared_ptr<NotEqualStencilOpenGLRenderer> secondRenderer(new NotEqualStencilOpenGLRenderer(renderer));
 			renderingEngine->addRenderer(secondRenderer);
-			renderingEngine->setRendererRoot(*secondRenderer, renderingPass2Root);
+			renderingEngine->setRendererRoot(*secondRenderer, renderingPass2Root.get());
 
 			renderingEngine->init();
 		}

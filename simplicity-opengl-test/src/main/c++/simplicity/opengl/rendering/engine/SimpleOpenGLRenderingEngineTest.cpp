@@ -101,7 +101,7 @@ namespace simplicity
 		// //////////////////////////////////////////////////
 		ASSERT_EQ(1u, fTestObject.getRenderers().size());
 		ASSERT_FALSE(fTestObject.getRenderers().end() == find(fTestObject.getRenderers().begin(), fTestObject.getRenderers().end(), mockRenderer));
-		ASSERT_EQ(nodes.node1, fTestObject.getRendererRoot(*mockRenderer));
+		ASSERT_EQ(nodes.node1.get(), fTestObject.getRendererRoot(*mockRenderer));
 
 		// Perform test 2.
 		// //////////////////////////////////////////////////
@@ -110,7 +110,7 @@ namespace simplicity
 		// Verify test 2 results.
 		// //////////////////////////////////////////////////
 		ASSERT_EQ(0u, fTestObject.getRenderers().size());
-		ASSERT_FALSE(fTestObject.getRendererRoot(*mockRenderer).get());
+		ASSERT_FALSE(fTestObject.getRendererRoot(*mockRenderer));
 	}
 
 	/**
@@ -246,17 +246,26 @@ namespace simplicity
 	{
 		// Create dependencies.
 		// //////////////////////////////////////////////////
-		shared_ptr<MockRenderer> mockRenderer(new NiceMock<MockRenderer>);
+		shared_ptr<MockScene> mockScene(new NiceMock<MockScene>);
+		NiceMock<MockRenderer> mockRenderer;
 		NodeHierarchy nodes;
 		nodes.setStandardNodeHierarchy();
 
+		// Provide stub behaviour.
+		// //////////////////////////////////////////////////
+		ON_CALL(*mockScene, getRoot()).WillByDefault(Return(nodes.node1));
+
+		// Initialise the test environment.
+		// //////////////////////////////////////////////////
+		fTestObject.setScene(mockScene);
+
 		// Dictate expected results.
 		// //////////////////////////////////////////////////
-		EXPECT_CALL(*mockRenderer, renderModel(Ref(*dynamic_pointer_cast<ModelNode> (nodes.node3)->getModel())));
+		EXPECT_CALL(mockRenderer, renderModel(Ref(*dynamic_pointer_cast<ModelNode> (nodes.node3)->getModel())));
 
 		// Perform test.
 		// //////////////////////////////////////////////////
-		fTestObject.renderSceneGraph(*mockRenderer, *nodes.node1);
+		fTestObject.renderSceneGraph(mockRenderer, *nodes.node1);
 	}
 
 	/**
@@ -271,17 +280,26 @@ namespace simplicity
 	{
 		// Create dependencies.
 		// //////////////////////////////////////////////////
-		shared_ptr<MockNamedRenderer> mockNamedRenderer(new NiceMock<MockNamedRenderer>);
+		shared_ptr<MockScene> mockScene(new NiceMock<MockScene>);
+		NiceMock<MockNamedRenderer> mockNamedRenderer;
 		NodeHierarchy nodes;
 		nodes.setStandardNodeHierarchy();
 
+		// Provide stub behaviour.
+		// //////////////////////////////////////////////////
+		ON_CALL(*mockScene, getRoot()).WillByDefault(Return(nodes.node1));
+
+		// Initialise the test environment.
+		// //////////////////////////////////////////////////
+		fTestObject.setScene(mockScene);
+
 		// Dictate expected results.
 		// //////////////////////////////////////////////////
-		EXPECT_CALL(*mockNamedRenderer, renderModel(Ref(*dynamic_pointer_cast<ModelNode> (nodes.node3)->getModel()), 2));
+		EXPECT_CALL(mockNamedRenderer, renderModel(Ref(*dynamic_pointer_cast<ModelNode> (nodes.node3)->getModel()), 2));
 
 		// Perform test.
 		// //////////////////////////////////////////////////
-		fTestObject.renderSceneGraph(*mockNamedRenderer, *nodes.node1);
+		fTestObject.renderSceneGraph(mockNamedRenderer, *nodes.node1);
 	}
 
 	/**
@@ -314,7 +332,7 @@ namespace simplicity
 
 		// Verify test results.
 		// //////////////////////////////////////////////////
-		ASSERT_EQ(nodes.node1, fTestObject.getRendererRoot(*mockRenderer1));
-		ASSERT_EQ(nodes.node1, fTestObject.getRendererRoot(*mockRenderer2));
+		ASSERT_EQ(nodes.node1.get(), fTestObject.getRendererRoot(*mockRenderer1));
+		ASSERT_EQ(nodes.node1.get(), fTestObject.getRendererRoot(*mockRenderer2));
 	}
 }}

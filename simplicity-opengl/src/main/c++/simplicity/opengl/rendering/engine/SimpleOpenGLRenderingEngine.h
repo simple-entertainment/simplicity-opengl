@@ -70,7 +70,7 @@ namespace simplicity
 
 				const ColourVector<>& getClearingColour() const;
 
-				std::shared_ptr<Node> getRendererRoot(const Renderer& renderer) const;
+				Node* getRendererRoot(const Renderer& renderer) const;
 
 				std::vector<std::shared_ptr<Renderer> > getRenderers() const;
 
@@ -92,7 +92,7 @@ namespace simplicity
 
 				void setClearsBeforeRender(const bool clearsBeforeRender);
 
-				void setRendererRoot(const Renderer& renderer, std::shared_ptr<Node> root);
+				void setRendererRoot(const Renderer& renderer, Node* root);
 
 				void setScene(std::shared_ptr<Scene> scene);
 
@@ -146,7 +146,7 @@ namespace simplicity
 				 * the {@link simplicity::Renderer Renderer}s will render when they are executed.
 				 * </p>
 				 */
-				std::map<std::shared_ptr<Renderer>, std::shared_ptr<Node> > rendererRoots;
+				std::map<const Renderer*, Node*> rendererRoots;
 
 				/**
 				 * <p>

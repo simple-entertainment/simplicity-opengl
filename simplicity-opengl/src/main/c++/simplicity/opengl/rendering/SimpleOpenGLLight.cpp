@@ -77,7 +77,7 @@ namespace simplicity
 			return lightingMode;
 		}
 
-		std::shared_ptr<Node> SimpleOpenGLLight::getNode() const
+		Node* SimpleOpenGLLight::getNode() const
 		{
 			return node;
 		}
@@ -91,7 +91,7 @@ namespace simplicity
 		{
 			transformation = MathFactory::getInstance().createTransformationMatrix();
 
-			if (node.get() == NULL)
+			if (node == NULL)
 			{
 				return *transformation;
 			}
@@ -172,7 +172,7 @@ namespace simplicity
 			initialised = false;
 		}
 
-		void SimpleOpenGLLight::setNode(std::shared_ptr<Node> newNode)
+		void SimpleOpenGLLight::setNode(Node* newNode)
 		{
 			this->node = newNode;
 		}

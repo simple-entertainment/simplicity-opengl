@@ -45,28 +45,28 @@ namespace simplicity
 		{
 		}
 
-		shared_ptr<Camera> OpenGLDemo::addStandardCamera(shared_ptr<Node> parentNode)
+		shared_ptr<Camera> OpenGLDemo::addStandardCamera(Node& parentNode)
 		{
 			shared_ptr<SimpleOpenGLCamera> camera(new SimpleOpenGLCamera);
 
 			shared_ptr<Node> node(SceneFactory::getInstance().createNode());
-			camera->setNode(node);
+			camera->setNode(node.get());
 
 			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
 			location->setZ(15.0f);
 			node->getTransformation().translate(*location);
 
-			parentNode->addChild(node);
+			parentNode.addChild(node);
 
 			return camera;
 		}
 
-		shared_ptr<Light> OpenGLDemo::addStandardLight(shared_ptr<Node> parentNode)
+		shared_ptr<Light> OpenGLDemo::addStandardLight(Node& parentNode)
 		{
 			shared_ptr<SimpleOpenGLLight> light(new SimpleOpenGLLight);
 
 			shared_ptr<Node> node(SceneFactory::getInstance().createNode());
-			light->setNode(node);
+			light->setNode(node.get());
 
 			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
 			location->setZ(15.0f);
@@ -90,7 +90,7 @@ namespace simplicity
 			specularLight->setBlue(0.5f);
 			light->setSpecularLight(move(specularLight));
 
-			parentNode->addChild(node);
+			parentNode.addChild(node);
 
 			return light;
 		}
@@ -238,9 +238,9 @@ namespace simplicity
 			onDispose();
 		}
 
-		shared_ptr<Node> OpenGLDemo::getModelsRoot()
+		Node* OpenGLDemo::getModelsRoot()
 		{
-			return modelsRoot;
+			return modelsRoot.get();
 		}
 
 		void OpenGLDemo::init()

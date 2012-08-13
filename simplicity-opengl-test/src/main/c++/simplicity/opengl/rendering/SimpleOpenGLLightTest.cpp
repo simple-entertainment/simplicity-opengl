@@ -31,15 +31,15 @@ namespace simplicity
      */
     TEST_F(SimpleOpenGLLightTest, getTransformation)
     {
-      shared_ptr<MockNode> mockNode(new MockNode);
+      NiceMock<MockNode> mockNode;
       SimpleTransformationMatrix<> matrix;
       SimpleTranslationVector<> translation(1.0f, 0.0f, 0.0f, 1.0f);
       matrix.rotate(90.0f * pi<float>() / 180.0f, translation);
 
-      fTestObject.setNode(mockNode);
+      fTestObject.setNode(&mockNode);
 
       // TODO Uncomment when unique_ptr is supported!
-      //EXPECT_CALL(*mockNode, getAbsoluteTransformation()).WillRepeatedly(ReturnRef(matrix));
+      //EXPECT_CALL(mockNode, getAbsoluteTransformation()).WillRepeatedly(ReturnRef(matrix));
 
       //SimpleTransformationMatrix<> invertedMatrix;
       //invertedMatrix.multiplyRight(matrix);

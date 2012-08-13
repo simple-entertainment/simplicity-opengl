@@ -50,18 +50,17 @@ namespace simplicity
 				hit.minimumDistance = fSelectBuffer[bufferIndex++];
 				hit.maximumDistance = fSelectBuffer[bufferIndex++];
 
-				hit.node = scene.getNode(fSelectBuffer[bufferIndex]);
+				hit.node = scene.getNode(fSelectBuffer[bufferIndex]).get();
 
-				shared_ptr<Model> model(dynamic_pointer_cast < ModelNode > (hit.node)->getModel());
-				if (dynamic_pointer_cast<VertexGroup>(model))
+				shared_ptr<Model> model = dynamic_cast<ModelNode*>(hit.node)->getModel();
+				if (dynamic_pointer_cast < VertexGroup > (model))
 				{
 					if (numberOfNames > 1)
 					{
-						hit.primitive = getSubsetVG(dynamic_cast<VertexGroup&>(*model),
-							fSelectBuffer[bufferIndex + 1]);
+						hit.primitive = getSubsetVG(dynamic_cast<VertexGroup&>(*model), fSelectBuffer[bufferIndex + 1]);
 					}
 				}
-				else if (dynamic_pointer_cast<Shape>(model))
+				else if (dynamic_pointer_cast < Shape > (model))
 				{
 					hit.primitive = model;
 				}

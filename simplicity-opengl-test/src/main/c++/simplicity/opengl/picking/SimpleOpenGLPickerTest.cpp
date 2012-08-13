@@ -71,9 +71,9 @@ namespace simplicity
       // Verify test results.
       // //////////////////////////////////////////////////
       ASSERT_EQ(2, pickEvent.getHitCount());
-      ASSERT_EQ(mockNode0, pickEvent.getHit(0).node);
+      ASSERT_EQ(mockNode0.get(), pickEvent.getHit(0).node);
       ASSERT_EQ(mockShape0, pickEvent.getHit(0).primitive);
-      ASSERT_EQ(mockNode1, pickEvent.getHit(1).node);
+      ASSERT_EQ(mockNode1.get(), pickEvent.getHit(1).node);
       ASSERT_EQ(mockShape1, pickEvent.getHit(1).primitive);
     }
 
@@ -127,9 +127,9 @@ namespace simplicity
       // Verify test results.
       // //////////////////////////////////////////////////
       ASSERT_EQ(2, pickEvent.getHitCount());
-      ASSERT_EQ(mockNode0, pickEvent.getHit(0).node);
+      ASSERT_EQ(mockNode0.get(), pickEvent.getHit(0).node);
       ASSERT_EQ(mockChildVertexGroup0, pickEvent.getHit(0).primitive);
-      ASSERT_EQ(mockNode1, pickEvent.getHit(1).node);
+      ASSERT_EQ(mockNode1.get(), pickEvent.getHit(1).node);
       ASSERT_EQ(mockChildVertexGroup1, pickEvent.getHit(1).primitive);
     }
 
@@ -181,9 +181,9 @@ namespace simplicity
       // Verify test results.
       // //////////////////////////////////////////////////
       ASSERT_EQ(2, pickEvent.getHitCount());
-      ASSERT_EQ(mockNode0, pickEvent.getHit(0).node);
+      ASSERT_EQ(mockNode0.get(), pickEvent.getHit(0).node);
       ASSERT_EQ(shared_ptr<MockVertexGroup> (), pickEvent.getHit(0).primitive);
-      ASSERT_EQ(mockNode1, pickEvent.getHit(1).node);
+      ASSERT_EQ(mockNode1.get(), pickEvent.getHit(1).node);
       ASSERT_EQ(shared_ptr<MockVertexGroup> (), pickEvent.getHit(1).primitive);
     }
   }

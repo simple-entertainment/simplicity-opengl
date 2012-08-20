@@ -77,7 +77,7 @@ namespace simplicity
 			return lightingMode;
 		}
 
-		Node* SimpleOpenGLLight::getNode() const
+		TreeNode* SimpleOpenGLLight::getNode() const
 		{
 			return node;
 		}
@@ -172,9 +172,9 @@ namespace simplicity
 			initialised = false;
 		}
 
-		void SimpleOpenGLLight::setNode(Node* newNode)
+		void SimpleOpenGLLight::setNode(TreeNode* node)
 		{
-			this->node = newNode;
+			this->node = node;
 		}
 
 		void SimpleOpenGLLight::setSpecularLight(unique_ptr<ColourVector<> > specularLight)

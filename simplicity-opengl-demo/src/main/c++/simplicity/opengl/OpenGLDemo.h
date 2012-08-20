@@ -39,75 +39,35 @@ namespace simplicity
 				OpenGLDemo();
 
 			protected:
-				/**
-				 * <p>
-				 * Creates a standard OpenGL camera in the standard location for use with demos.
-				 * </p>
-				 *
-				 * @param parentNode The node under which the camera should be added.
-				 *
-				 * @return The standard camera.
-				 */
-				std::shared_ptr<Camera> addStandardCamera(Node& parentNode);
+				std::shared_ptr<Camera> addCamera();
 
-				/**
-				 * <p>
-				 * Creates a standard OpenGL light in the standard location for use with demos.
-				 * </p>
-				 *
-				 * @param parentNode The node under which the light should be added.
-				 *
-				 * @return The standard light.
-				 */
-				std::shared_ptr<Light> addStandardLight(Node& parentNode);
+				void addCapsule(TreeNode& parent);
 
-				std::vector<std::shared_ptr<Model> > createDescription();
+				void addCylinder(TreeNode& parent);
 
-				std::shared_ptr<Model> createTitle();
+				void addDescription(TreeNode& parent);
 
-				/**
-				 * <p>
-				 * Creates a standard OpenGL capsule in the standard location for use with demos.
-				 * </p>
-				 *
-				 * @param parentNode The node under which the capsule should be added.
-				 */
-				std::shared_ptr<Model> createStandardCapsule();
+				void addLight();
 
-				/**
-				 * <p>
-				 * Creates a standard OpenGL cylinder in the standard location for use with demos.
-				 * </p>
-				 *
-				 * @param parentNode The node under which the cylinder should be added.
-				 */
-				std::shared_ptr<Model> createStandardCylinder();
+				void addSphere(TreeNode& parent);
 
-				/**
-				 * <p>
-				 * Creates a standard OpenGL sphere in the standard location for use with demos.
-				 * </p>
-				 *
-				 * @param parentNode The node under which the sphere should be added.
-				 */
-				std::shared_ptr<Model> createStandardSphere();
+				void addTitle(TreeNode& parent);
 
-				/**
-				 * <p>
-				 * Creates a standard OpenGL torus in the standard location for use with demos.
-				 * </p>
-				 *
-				 * @param parentNode The node under which the torus should be added.
-				 */
-				std::shared_ptr<Torus> createStandardTorus();
+				Torus& addTorus(TreeNode& parent);
 
 				void dispose();
 
-				Node* getModelsRoot();
+				std::shared_ptr<TreeNode> getModelsRoot();
 
 				void init();
 
+				void initScene() const;
+
+				void removeAllEntities();
+
 			private:
+				std::vector<reference_wrapper<Entity> > entities;
+
 				Button::State leftButtonState;
 
 				/**
@@ -115,7 +75,7 @@ namespace simplicity
 				 * The root node of the scene (excluding the camera, light(s) and text).
 				 * </p>
 				 */
-				std::shared_ptr<Node> modelsRoot;
+				std::shared_ptr<TreeNode> modelsRoot;
 
 				/**
 				 * <p>
@@ -131,15 +91,16 @@ namespace simplicity
 				 */
 				int mouseY;
 
-				std::shared_ptr<Model> createDescriptionLine(const std::string& line, const unsigned int lineNum);
+				std::shared_ptr<Model> createDescriptionLine(TreeNode& parent, const std::string& line,
+					const unsigned int lineNum);
 
 				virtual void onDispose() = 0;
 
 				virtual void onInit() = 0;
 
-				void onMouseButton(const boost::any data);
+				void onMouseButton(const boost::any message);
 
-				void onMouseMove(const boost::any data);
+				void onMouseMove(const boost::any message);
 		};
 	}
 }

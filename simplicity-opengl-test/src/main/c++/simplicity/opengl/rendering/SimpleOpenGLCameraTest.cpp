@@ -11,9 +11,9 @@
  */
 #include <boost/math/constants/constants.hpp>
 
+#include <simplicity/graph/MockTreeNode.h>
 #include <simplicity/math/SimpleTransformationMatrix.h>
 #include <simplicity/math/SimpleTranslationVector.h>
-#include <simplicity/scene/MockNode.h>
 
 #include "SimpleOpenGLCameraTest.h"
 
@@ -65,7 +65,7 @@ namespace simplicity
      */
     TEST_F(SimpleOpenGLCameraTest, getTransformation)
     {
-      NiceMock<MockNode> mockNode;
+      NiceMock<MockTreeNode> mockNode;
       SimpleTransformationMatrix<> matrix;
       SimpleTranslationVector<> translation(1.0f, 0.0f, 0.0f, 1.0f);
       matrix.rotate(90.0f * pi<float>() / 180.0f, translation);

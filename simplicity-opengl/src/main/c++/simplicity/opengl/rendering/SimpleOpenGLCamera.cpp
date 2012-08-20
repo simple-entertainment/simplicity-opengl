@@ -94,7 +94,7 @@ namespace simplicity
 			return nearClippingDistance;
 		}
 
-		Node* SimpleOpenGLCamera::getNode() const
+		TreeNode* SimpleOpenGLCamera::getNode() const
 		{
 			return node;
 		}
@@ -231,7 +231,7 @@ namespace simplicity
 			initialised = false;
 		}
 
-		void SimpleOpenGLCamera::setNode(Node* node)
+		void SimpleOpenGLCamera::setNode(TreeNode* node)
 		{
 			this->node = node;
 		}

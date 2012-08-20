@@ -18,9 +18,10 @@
 #include <stdio.h>
 
 #include <simplicity/common/AddressEquals.h>
+#include <simplicity/graph/PreorderConstNodeIterator.h>
 #include <simplicity/math/MathFactory.h>
-#include <simplicity/scene/PreorderConstNodeIterator.h>
 #include <simplicity/SEInvalidOperationException.h>
+#include <simplicity/Simplicity.h>
 
 #include "SimpleOpenGLRenderingEngine.h"
 
@@ -45,20 +46,13 @@ namespace simplicity
 
 		void SimpleOpenGLRenderingEngine::addEntity(std::shared_ptr<Entity> entity)
 		{
-			for (std::shared_ptr<Model> model : entity->getComponents<Model>())
-			{
-				scene->addNode(model->getNode());
-			}
 		}
 
 		void SimpleOpenGLRenderingEngine::addRenderer(const int index, std::shared_ptr<Renderer> renderer)
 		{
 			renderers.insert(renderers.begin() + index, renderer);
 
-			if (scene.get())
-			{
-				setRendererRoot(*renderer, scene->getRoot().get());
-			}
+			setRendererRoot(*renderer, &Simplicity::getScene()->getTree().getRoot());
 		}
 
 		void SimpleOpenGLRenderingEngine::addRenderer(std::shared_ptr<Renderer> renderer)
@@ -75,12 +69,6 @@ namespace simplicity
 			}
 
 			camera->init();
-
-			if (!scene.get())
-			{
-				logger.fatal("Just what do you expect me to render then? I don't have a scene to play with.");
-				throw SEInvalidOperationException();
-			}
 
 			if (!initialised)
 			{
@@ -145,7 +133,7 @@ namespace simplicity
 			return *clearingColour;
 		}
 
-		Node* SimpleOpenGLRenderingEngine::getRendererRoot(const Renderer& renderer) const
+		TreeNode* SimpleOpenGLRenderingEngine::getRendererRoot(const Renderer& renderer) const
 		{
 			if (rendererRoots.find(&renderer) == rendererRoots.end())
 			{
@@ -158,11 +146,6 @@ namespace simplicity
 		vector<std::shared_ptr<Renderer> > SimpleOpenGLRenderingEngine::getRenderers() const
 		{
 			return renderers;
-		}
-
-		std::shared_ptr<Scene> SimpleOpenGLRenderingEngine::getScene() const
-		{
-			return scene;
 		}
 
 		int SimpleOpenGLRenderingEngine::getViewportHeight() const
@@ -206,10 +189,6 @@ namespace simplicity
 
 		void SimpleOpenGLRenderingEngine::removeEntity(const Entity& entity)
 		{
-			for (std::shared_ptr<Model> model : entity.getComponents<Model>())
-			{
-				scene->removeNode(*model->getNode());
-			}
 		}
 
 		void SimpleOpenGLRenderingEngine::removeRenderer(const Renderer& renderer)
@@ -227,9 +206,9 @@ namespace simplicity
 			{
 				camera->apply();
 
-				for (unsigned int index = 0; index < scene->getLights().size(); index++)
+				for (unsigned int index = 0; index < Simplicity::getScene()->getLights().size(); index++)
 				{
-					scene->getLights().at(index)->apply();
+					Simplicity::getScene()->getLights().at(index)->apply();
 				}
 
 				renderSceneGraph(renderer, *rendererRoots.find(&renderer)->second);
@@ -237,11 +216,11 @@ namespace simplicity
 			glPopMatrix();
 		}
 
-		void SimpleOpenGLRenderingEngine::renderSceneGraph(Renderer& renderer, const Node& root)
+		void SimpleOpenGLRenderingEngine::renderSceneGraph(Renderer& renderer, const TreeNode& root)
 		{
 			// For every node in the traversal of the scene.
 			PreorderConstNodeIterator iterator(root);
-			const Node* currentNode;
+			const TreeNode* currentNode;
 
 			while (iterator.hasMoreNodes())
 			{
@@ -249,11 +228,11 @@ namespace simplicity
 				backtrack(iterator.getBacktracksToNextNode());
 
 				// Apply the transformation of the current node.
-				currentNode = &iterator.getNextNode();
+				currentNode = dynamic_cast<const TreeNode*>(&iterator.getNextNode());
 
 				glPushMatrix();
 
-				if (currentNode == &root && currentNode != scene->getRoot().get())
+				if (currentNode == &root && currentNode != &Simplicity::getScene()->getTree().getRoot())
 				{
 					glMultMatrixf(currentNode->getAbsoluteTransformation()->getData().data());
 				}
@@ -263,18 +242,20 @@ namespace simplicity
 				}
 
 				// Render the current node.
-				const ModelNode* modelNode = dynamic_cast<const ModelNode*>(currentNode);
-
-				if (modelNode != NULL)
+				if (currentNode->getComponent() != NULL)
 				{
-					NamedRenderer* namedRenderer = dynamic_cast<NamedRenderer*>(&renderer);
-					if (namedRenderer != NULL)
+					Model* model = dynamic_cast<Model*>(currentNode->getComponent());
+					if (model != NULL)
 					{
-						namedRenderer->renderModel(*modelNode->getModel(), modelNode->getId());
-					}
-					else
-					{
-						renderer.renderModel(*modelNode->getModel());
+						NamedRenderer* namedRenderer = dynamic_cast<NamedRenderer*>(&renderer);
+						if (namedRenderer != NULL)
+						{
+							namedRenderer->renderModel(*model, currentNode->getId());
+						}
+						else
+						{
+							renderer.renderModel(*model);
+						}
 					}
 				}
 			}
@@ -300,23 +281,10 @@ namespace simplicity
 			clearsBuffers = clearsBeforeRender;
 		}
 
-		void SimpleOpenGLRenderingEngine::setRendererRoot(const Renderer& renderer, Node* root)
+		void SimpleOpenGLRenderingEngine::setRendererRoot(const Renderer& renderer, TreeNode* root)
 		{
 			rendererRoots.erase(&renderer);
-			rendererRoots.insert(pair<const Renderer*, Node*>(&renderer, root));
-		}
-
-		void SimpleOpenGLRenderingEngine::setScene(std::shared_ptr<Scene> scene)
-		{
-			this->scene = scene;
-
-			for (shared_ptr<Renderer> renderer : renderers)
-			{
-				if (rendererRoots.find(renderer.get()) == rendererRoots.end())
-				{
-					rendererRoots.insert(pair<const Renderer*, Node*>(renderer.get(), scene->getRoot().get()));
-				}
-			}
+			rendererRoots.insert(pair<const Renderer*, TreeNode*>(&renderer, root));
 		}
 
 		void SimpleOpenGLRenderingEngine::setViewportHeight(const int viewportHeight)

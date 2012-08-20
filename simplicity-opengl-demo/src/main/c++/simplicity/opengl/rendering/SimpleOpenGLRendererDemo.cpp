@@ -16,8 +16,9 @@
  */
 #include <boost/math/constants/constants.hpp>
 
+#include <simplicity/graph/NodeFactory.h>
 #include <simplicity/math/MathFactory.h>
-#include <simplicity/scene/SceneFactory.h>
+#include <simplicity/Simplicity.h>
 
 #include <simplicity/opengl/rendering/engine/SimpleOpenGLRenderingEngine.h>
 #include <simplicity/opengl/rendering/SimpleOpenGLRenderer.h>
@@ -35,17 +36,17 @@ namespace simplicity
 		{
 		}
 
-		string SimpleOpenGLRendererDemo::getDescription()
+		string SimpleOpenGLRendererDemo::getDescription() const
 		{
 			return "";
 		}
 
-		shared_ptr<Engine> SimpleOpenGLRendererDemo::getEngine()
+		shared_ptr<Engine> SimpleOpenGLRendererDemo::getEngine() const
 		{
 			return renderingEngine;
 		}
 
-		string SimpleOpenGLRendererDemo::getTitle()
+		string SimpleOpenGLRendererDemo::getTitle() const
 		{
 			return "SimpleOpenGLRenderer";
 		}
@@ -53,6 +54,7 @@ namespace simplicity
 		void SimpleOpenGLRendererDemo::onDispose()
 		{
 			renderingEngine->destroy();
+			removeAllEntities();
 		}
 
 		void SimpleOpenGLRendererDemo::onInit()
@@ -63,39 +65,29 @@ namespace simplicity
 			renderingEngine->setViewportWidth(800);
 			renderingEngine->setViewportHeight(800);
 
-			unique_ptr<ColourVector<> > clearingColour(MathFactory::getInstance().createColourVector());
+			unique_ptr<ColourVector<> > clearingColour = MathFactory::getInstance().createColourVector();
 			clearingColour->setRed(0.95f);
 			clearingColour->setGreen(0.95f);
 			clearingColour->setBlue(0.95f);
 			renderingEngine->setClearingColour(move(clearingColour));
 
-			shared_ptr<Scene> scene(SceneFactory::getInstance().createScene());
-			renderingEngine->setScene(scene);
+			initScene();
 
-			shared_ptr<Node> sceneRoot(SceneFactory::getInstance().createNode());
-			scene->addNode(sceneRoot);
-
-			shared_ptr<Camera> camera = addStandardCamera(*sceneRoot);
-			scene->addCamera(camera);
+			shared_ptr<Camera> camera = addCamera();
 			renderingEngine->setCamera(camera);
 
-			shared_ptr<Light> light = addStandardLight(*sceneRoot);
-			scene->addLight(light);
+			addLight();
 
-			sceneRoot->addChild(createTitle()->getNode());
-			for (shared_ptr<Model> descriptionLine : createDescription()) {
-				sceneRoot->addChild(descriptionLine->getNode());
-			}
+			addTitle(Simplicity::getScene()->getTree().getRoot());
+			addDescription(Simplicity::getScene()->getTree().getRoot());
 
-			sceneRoot->addChild(getModelsRoot()->getThisShared());
-			shared_ptr<Model> capsule(createStandardCapsule());
-			getModelsRoot()->addChild(capsule->getNode());
-			shared_ptr<Model> cylinder(createStandardCylinder());
-			getModelsRoot()->addChild(cylinder->getNode());
-			shared_ptr<Model> sphere(createStandardSphere());
-			getModelsRoot()->addChild(sphere->getNode());
-			shared_ptr<Model> torus(createStandardTorus());
-			getModelsRoot()->addChild(torus->getNode());
+			Simplicity::getScene()->getTree().add(getModelsRoot());
+			Simplicity::getScene()->getTree().connect(Simplicity::getScene()->getTree().getRoot(), *getModelsRoot());
+
+			addCapsule(*getModelsRoot());
+			addCylinder(*getModelsRoot());
+			addSphere(*getModelsRoot());
+			addTorus(*getModelsRoot());
 
 			shared_ptr<SimpleOpenGLRenderer> renderer(new SimpleOpenGLRenderer);
 			renderingEngine->addRenderer(renderer);

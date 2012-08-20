@@ -42,9 +42,9 @@ namespace simplicity
          * </p>
          */
         PickEvent
-        createPickEventPublic(const Scene& scene, const int numberOfHits) const
+        createPickEventPublic(const int numberOfHits) const
         {
-          return (fTestObject.createPickEvent(scene, numberOfHits));
+          return (fTestObject.createPickEvent(numberOfHits));
         }
     };
   }

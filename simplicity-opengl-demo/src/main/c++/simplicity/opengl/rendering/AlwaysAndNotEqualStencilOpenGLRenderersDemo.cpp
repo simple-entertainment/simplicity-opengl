@@ -16,8 +16,9 @@
  */
 #include <boost/math/constants/constants.hpp>
 
+#include <simplicity/graph/NodeFactory.h>
 #include <simplicity/math/MathFactory.h>
-#include <simplicity/scene/SceneFactory.h>
+#include <simplicity/Simplicity.h>
 
 #include <simplicity/opengl/rendering/engine/SimpleOpenGLRenderingEngine.h>
 #include <simplicity/opengl/rendering/AlwaysStencilOpenGLRenderer.h>
@@ -35,19 +36,19 @@ namespace simplicity
 		{
 		}
 
-		string AlwaysAndNotEqualStencilOpenGLRenderersDemo::getDescription()
+		string AlwaysAndNotEqualStencilOpenGLRenderersDemo::getDescription() const
 		{
 			return "Pass #1 Renders the sphere, cylinder and capsule and assigns a value to the stencil buffer.\n"
 				"Pass #2 Renders the torus only where the stencil buffer has not been assigned a value.\n"
 				"The result of this is that the torus will never be rendered over the other shapes.";
 		}
 
-		shared_ptr<Engine> AlwaysAndNotEqualStencilOpenGLRenderersDemo::getEngine()
+		shared_ptr<Engine> AlwaysAndNotEqualStencilOpenGLRenderersDemo::getEngine() const
 		{
 			return renderingEngine;
 		}
 
-		string AlwaysAndNotEqualStencilOpenGLRenderersDemo::getTitle()
+		string AlwaysAndNotEqualStencilOpenGLRenderersDemo::getTitle() const
 		{
 			return "AlwaysStencilOpenGLRenderer and NotEqualStencilOpenGLRenderer";
 		}
@@ -55,6 +56,7 @@ namespace simplicity
 		void AlwaysAndNotEqualStencilOpenGLRenderersDemo::onDispose()
 		{
 			renderingEngine->destroy();
+			removeAllEntities();
 		}
 
 		void AlwaysAndNotEqualStencilOpenGLRenderersDemo::onInit()
@@ -65,50 +67,42 @@ namespace simplicity
 			renderingEngine->setViewportWidth(800);
 			renderingEngine->setViewportHeight(800);
 
-			unique_ptr<ColourVector<> > clearingColour(MathFactory::getInstance().createColourVector());
+			unique_ptr<ColourVector<> > clearingColour = MathFactory::getInstance().createColourVector();
 			clearingColour->setRed(0.95f);
 			clearingColour->setGreen(0.95f);
 			clearingColour->setBlue(0.95f);
 			renderingEngine->setClearingColour(move(clearingColour));
 
-			shared_ptr<Scene> scene(SceneFactory::getInstance().createScene());
-			renderingEngine->setScene(scene);
+			initScene();
 
-			shared_ptr<Node> sceneRoot(SceneFactory::getInstance().createNode());
-			scene->addNode(sceneRoot);
-
-			shared_ptr<Camera> camera = addStandardCamera(*sceneRoot);
-			scene->addCamera(camera);
+			shared_ptr<Camera> camera = addCamera();
 			renderingEngine->setCamera(camera);
 
-			shared_ptr<Light> light = addStandardLight(*sceneRoot);
-			scene->addLight(light);
+			addLight();
 
-			shared_ptr<Node> textRoot(SceneFactory::getInstance().createNode());
-			sceneRoot->addChild(textRoot);
+			shared_ptr<TreeNode> textRoot = NodeFactory::getInstance().createTreeNode();
+			Simplicity::getScene()->getTree().add(textRoot);
+			Simplicity::getScene()->getTree().connect(Simplicity::getScene()->getTree().getRoot(), *textRoot);
 
-			textRoot->addChild(createTitle()->getNode());
-			for (shared_ptr<Model> descriptionLine : createDescription()) {
-				textRoot->addChild(descriptionLine->getNode());
-			}
+			addTitle(*textRoot);
+			addDescription(*textRoot);
 
-			sceneRoot->addChild(getModelsRoot()->getThisShared());
+			Simplicity::getScene()->getTree().add(getModelsRoot());
+			Simplicity::getScene()->getTree().connect(Simplicity::getScene()->getTree().getRoot(), *getModelsRoot());
 
-			shared_ptr<Node> renderingPass1Root(SceneFactory::getInstance().createNode());
-			getModelsRoot()->addChild(renderingPass1Root);
+			shared_ptr<TreeNode> renderingPass1Root = NodeFactory::getInstance().createTreeNode();
+			Simplicity::getScene()->getTree().add(renderingPass1Root);
+			Simplicity::getScene()->getTree().connect(*getModelsRoot(), *renderingPass1Root);
 
-			shared_ptr<Model> capsule(createStandardCapsule());
-			renderingPass1Root->addChild(capsule->getNode());
-			shared_ptr<Model> cylinder(createStandardCylinder());
-			renderingPass1Root->addChild(cylinder->getNode());
-			shared_ptr<Model> sphere(createStandardSphere());
-			renderingPass1Root->addChild(sphere->getNode());
+			addCapsule(*renderingPass1Root);
+			addCylinder(*renderingPass1Root);
+			addSphere(*renderingPass1Root);
 
-			shared_ptr<Node> renderingPass2Root(SceneFactory::getInstance().createNode());
-			getModelsRoot()->addChild(renderingPass2Root);
+			shared_ptr<TreeNode> renderingPass2Root = NodeFactory::getInstance().createTreeNode();
+			Simplicity::getScene()->getTree().add(renderingPass2Root);
+			Simplicity::getScene()->getTree().connect(*getModelsRoot(), *renderingPass2Root);
 
-			shared_ptr<Model> torus(createStandardTorus());
-			renderingPass2Root->addChild(torus->getNode());
+			addTorus(*renderingPass2Root);
 
 			shared_ptr<SimpleOpenGLRenderer> renderer(new SimpleOpenGLRenderer);
 

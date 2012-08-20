@@ -58,7 +58,7 @@ namespace simplicity
 
 				Light::LightingMode getLightingMode() const;
 
-				Node* getNode() const;
+				TreeNode* getNode() const;
 
 				ColourVector<>& getSpecularLight() const;
 
@@ -76,7 +76,7 @@ namespace simplicity
 
 				void setLightingMode(const Light::LightingMode lightingMode);
 
-				void setNode(Node* node);
+				void setNode(TreeNode* node);
 
 				void setSpecularLight(std::unique_ptr<ColourVector<> > specularLight);
 
@@ -121,7 +121,7 @@ namespace simplicity
 				 * The node that represents this <code>SimpleOpenGLLight</code>'s location and orientation of this light.
 				 * </p>
 				 */
-				Node* node;
+				TreeNode* node;
 
 				/**
 				 * <p>

@@ -18,7 +18,7 @@
 
 #include <simplicity/model/ModelConstants.h>
 #include <simplicity/model/shape/Shape.h>
-#include <simplicity/scene/model/ModelNode.h>
+#include <simplicity/Simplicity.h>
 
 #include "SimpleOpenGLPicker.h"
 
@@ -38,7 +38,7 @@ namespace simplicity
 		{
 		}
 
-		PickEvent SimpleOpenGLPicker::createPickEvent(const Scene& scene, const int numberOfHits) const
+		PickEvent SimpleOpenGLPicker::createPickEvent(const int numberOfHits) const
 		{
 			PickEvent event;
 			int bufferIndex = 0;
@@ -50,19 +50,17 @@ namespace simplicity
 				hit.minimumDistance = fSelectBuffer[bufferIndex++];
 				hit.maximumDistance = fSelectBuffer[bufferIndex++];
 
-				hit.node = scene.getNode(fSelectBuffer[bufferIndex]).get();
+				hit.node = &Simplicity::getScene()->getTree().get(fSelectBuffer[bufferIndex]);
 
-				shared_ptr<Model> model = dynamic_cast<ModelNode*>(hit.node)->getModel();
-				if (dynamic_pointer_cast < VertexGroup > (model))
+				Component* component = hit.node->getComponent();
+
+				if (dynamic_cast<VertexGroup*>(component))
 				{
 					if (numberOfNames > 1)
 					{
-						hit.primitive = getSubsetVG(dynamic_cast<VertexGroup&>(*model), fSelectBuffer[bufferIndex + 1]);
+						hit.primitive = getSubsetVG(dynamic_cast<VertexGroup&>(*component),
+							fSelectBuffer[bufferIndex + 1]);
 					}
-				}
-				else if (dynamic_pointer_cast < Shape > (model))
-				{
-					hit.primitive = model;
 				}
 
 				bufferIndex += numberOfNames;
@@ -123,12 +121,10 @@ namespace simplicity
 			glSelectBuffer(fSelectBufferCapacity, fSelectBuffer);
 		}
 
-		PickEvent SimpleOpenGLPicker::pickScene(Scene& scene, const Camera& camera, const Pick pick)
+		PickEvent SimpleOpenGLPicker::pickScene(const Camera& camera, const Pick pick)
 		{
-			shared_ptr<Scene> originalScene(fRenderingEngine->getScene());
 			shared_ptr<Camera> originalCamera(fRenderingEngine->getCamera());
 
-			fRenderingEngine->setScene(scene.getThisShared());
 			fRenderingEngine->setCamera(camera.getPickCamera(pick));
 
 			glRenderMode(GL_SELECT);
@@ -137,10 +133,9 @@ namespace simplicity
 
 			int numberOfHits = glRenderMode(GL_RENDER);
 
-			fRenderingEngine->setScene(originalScene);
 			fRenderingEngine->setCamera(originalCamera);
 
-			return (createPickEvent(scene, numberOfHits));
+			return (createPickEvent(numberOfHits));
 		}
 
 		void SimpleOpenGLPicker::setDrawingMode(const Renderer::DrawingMode mode)

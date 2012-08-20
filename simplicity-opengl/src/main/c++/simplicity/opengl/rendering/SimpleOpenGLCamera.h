@@ -129,7 +129,7 @@ namespace simplicity
 
 				float getNearClippingDistance() const;
 
-				Node* getNode() const;
+				TreeNode* getNode() const;
 
 				std::shared_ptr<Camera> getPickCamera(const Pick pick) const;
 
@@ -157,7 +157,7 @@ namespace simplicity
 
 				void setNearClippingDistance(const float nearClippingDistance);
 
-				void setNode(Node* node);
+				void setNode(TreeNode* node);
 
 				void setProjectionMode(const Camera::ProjectionMode projectionMode);
 
@@ -253,7 +253,7 @@ namespace simplicity
 				 * The <code>Node</code> that represents this <code>SimpleJOGLCamera</code>'s location and orientation.
 				 * </p>
 				 */
-				Node* node;
+				TreeNode* node;
 
 				/**
 				 * <p>

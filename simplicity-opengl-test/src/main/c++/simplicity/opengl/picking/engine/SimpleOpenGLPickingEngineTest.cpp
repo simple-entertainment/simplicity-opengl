@@ -13,6 +13,7 @@
 #include <simplicity/rendering/engine/MockRenderingEngine.h>
 #include <simplicity/rendering/MockCamera.h>
 #include <simplicity/scene/MockScene.h>
+#include <simplicity/Simplicity.h>
 
 #include "SimpleOpenGLPickingEngineTest.h"
 
@@ -40,7 +41,7 @@ namespace simplicity
       // Initialise the test environment.
       // //////////////////////////////////////////////////
       fTestObject.setPicker(mockPicker);
-      fTestObject.setScene(mockScene);
+      Simplicity::setScene(mockScene);
       fTestObject.setCamera(mockCamera);
       fTestObject.pick(5, 10, 15, 20);
       fTestObject.pick(10, 20, 30, 40);
@@ -48,7 +49,7 @@ namespace simplicity
       // Dictate expected results.
       // //////////////////////////////////////////////////
       EXPECT_CALL(*mockPicker, init());
-      EXPECT_CALL(*mockPicker, pickScene(Ref(*mockScene), Ref(*mockCamera), _)).Times(2).WillRepeatedly(Return(PickEvent ()));
+      EXPECT_CALL(*mockPicker, pickScene(Ref(*mockCamera), _)).Times(2).WillRepeatedly(Return(PickEvent ()));
       EXPECT_CALL(*mockPicker, dispose());
 
       // Perform test.
@@ -90,12 +91,10 @@ namespace simplicity
       // //////////////////////////////////////////////////
       shared_ptr<MockPicker> mockPicker(new NiceMock<MockPicker>);
       shared_ptr<MockRenderingEngine> mockRenderingEngine(new NiceMock<MockRenderingEngine>);
-      shared_ptr<MockScene> mockScene(new NiceMock<MockScene>);
       shared_ptr<MockCamera> mockCamera(new NiceMock<MockCamera>);
 
       // Dictate correct behaviour.
       // //////////////////////////////////////////////////
-      ON_CALL(*mockRenderingEngine, getScene()).WillByDefault(Return(mockScene));
       ON_CALL(*mockRenderingEngine, getCamera()).WillByDefault(Return(mockCamera));
 
       // Initialise the test environment.
@@ -108,7 +107,7 @@ namespace simplicity
       // Dictate expected results.
       // //////////////////////////////////////////////////
       EXPECT_CALL(*mockPicker, init());
-      EXPECT_CALL(*mockPicker, pickScene(Ref(*mockScene), Ref(*mockCamera), _)).Times(2).WillRepeatedly(Return(PickEvent ()));
+      EXPECT_CALL(*mockPicker, pickScene(Ref(*mockCamera), _)).Times(2).WillRepeatedly(Return(PickEvent ()));
       EXPECT_CALL(*mockPicker, dispose());
 
       // Perform test.
@@ -192,12 +191,10 @@ namespace simplicity
       // Create dependencies.
       // //////////////////////////////////////////////////
       shared_ptr<MockRenderingEngine> mockRenderingEngine(new NiceMock<MockRenderingEngine>);
-      shared_ptr<MockScene> mockScene(new NiceMock<MockScene>);
       shared_ptr<MockCamera> mockCamera(new NiceMock<MockCamera>);
 
       // Dictate correct behaviour.
       // //////////////////////////////////////////////////
-      ON_CALL(*mockRenderingEngine, getScene()).WillByDefault(Return(mockScene));
       ON_CALL(*mockRenderingEngine, getCamera()).WillByDefault(Return(mockCamera));
 
       // Perform test.
@@ -206,7 +203,6 @@ namespace simplicity
 
       // Verify test results.
       // //////////////////////////////////////////////////
-      ASSERT_EQ(mockScene, fTestObject.getScene());
       ASSERT_EQ(mockCamera, fTestObject.getCamera());
     }
   }

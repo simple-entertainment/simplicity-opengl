@@ -37,11 +37,11 @@ namespace simplicity
 			public:
 				SimpleOpenGLPickerDemo();
 
-				std::string getDescription();
+				std::string getDescription() const;
 
-				std::shared_ptr<Engine> getEngine();
+				std::shared_ptr<Engine> getEngine() const;
 
-				std::string getTitle();
+				std::string getTitle() const;
 
 			private:
 				/**

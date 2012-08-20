@@ -12,6 +12,7 @@
 #include <simplicity/engine/SimpleCompositeEngine.h>
 #include <simplicity/Events.h>
 #include <simplicity/input/KeyboardButtonEvent.h>
+#include <simplicity/Messages.h>
 #include <simplicity/Simplicity.h>
 
 #include <simplicity/opengl/model/OpenGLModelFactory.h>
@@ -33,8 +34,7 @@ using namespace simplicity::freeglut;
 using namespace simplicity::opengl;
 using namespace std;
 
-unique_ptr<CompositeEngine> engine(new SimpleCompositeEngine);
-CompositeEngine& engineRef = *engine;
+shared_ptr<CompositeEngine> engine(new SimpleCompositeEngine);
 
 vector<unique_ptr<Demo> > demos;
 unsigned int demoIndex = 0;
@@ -43,13 +43,13 @@ void nextDemo()
 {
 	if (demoIndex < demos.size() - 1)
 	{
-		engineRef.removeEngine(demos.at(demoIndex)->getEngine());
+		engine->removeEngine(demos.at(demoIndex)->getEngine());
 		demos.at(demoIndex)->dispose();
 
 		demoIndex++;
 
 		demos.at(demoIndex)->init();
-		engineRef.addEngine(demos.at(demoIndex)->getEngine());
+		engine->addEngine(demos.at(demoIndex)->getEngine());
 	}
 }
 
@@ -57,13 +57,13 @@ void previousDemo()
 {
 	if (demoIndex > 0)
 	{
-		engineRef.removeEngine(demos.at(demoIndex)->getEngine());
+		engine->removeEngine(demos.at(demoIndex)->getEngine());
 		demos.at(demoIndex)->dispose();
 
 		demoIndex--;
 
 		demos.at(demoIndex)->init();
-		engineRef.addEngine(demos.at(demoIndex)->getEngine());
+		engine->addEngine(demos.at(demoIndex)->getEngine());
 	}
 }
 
@@ -92,9 +92,9 @@ int main(int argc, char** argv)
 	freeglutEngine->setPreferredFrequency(100);
 	engine->addEngine(freeglutEngine);
 
-	Simplicity::init(move(engine));
+	Simplicity::setEngine(engine);
 
-	Simplicity::registerObserver(KEYBOARD_BUTTON_EVENT, changeDemo);
+	Messages::registerRecipient(KEYBOARD_BUTTON_EVENT, changeDemo);
 
 	unique_ptr<ModelFactory> modelFactory(new OpenGLModelFactory);
 	ModelFactory::setInstance(move(modelFactory));
@@ -119,7 +119,7 @@ int main(int argc, char** argv)
 	demos.push_back(move(simpleOpenGLPickerDemo));
 
 	demos.at(demoIndex)->init();
-	engineRef.addEngine(demos.at(demoIndex)->getEngine());
+	engine->addEngine(demos.at(demoIndex)->getEngine());
 
 	Simplicity::start();
 

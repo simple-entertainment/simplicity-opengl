@@ -20,9 +20,10 @@
 
 #include <simplicity/engine/SimpleCompositeEngine.h>
 #include <simplicity/Events.h>
+#include <simplicity/graph/NodeFactory.h>
 #include <simplicity/input/MouseButtonEvent.h>
 #include <simplicity/math/MathFactory.h>
-#include <simplicity/scene/SceneFactory.h>
+#include <simplicity/Messages.h>
 #include <simplicity/Simplicity.h>
 
 #include <simplicity/opengl/picking/engine/SimpleOpenGLPickingEngine.h>
@@ -46,18 +47,18 @@ namespace simplicity
 		{
 		}
 
-		string SimpleOpenGLPickerDemo::getDescription()
+		string SimpleOpenGLPickerDemo::getDescription() const
 		{
 			return "Pass #1 Renders the shapes.\nPass #2 Renders only an outline of the selected shape.\n"
 				"Shapes can be selected by 'picking' them (right-clicking on them).";
 		}
 
-		shared_ptr<Engine> SimpleOpenGLPickerDemo::getEngine()
+		shared_ptr<Engine> SimpleOpenGLPickerDemo::getEngine() const
 		{
 			return engine;
 		}
 
-		string SimpleOpenGLPickerDemo::getTitle()
+		string SimpleOpenGLPickerDemo::getTitle() const
 		{
 			return "SimpleOpenGLPicker";
 		}
@@ -65,10 +66,11 @@ namespace simplicity
 		void SimpleOpenGLPickerDemo::onDispose()
 		{
 			engine->destroy();
+			removeAllEntities();
 
-			Simplicity::deregisterObserver(MOUSE_BUTTON_EVENT,
+			Messages::deregisterRecipient(MOUSE_BUTTON_EVENT,
 				bind(&SimpleOpenGLPickerDemo::onMouse, this, placeholders::_1));
-			Simplicity::deregisterObserver(PICK_EVENT, bind(&SimpleOpenGLPickerDemo::onPick, this, placeholders::_1));
+			Messages::deregisterRecipient(PICK_EVENT, bind(&SimpleOpenGLPickerDemo::onPick, this, placeholders::_1));
 		}
 
 		void SimpleOpenGLPickerDemo::onInit()
@@ -88,33 +90,20 @@ namespace simplicity
 			clearingColour->setBlue(0.95f);
 			renderingEngine->setClearingColour(move(clearingColour));
 
-			shared_ptr<Scene> scene(SceneFactory::getInstance().createScene());
-			renderingEngine->setScene(scene);
+			initScene();
 
-			shared_ptr<Node> sceneRoot(SceneFactory::getInstance().createNode());
-			scene->addNode(sceneRoot);
-
-			shared_ptr<Camera> camera = addStandardCamera(*sceneRoot);
-			scene->addCamera(camera);
+			shared_ptr<Camera> camera = addCamera();
 			renderingEngine->setCamera(camera);
 
-			shared_ptr<Light> light = addStandardLight(*sceneRoot);
-			scene->addLight(light);
+			addLight();
 
-			sceneRoot->addChild(createTitle()->getNode());
-			for (shared_ptr<Model> descriptionLine : createDescription())
-			{
-				sceneRoot->addChild(descriptionLine->getNode());
-			}
+			addTitle(Simplicity::getScene()->getTree().getRoot());
+			addDescription(Simplicity::getScene()->getTree().getRoot());
 
-			shared_ptr<Model> capsule(createStandardCapsule());
-			sceneRoot->addChild(capsule->getNode());
-			shared_ptr<Model> cylinder(createStandardCylinder());
-			sceneRoot->addChild(cylinder->getNode());
-			shared_ptr<Model> sphere(createStandardSphere());
-			sceneRoot->addChild(sphere->getNode());
-			shared_ptr<Model> torus(createStandardTorus());
-			sceneRoot->addChild(torus->getNode());
+			addCapsule(Simplicity::getScene()->getTree().getRoot());
+			addCylinder(Simplicity::getScene()->getTree().getRoot());
+			addSphere(Simplicity::getScene()->getTree().getRoot());
+			addTorus(Simplicity::getScene()->getTree().getRoot());
 
 			shared_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
 			renderingEngine->addRenderer(renderer);
@@ -128,7 +117,6 @@ namespace simplicity
 			pickingEngine->setPreferredFrequency(100);
 
 			shared_ptr<RenderingEngine> pickerRenderingEngine(new SimpleOpenGLRenderingEngine);
-			pickerRenderingEngine->setScene(scene);
 			pickerRenderingEngine->setViewportWidth(800);
 			pickerRenderingEngine->setViewportHeight(800);
 
@@ -146,9 +134,9 @@ namespace simplicity
 			static_pointer_cast<SimpleOpenGLPickingEngine>(pickingEngine)->setRenderingEngine(renderingEngine);
 			pickingEngine->setPicker(picker);
 
-			Simplicity::registerObserver(MOUSE_BUTTON_EVENT,
+			Messages::registerRecipient(MOUSE_BUTTON_EVENT,
 				bind(&SimpleOpenGLPickerDemo::onMouse, this, placeholders::_1));
-			Simplicity::registerObserver(PICK_EVENT, bind(&SimpleOpenGLPickerDemo::onPick, this, placeholders::_1));
+			Messages::registerRecipient(PICK_EVENT, bind(&SimpleOpenGLPickerDemo::onPick, this, placeholders::_1));
 
 			engine->init();
 		}

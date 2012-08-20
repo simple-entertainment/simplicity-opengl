@@ -17,6 +17,7 @@
 #include <log4cpp/Category.hh>
 
 #include <simplicity/Events.h>
+#include <simplicity/Messages.h>
 #include <simplicity/Simplicity.h>
 
 #include "../../rendering/SimpleOpenGLCamera.h"
@@ -49,11 +50,6 @@ namespace simplicity
 
 			if (renderingEngine.get())
 			{
-				if (renderingEngine->getScene().get())
-				{
-					scene = renderingEngine->getScene();
-				}
-
 				if (renderingEngine->getCamera().get())
 				{
 					camera = renderingEngine->getCamera();
@@ -65,7 +61,7 @@ namespace simplicity
 			// For every pick.
 			for (unsigned int index = 0; index < picks.size(); index++)
 			{
-				Simplicity::fireEvent(PICK_EVENT, picker->pickScene(*scene, *camera, picks.at(index)));
+				Messages::send(PICK_EVENT, picker->pickScene(*camera, picks.at(index)));
 			}
 
 			picker->dispose();
@@ -108,11 +104,6 @@ namespace simplicity
 		shared_ptr<RenderingEngine> SimpleOpenGLPickingEngine::getRenderingEngine() const
 		{
 			return renderingEngine;
-		}
-
-		shared_ptr<Scene> SimpleOpenGLPickingEngine::getScene() const
-		{
-			return scene;
 		}
 
 		void SimpleOpenGLPickingEngine::onInit()
@@ -174,20 +165,10 @@ namespace simplicity
 		{
 			this->renderingEngine = renderingEngine;
 
-			if (renderingEngine->getScene().get())
-			{
-				scene = renderingEngine->getScene();
-			}
-
 			if (renderingEngine->getCamera().get())
 			{
 				camera = renderingEngine->getCamera();
 			}
-		}
-
-		void SimpleOpenGLPickingEngine::setScene(shared_ptr<Scene> scene)
-		{
-			this->scene = scene;
 		}
 	}
 }

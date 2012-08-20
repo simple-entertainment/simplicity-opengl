@@ -20,10 +20,10 @@
 #include <GL/glew.h>
 
 #include <simplicity/engine/BaseEngine.h>
+#include <simplicity/graph/Node.h>
 #include <simplicity/math/SimpleVector.h>
 #include <simplicity/rendering/engine/RenderingEngine.h>
 #include <simplicity/rendering/NamedRenderer.h>
-#include <simplicity/scene/model/ModelNode.h>
 
 namespace simplicity
 {
@@ -70,11 +70,9 @@ namespace simplicity
 
 				const ColourVector<>& getClearingColour() const;
 
-				Node* getRendererRoot(const Renderer& renderer) const;
+				TreeNode* getRendererRoot(const Renderer& renderer) const;
 
 				std::vector<std::shared_ptr<Renderer> > getRenderers() const;
-
-				std::shared_ptr<Scene> getScene() const;
 
 				int getViewportHeight() const;
 
@@ -84,7 +82,7 @@ namespace simplicity
 
 				void removeRenderer(const Renderer& renderer);
 
-				void renderSceneGraph(Renderer& renderer, const Node& root);
+				void renderSceneGraph(Renderer& renderer, const TreeNode& root);
 
 				void setCamera(std::shared_ptr<Camera> camera);
 
@@ -92,9 +90,7 @@ namespace simplicity
 
 				void setClearsBeforeRender(const bool clearsBeforeRender);
 
-				void setRendererRoot(const Renderer& renderer, Node* root);
-
-				void setScene(std::shared_ptr<Scene> scene);
+				void setRendererRoot(const Renderer& renderer, TreeNode* root);
 
 				void setViewportHeight(const int viewportHeight);
 
@@ -146,7 +142,7 @@ namespace simplicity
 				 * the {@link simplicity::Renderer Renderer}s will render when they are executed.
 				 * </p>
 				 */
-				std::map<const Renderer*, Node*> rendererRoots;
+				std::map<const Renderer*, TreeNode*> rendererRoots;
 
 				/**
 				 * <p>
@@ -155,13 +151,6 @@ namespace simplicity
 				 * </p>
 				 */
 				std::vector<std::shared_ptr<Renderer> > renderers;
-
-				/**
-				 * <p>
-				 * The {@link simplicity::SceneGraph SceneGraph} to be rendered.
-				 * </p>
-				 */
-				std::shared_ptr<Scene> scene;
 
 				/**
 				 * <p>

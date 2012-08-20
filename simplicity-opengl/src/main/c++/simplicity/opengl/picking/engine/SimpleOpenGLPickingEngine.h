@@ -73,8 +73,6 @@ namespace simplicity
 				 */
 				std::shared_ptr<RenderingEngine> getRenderingEngine() const;
 
-				std::shared_ptr<Scene> getScene() const;
-
 				void pick(const float x, const float y, const float width, const float height);
 
 				void pick(const Pick pick);
@@ -104,8 +102,6 @@ namespace simplicity
 				 */
 				void setRenderingEngine(std::shared_ptr<RenderingEngine> renderingEngine);
 
-				void setScene(std::shared_ptr<Scene> scene);
-
 			private:
 				/**
 				 * The viewpoint that will be adapted to create the picking viewpoint.
@@ -134,11 +130,6 @@ namespace simplicity
 				 * </p>
 				 */
 				std::shared_ptr<RenderingEngine> renderingEngine;
-
-				/**
-				 * The <code>Scene</code> to pick.
-				 */
-				std::shared_ptr<Scene> scene;
 
 				/**
 				 * <p>

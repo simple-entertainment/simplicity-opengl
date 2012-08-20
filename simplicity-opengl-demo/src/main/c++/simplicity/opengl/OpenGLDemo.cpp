@@ -20,11 +20,14 @@
 #include <boost/math/constants/constants.hpp>
 
 #include <simplicity/Events.h>
+#include <simplicity/graph/NodeFactory.h>
+#include <simplicity/graph/SimpleTree.h>
 #include <simplicity/input/MouseButtonEvent.h>
 #include <simplicity/input/MouseMoveEvent.h>
 #include <simplicity/math/MathFactory.h>
+#include <simplicity/Messages.h>
 #include <simplicity/model/ModelFactory.h>
-#include <simplicity/scene/SceneFactory.h>
+#include <simplicity/scene/SimpleScene.h>
 #include <simplicity/Simplicity.h>
 
 #include <simplicity/opengl/model/OpenGLText.h>
@@ -41,82 +44,208 @@ namespace simplicity
 	namespace opengl
 	{
 		OpenGLDemo::OpenGLDemo() :
-			leftButtonState(Button::State::UNKNOWN_STATE), modelsRoot(SceneFactory::getInstance().createNode())
+			leftButtonState(Button::State::UNKNOWN_STATE), modelsRoot(NodeFactory::getInstance().createTreeNode())
 		{
 		}
 
-		shared_ptr<Camera> OpenGLDemo::addStandardCamera(Node& parentNode)
+		shared_ptr<Camera> OpenGLDemo::addCamera()
 		{
 			shared_ptr<SimpleOpenGLCamera> camera(new SimpleOpenGLCamera);
 
-			shared_ptr<Node> node(SceneFactory::getInstance().createNode());
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
 			camera->setNode(node.get());
 
 			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
 			location->setZ(15.0f);
 			node->getTransformation().translate(*location);
 
-			parentNode.addChild(node);
+			Simplicity::getScene()->addCamera(camera);
+			Simplicity::getScene()->getTree().add(node);
+			Simplicity::getScene()->getTree().connect(Simplicity::getScene()->getTree().getRoot(), *node);
 
 			return camera;
 		}
 
-		shared_ptr<Light> OpenGLDemo::addStandardLight(Node& parentNode)
+		void OpenGLDemo::addCapsule(TreeNode& parent)
+		{
+			shared_ptr<Entity> capsule(new Entity("capsule"));
+
+			shared_ptr<Capsule> model = ModelFactory::getInstance().createCapsule();
+			capsule->addComponent(model);
+
+			unique_ptr<ColourVector<> > colour = MathFactory::getInstance().createColourVector();
+			colour->setRed(0.75f);
+			model->setColour(move(colour));
+
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
+			model->setNode(node.get());
+			node->setComponent(model.get());
+
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
+			location->setX(-3.0f);
+			location->setY(3.0f);
+			node->getTransformation().translate(*location);
+
+			Simplicity::addEntity(capsule, node, parent);
+			entities.push_back(*capsule);
+		}
+
+		void OpenGLDemo::addCylinder(TreeNode& parent)
+		{
+			shared_ptr<Entity> cylinder(new Entity("cylinder"));
+
+			shared_ptr<Cylinder> model = ModelFactory::getInstance().createCylinder();
+			cylinder->addComponent(model);
+
+			unique_ptr<ColourVector<> > colour = MathFactory::getInstance().createColourVector();
+			colour->setGreen(0.75f);
+			model->setColour(move(colour));
+
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
+			model->setNode(node.get());
+			node->setComponent(model.get());
+
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
+			location->setY(3.0f);
+			node->getTransformation().translate(*location);
+
+			Simplicity::addEntity(cylinder, node, parent);
+			entities.push_back(*cylinder);
+		}
+
+		void OpenGLDemo::addDescription(TreeNode& parent)
+		{
+			shared_ptr<Entity> description(new Entity("description"));
+
+			unsigned int lineNum = 0;
+			string text = getDescription();
+			while (text.find('\n') != string::npos)
+			{
+				shared_ptr<Model> descriptionLine = createDescriptionLine(parent, text.substr(0, text.find('\n')),
+					lineNum);
+				description->addComponent(descriptionLine);
+				descriptionLine->setEntity(description);
+
+				text = text.substr(text.find('\n') + 1);
+				lineNum++;
+			}
+
+			shared_ptr<Model> descriptionLine = createDescriptionLine(parent, text, lineNum);
+			description->addComponent(descriptionLine);
+			descriptionLine->setEntity(description);
+
+			Simplicity::addEntity(description);
+			entities.push_back(*description);
+		}
+
+		void OpenGLDemo::addLight()
 		{
 			shared_ptr<SimpleOpenGLLight> light(new SimpleOpenGLLight);
 
-			shared_ptr<Node> node(SceneFactory::getInstance().createNode());
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
 			light->setNode(node.get());
 
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
 			location->setZ(15.0f);
 			node->getTransformation().translate(*location);
 
-			unique_ptr<ColourVector<> > ambientLight(MathFactory::getInstance().createColourVector());
+			unique_ptr<ColourVector<> > ambientLight = MathFactory::getInstance().createColourVector();
 			ambientLight->setRed(0.25f);
 			ambientLight->setGreen(0.25f);
 			ambientLight->setBlue(0.25f);
 			light->setAmbientLight(move(ambientLight));
 
-			unique_ptr<ColourVector<> > diffuseLight(MathFactory::getInstance().createColourVector());
+			unique_ptr<ColourVector<> > diffuseLight = MathFactory::getInstance().createColourVector();
 			diffuseLight->setRed(0.5f);
 			diffuseLight->setGreen(0.5f);
 			diffuseLight->setBlue(0.5f);
 			light->setDiffuseLight(move(diffuseLight));
 
-			unique_ptr<ColourVector<> > specularLight(MathFactory::getInstance().createColourVector());
+			unique_ptr<ColourVector<> > specularLight = MathFactory::getInstance().createColourVector();
 			specularLight->setRed(0.5f);
 			specularLight->setGreen(0.5f);
 			specularLight->setBlue(0.5f);
 			light->setSpecularLight(move(specularLight));
 
-			parentNode.addChild(node);
-
-			return light;
+			Simplicity::getScene()->addLight(light);
+			Simplicity::getScene()->getTree().add(node);
+			Simplicity::getScene()->getTree().connect(Simplicity::getScene()->getTree().getRoot(), *node);
 		}
 
-		vector<shared_ptr<Model> > OpenGLDemo::createDescription()
+		void OpenGLDemo::addSphere(TreeNode& parent)
 		{
-			vector < shared_ptr<Model> > description;
-			string text(getDescription());
+			shared_ptr<Entity> sphere(new Entity("sphere"));
 
-			unsigned int lineNum = 0;
-			while (text.find('\n') != string::npos)
-			{
-				description.push_back(createDescriptionLine(text.substr(0, text.find('\n')), lineNum));
-				text = text.substr(text.find('\n') + 1);
-				lineNum++;
-			}
-			description.push_back(createDescriptionLine(text, lineNum));
+			shared_ptr<Sphere> model = ModelFactory::getInstance().createSphere();
+			sphere->addComponent(model);
 
-			return description;
+			unique_ptr<ColourVector<> > colour = MathFactory::getInstance().createColourVector();
+			colour->setBlue(0.75f);
+			model->setColour(move(colour));
+
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
+			model->setNode(node.get());
+			node->setComponent(model.get());
+
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
+			location->setX(3.0f);
+			location->setY(3.0f);
+			node->getTransformation().translate(*location);
+
+			Simplicity::addEntity(sphere, node, parent);
+			entities.push_back(*sphere);
 		}
 
-		shared_ptr<Model> OpenGLDemo::createDescriptionLine(const string& line, const unsigned int lineNum)
+		void OpenGLDemo::addTitle(TreeNode& parent)
 		{
-			shared_ptr<Text> descriptionLine(ModelFactory::getInstance().createText());
+			shared_ptr<Entity> title(new Entity("title"));
 
-			unique_ptr<ColourVector<> > colour(MathFactory::getInstance().createColourVector());
+			shared_ptr<Text> model = ModelFactory::getInstance().createText();
+			title->addComponent(model);
+
+			dynamic_cast<OpenGLText*>(model.get())->setFont(GLUT_BITMAP_HELVETICA_18);
+			model->setText(getTitle());
+
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
+			model->setNode(node.get());
+			node->setComponent(model.get());
+
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
+			location->setX(-3.6f);
+			location->setY(2.6f);
+			node->getTransformation().setTranslation(*location);
+
+			Simplicity::addEntity(title, node, parent);
+			entities.push_back(*title);
+		}
+
+		Torus& OpenGLDemo::addTorus(TreeNode& parent)
+		{
+			shared_ptr<Entity> torus(new Entity("torus"));
+
+			shared_ptr<Torus> model = ModelFactory::getInstance().createTorus();
+			torus->addComponent(model);
+
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
+			model->setNode(node.get());
+			node->setComponent(model.get());
+
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
+			location->setY(-2.0f);
+			node->getTransformation().translate(*location);
+
+			Simplicity::addEntity(torus, node, parent);
+			entities.push_back(*torus);
+
+			return *model;
+		}
+
+		shared_ptr<Model> OpenGLDemo::createDescriptionLine(TreeNode& parent, const string& line,
+			const unsigned int lineNum)
+		{
+			shared_ptr<Text> descriptionLine = ModelFactory::getInstance().createText();
+
+			unique_ptr<ColourVector<> > colour = MathFactory::getInstance().createColourVector();
 			colour->setRed(1.0f);
 			colour->setGreen(1.0f);
 			colour->setBlue(1.0f);
@@ -124,136 +253,53 @@ namespace simplicity
 
 			descriptionLine->setText(line);
 
-			shared_ptr<ModelNode> node(SceneFactory::getInstance().createModelNode());
-			descriptionLine->setNode(node);
-			node->setModel(descriptionLine);
+			shared_ptr<TreeNode> node = NodeFactory::getInstance().createTreeNode();
+			descriptionLine->setNode(node.get());
+			node->setComponent(descriptionLine.get());
 
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
+			unique_ptr<TranslationVector<> > location = MathFactory::getInstance().createTranslationVector();
 			location->setX(-3.6f);
 			location->setY(2.4f - (lineNum / 10.0f));
 			node->getTransformation().setTranslation(*location);
 
+			Simplicity::getScene()->getTree().add(node);
+			Simplicity::getScene()->getTree().connect(parent, *node);
+
 			return descriptionLine;
-		}
-
-		shared_ptr<Model> OpenGLDemo::createStandardCapsule()
-		{
-			shared_ptr<Capsule> capsule(ModelFactory::getInstance().createCapsule());
-
-			unique_ptr<ColourVector<> > colour(MathFactory::getInstance().createColourVector());
-			colour->setRed(0.75f);
-			capsule->setColour(move(colour));
-
-			shared_ptr<ModelNode> node(SceneFactory::getInstance().createModelNode());
-			capsule->setNode(node);
-			node->setModel(capsule);
-
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
-			location->setX(-3.0f);
-			location->setY(3.0f);
-			node->getTransformation().translate(*location);
-
-			return capsule;
-		}
-
-		shared_ptr<Model> OpenGLDemo::createStandardCylinder()
-		{
-			shared_ptr<Cylinder> cylinder(ModelFactory::getInstance().createCylinder());
-
-			unique_ptr<ColourVector<> > colour(MathFactory::getInstance().createColourVector());
-			colour->setGreen(0.75f);
-			cylinder->setColour(move(colour));
-
-			shared_ptr<ModelNode> node(SceneFactory::getInstance().createModelNode());
-			cylinder->setNode(node);
-			node->setModel(cylinder);
-
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
-			location->setY(3.0f);
-			node->getTransformation().translate(*location);
-
-			return cylinder;
-		}
-
-		shared_ptr<Model> OpenGLDemo::createStandardSphere()
-		{
-			shared_ptr<Sphere> sphere(ModelFactory::getInstance().createSphere());
-
-			unique_ptr<ColourVector<> > colour(MathFactory::getInstance().createColourVector());
-			colour->setBlue(0.75f);
-			sphere->setColour(move(colour));
-
-			shared_ptr<ModelNode> node(SceneFactory::getInstance().createModelNode());
-			sphere->setNode(node);
-			node->setModel(sphere);
-
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
-			location->setX(3.0f);
-			location->setY(3.0f);
-			node->getTransformation().translate(*location);
-
-			return sphere;
-		}
-
-		shared_ptr<Torus> OpenGLDemo::createStandardTorus()
-		{
-			shared_ptr<Torus> torus(ModelFactory::getInstance().createTorus());
-
-			shared_ptr<ModelNode> node(SceneFactory::getInstance().createModelNode());
-			torus->setNode(node);
-			node->setModel(torus);
-
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
-			location->setY(-2.0f);
-			node->getTransformation().translate(*location);
-
-			return torus;
-		}
-
-		shared_ptr<Model> OpenGLDemo::createTitle()
-		{
-			shared_ptr<Text> title(ModelFactory::getInstance().createText());
-
-			dynamic_cast<OpenGLText*>(title.get())->setFont(GLUT_BITMAP_HELVETICA_18);
-			title->setText(getTitle());
-
-			shared_ptr<ModelNode> node(SceneFactory::getInstance().createModelNode());
-			title->setNode(node);
-			node->setModel(title);
-
-			unique_ptr<TranslationVector<> > location(MathFactory::getInstance().createTranslationVector());
-			location->setX(-3.6f);
-			location->setY(2.6f);
-			node->getTransformation().setTranslation(*location);
-
-			return title;
 		}
 
 		void OpenGLDemo::dispose()
 		{
-			Simplicity::deregisterObserver(MOUSE_BUTTON_EVENT,
-				bind(&OpenGLDemo::onMouseButton, this, placeholders::_1));
-			Simplicity::deregisterObserver(MOUSE_MOVE_EVENT, bind(&OpenGLDemo::onMouseMove, this, placeholders::_1));
+			Messages::deregisterRecipient(MOUSE_BUTTON_EVENT, bind(&OpenGLDemo::onMouseButton, this, placeholders::_1));
+			Messages::deregisterRecipient(MOUSE_MOVE_EVENT, bind(&OpenGLDemo::onMouseMove, this, placeholders::_1));
 
 			onDispose();
 		}
 
-		Node* OpenGLDemo::getModelsRoot()
+		std::shared_ptr<TreeNode> OpenGLDemo::getModelsRoot()
 		{
-			return modelsRoot.get();
+			return modelsRoot;
 		}
 
 		void OpenGLDemo::init()
 		{
-			Simplicity::registerObserver(MOUSE_BUTTON_EVENT, bind(&OpenGLDemo::onMouseButton, this, placeholders::_1));
-			Simplicity::registerObserver(MOUSE_MOVE_EVENT, bind(&OpenGLDemo::onMouseMove, this, placeholders::_1));
+			Messages::registerRecipient(MOUSE_BUTTON_EVENT, bind(&OpenGLDemo::onMouseButton, this, placeholders::_1));
+			Messages::registerRecipient(MOUSE_MOVE_EVENT, bind(&OpenGLDemo::onMouseMove, this, placeholders::_1));
 
 			onInit();
 		}
 
-		void OpenGLDemo::onMouseButton(const boost::any data)
+		void OpenGLDemo::initScene() const
 		{
-			const MouseButtonEvent& event = boost::any_cast<MouseButtonEvent>(data);
+			shared_ptr<TreeNode> root = NodeFactory::getInstance().createTreeNode();
+			shared_ptr<Tree<TreeNode> > tree(new SimpleTree<TreeNode>(root));
+			shared_ptr<Scene> scene(new SimpleScene(tree));
+			Simplicity::setScene(scene);
+		}
+
+		void OpenGLDemo::onMouseButton(const boost::any message)
+		{
+			const MouseButtonEvent& event = boost::any_cast<MouseButtonEvent>(message);
 
 			if (event.button == Mouse::Button::LEFT)
 			{
@@ -261,14 +307,14 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLDemo::onMouseMove(const boost::any data)
+		void OpenGLDemo::onMouseMove(const boost::any message)
 		{
 			if (leftButtonState != Button::State::DOWN)
 			{
 				return;
 			}
 
-			const MouseMoveEvent& event = boost::any_cast<MouseMoveEvent>(data);
+			const MouseMoveEvent& event = boost::any_cast<MouseMoveEvent>(message);
 
 			float angleX = (mouseX - event.x) / 10.0f;
 			float angleY = (event.y - mouseY) / 10.0f;
@@ -285,6 +331,15 @@ namespace simplicity
 				xAxis->setX(1.0f);
 				modelsRoot->getTransformation().rotate(angleY / pi<float>(), *xAxis);
 			}
+		}
+
+		void OpenGLDemo::removeAllEntities()
+		{
+			for (reference_wrapper<Entity> entity : entities)
+			{
+				Simplicity::removeEntity(entity.get().getName());
+			}
+			entities.clear();
 		}
 	}
 }

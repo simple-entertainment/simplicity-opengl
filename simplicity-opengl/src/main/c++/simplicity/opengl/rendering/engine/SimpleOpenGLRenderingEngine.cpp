@@ -60,7 +60,7 @@ namespace simplicity
 			addRenderer(renderers.size(), renderer);
 		}
 
-		std::shared_ptr<EngineInput> SimpleOpenGLRenderingEngine::advance(const std::shared_ptr<EngineInput> input)
+		vector<shared_ptr<Action> > SimpleOpenGLRenderingEngine::advance(vector<shared_ptr<Action> > actions)
 		{
 			if (!camera.get())
 			{
@@ -91,7 +91,7 @@ namespace simplicity
 				}
 			}
 
-			return std::shared_ptr<EngineInput>();
+			return actions;
 		}
 
 		void SimpleOpenGLRenderingEngine::backtrack(const int backtracks)

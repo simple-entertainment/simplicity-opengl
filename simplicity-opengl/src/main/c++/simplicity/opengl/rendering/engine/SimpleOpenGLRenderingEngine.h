@@ -60,7 +60,7 @@ namespace simplicity
 
 				void addRenderer(std::shared_ptr<Renderer> renderer);
 
-				std::shared_ptr<EngineInput> advance(const std::shared_ptr<EngineInput> input);
+				std::vector<std::shared_ptr<Action> > advance(std::vector<std::shared_ptr<Action> > actions);
 
 				bool clearsBeforeRender() const;
 

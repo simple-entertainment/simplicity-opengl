@@ -41,11 +41,11 @@ namespace simplicity
 		{
 		}
 
-		shared_ptr<EngineInput> SimpleOpenGLPickingEngine::advance(const shared_ptr<EngineInput> input)
+		vector<shared_ptr<Action> > SimpleOpenGLPickingEngine::advance(vector<shared_ptr<Action> > actions)
 		{
 			if (picks.empty())
 			{
-				return (shared_ptr<EngineInput>());
+				return actions;
 			}
 
 			if (renderingEngine.get())
@@ -68,7 +68,7 @@ namespace simplicity
 
 			picks.clear();
 
-			return shared_ptr<EngineInput>();
+			return actions;
 		}
 
 		Pick SimpleOpenGLPickingEngine::convertPickCoordinatesFromViewportToSceneGraph(const float viewportWidth,

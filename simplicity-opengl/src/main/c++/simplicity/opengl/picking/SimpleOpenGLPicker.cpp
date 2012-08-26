@@ -129,7 +129,7 @@ namespace simplicity
 
 			glRenderMode(GL_SELECT);
 
-			fRenderingEngine->advance(shared_ptr<EngineInput>());
+			fRenderingEngine->advance(vector<shared_ptr<Action> >());
 
 			int numberOfHits = glRenderMode(GL_RENDER);
 

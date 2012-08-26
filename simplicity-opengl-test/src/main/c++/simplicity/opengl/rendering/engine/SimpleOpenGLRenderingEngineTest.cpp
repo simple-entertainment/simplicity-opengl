@@ -136,7 +136,7 @@ namespace simplicity
 		{
 			// Perform test - Verify test results.
 			// //////////////////////////////////////////////////
-			ASSERT_THROW(fTestObject.advance(shared_ptr<EngineInput>()), SEInvalidOperationException);
+			ASSERT_THROW(fTestObject.advance(vector<shared_ptr<Action> >()), SEInvalidOperationException);
 		}
 
 		/**
@@ -183,7 +183,7 @@ namespace simplicity
 
 			// Perform test.
 			// //////////////////////////////////////////////////
-			fTestObject.advance(shared_ptr<EngineInput>());
+			fTestObject.advance(vector<shared_ptr<Action> >());
 		}
 
 		/**

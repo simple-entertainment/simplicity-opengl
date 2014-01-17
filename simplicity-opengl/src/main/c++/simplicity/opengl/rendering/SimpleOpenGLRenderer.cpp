@@ -14,62 +14,58 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include <boost/math/constants/constants.hpp>
+//#include <windows.h>
 
-#include <GL/glew.h>
-#include <GL/glut.h>
+//#include <GL/glew.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
-#include <simplicity/math/MathFactory.h>
-#include <simplicity/model/ModelConstants.h>
-#include <simplicity/SENotSupportedException.h>
+#include <simplicity/math/MathConstants.h>
+#include <simplicity/math/MathFunctions.h>
+#include <simplicity/math/Matrix.h>
+#include <simplicity/model/Mesh.h>
+#include <simplicity/model/shape/Capsule.h>
+#include <simplicity/model/shape/Cylinder.h>
+#include <simplicity/model/shape/Sphere.h>
+#include <simplicity/model/shape/Torus.h>
 
 #include "SimpleOpenGLRenderer.h"
 
-using namespace boost::math::constants;
-using namespace simplicity::model_constants;
 using namespace std;
 
 namespace simplicity
 {
 	namespace opengl
 	{
-		SimpleOpenGLRenderer::SimpleOpenGLRenderer() :
-			drawingMode(FACES)
-		{
-		}
-
-		SimpleOpenGLRenderer::~SimpleOpenGLRenderer()
-		{
-		}
-
 		void SimpleOpenGLRenderer::dispose()
 		{
 			glPointSize(1.0f);
 		}
 
-		Renderer::DrawingMode SimpleOpenGLRenderer::getDrawingMode() const
+		int SimpleOpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
 		{
-			return (drawingMode);
-		}
-
-		int SimpleOpenGLRenderer::getOpenGlDrawingMode(const DrawingMode drawingMode)
-		{
-			int openGlDrawingMode = -1;
-
-			if (drawingMode == Renderer::VERTICES)
+			if (primitiveType == Model::POINTS)
 			{
-				openGlDrawingMode = GL_POINTS;
+				return GL_POINTS;
 			}
-			else if (drawingMode == Renderer::EDGES)
+			else if (primitiveType == Model::LINE_LIST)
 			{
-				openGlDrawingMode = GL_LINE_LOOP;
+				return GL_LINE;
 			}
-			else if (drawingMode == Renderer::FACES)
+			else if (primitiveType == Model::LINE_STRIP)
 			{
-				openGlDrawingMode = GL_TRIANGLES;
+				return GL_LINE_STRIP;
+			}
+			else if (primitiveType == Model::TRIANGLE_LIST)
+			{
+				return GL_TRIANGLES;
+			}
+			else if (primitiveType == Model::TRIANGLE_STRIP)
+			{
+				return GL_TRIANGLE_STRIP;
 			}
 
-			return (openGlDrawingMode);
+			return -1;
 		}
 
 		void SimpleOpenGLRenderer::init()
@@ -77,193 +73,106 @@ namespace simplicity
 			glPointSize(2.0f);
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const GLUCapsule& capsule)
+		void SimpleOpenGLRenderer::render(const Capsule& model)
 		{
-			ColourVector<>& color(capsule.getColour());
-			glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
 
-			gluCylinder(gluNewQuadric(), capsule.getRadius(), capsule.getRadius(), capsule.getLength(),
-				capsule.getSlices(), capsule.getStacks());
+			gluCylinder(gluNewQuadric(), model.getRadius(), model.getRadius(), model.getLength(),
+				model.getLevelOfDetail(), model.getLevelOfDetail());
 
 			glPushMatrix();
 			{
-				gluSphere(gluNewQuadric(), capsule.getRadius(), capsule.getSlices(), capsule.getSlices());
+				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 
-				unique_ptr<TransformationMatrix<> > transformation(
-					MathFactory::getInstance().createTransformationMatrix());
-				transformation->getTranslation()->translateZ(capsule.getLength());
+				Matrix44 transformation;
+				MathFunctions::getTranslation3(transformation).Z() = model.getLength();
 
-				glMultMatrixf(transformation->getData().data());
+				glMultMatrixf(transformation.getData());
 
-				gluSphere(gluNewQuadric(), capsule.getRadius(), capsule.getSlices(), capsule.getSlices());
+				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 			}
 			glPopMatrix();
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const GLUCylinder& cylinder)
+		void SimpleOpenGLRenderer::render(const Circle&)
 		{
-			ColourVector<>& color(cylinder.getColour());
-			glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		}
 
-			gluCylinder(gluNewQuadric(), cylinder.getRadius(), cylinder.getRadius(), cylinder.getLength(),
-				cylinder.getSlices(), cylinder.getStacks());
+		void SimpleOpenGLRenderer::render(const Cube&)
+		{
+		}
+
+		void SimpleOpenGLRenderer::render(const Cylinder& model)
+		{
+			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
+
+			gluCylinder(gluNewQuadric(), model.getRadius(), model.getRadius(), model.getLength(),
+				model.getLevelOfDetail(), model.getLevelOfDetail());
 
 			glPushMatrix();
 			{
-				unique_ptr<TransformationMatrix<> > transformation(
-					MathFactory::getInstance().createTransformationMatrix());
-				unique_ptr<TranslationVector<> > rotationAxis(MathFactory::getInstance().createTranslationVector());
-				rotationAxis->setY(1.0f);
-				transformation->rotate(pi<float>(), *rotationAxis);
+				Matrix44 transformation;
+				Vector4 rotationAxis;
+				rotationAxis.Y() = 1.0f;
+				MathFunctions::rotate(transformation, MathConstants::PI, rotationAxis);
 
-				glMultMatrixf(transformation->getData().data());
+				glMultMatrixf(transformation.getData());
 
-				gluDisk(gluNewQuadric(), 0.0f, cylinder.getRadius(), cylinder.getSlices(), 1);
+				gluDisk(gluNewQuadric(), 0.0f, model.getRadius(), model.getLevelOfDetail(), 1);
 			}
 			glPopMatrix();
 
 			glPushMatrix();
 			{
-				unique_ptr<TransformationMatrix<> > transformation(
-					MathFactory::getInstance().createTransformationMatrix());
-				transformation->getTranslation()->translateZ(cylinder.getLength());
+				Matrix44 transformation;
+				MathFunctions::getTranslation3(transformation).Z() = model.getLength();
 
-				glMultMatrixf(transformation->getData().data());
+				glMultMatrixf(transformation.getData());
 
-				gluDisk(gluNewQuadric(), 0.0f, cylinder.getRadius(), cylinder.getSlices(), 1);
+				gluDisk(gluNewQuadric(), 0.0f, model.getRadius(), model.getLevelOfDetail(), 1);
 			}
 			glPopMatrix();
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const GLUSphere& sphere)
+		void SimpleOpenGLRenderer::render(const Line<2>&)
 		{
-			ColourVector<>& color(sphere.getColour());
-			glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-
-			gluSphere(gluNewQuadric(), sphere.getRadius(), sphere.getSlices(), sphere.getStacks());
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const GLUTorus& torus)
+		void SimpleOpenGLRenderer::render(const Mesh& model)
 		{
-			ColourVector<>& color(torus.getColour());
-			glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+			const vector<int>& indices = model.getIndices();
+			const vector<Vertex>& vertices = model.getVertices();
 
-			glutSolidTorus(torus.getInnerRadius(), torus.getOuterRadius(), torus.getSlices(), torus.getStacks());
-		}
-
-		void SimpleOpenGLRenderer::renderModel(const IndexedVertexGroup& vertexGroup)
-		{
-			const vector<int>& indices = vertexGroup.getIndices();
-			const vector<float>& colours = vertexGroup.getColours();
-			const vector<float>& normals = vertexGroup.getNormals();
-			const vector<float>& vertices = vertexGroup.getVertices();
-
-			glBegin(getOpenGlDrawingMode(drawingMode));
+			glBegin(getOpenGLDrawingMode(model.getPrimitiveType()));
 			{
 				for (unsigned int indicesIndex = 0; indicesIndex < indices.size(); indicesIndex++)
 				{
-					int vertexIndex = indices.at(indicesIndex) * ITEMS_IN_CNV;
+					int vertexIndex = indices[indicesIndex];
 
-					glColor3f(colours.at(vertexIndex), colours.at(vertexIndex + 1), colours.at(vertexIndex + 2));
-					glNormal3f(normals.at(vertexIndex), normals.at(vertexIndex + 1), normals.at(vertexIndex + 2));
-					glVertex3f(vertices.at(vertexIndex), vertices.at(vertexIndex + 1), vertices.at(vertexIndex + 2));
+					glColor4f(vertices[vertexIndex].color.R(), vertices[vertexIndex].color.G(),
+						vertices[vertexIndex].color.B(), vertices[vertexIndex].color.A());
+					glNormal3f(vertices[vertexIndex].normal.X(), vertices[vertexIndex].normal.Y(),
+						vertices[vertexIndex].normal.Z());
+					glVertex3f(vertices[vertexIndex].position.X(), vertices[vertexIndex].position.Y(),
+						vertices[vertexIndex].position.Z());
 				}
 			}
 			glEnd();
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const Model& model)
+		void SimpleOpenGLRenderer::render(const Sphere& model)
 		{
-			if (dynamic_cast<const GLUCapsule*>(&model))
-			{
-				renderModel(dynamic_cast<const GLUCapsule&>(model));
-			}
-			else if (dynamic_cast<const GLUCylinder*>(&model))
-			{
-				renderModel(dynamic_cast<const GLUCylinder&>(model));
-			}
-			else if (dynamic_cast<const GLUSphere*>(&model))
-			{
-				renderModel(dynamic_cast<const GLUSphere&>(model));
-			}
-			else if (dynamic_cast<const GLUTorus*>(&model))
-			{
-				renderModel(dynamic_cast<const GLUTorus&>(model));
-			}
-			else if (dynamic_cast<const IndexedVertexGroup*>(&model))
-			{
-				renderModel(dynamic_cast<const IndexedVertexGroup&>(model));
-			}
-			else if (dynamic_cast<const OpenGLText*>(&model))
-			{
-				renderModel(dynamic_cast<const OpenGLText&>(model));
-			}
-			else if (dynamic_cast<const VertexGroup*>(&model))
-			{
-				renderModel(dynamic_cast<const VertexGroup&>(model));
-			}
-			else
-			{
-				throw new SENotSupportedException;
-			}
+			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
+
+			gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const OpenGLText& text)
+		void SimpleOpenGLRenderer::render(const Text&)
 		{
-			const ColourVector<>& colour(text.getColour());
-			glColor3f(colour.getRed(), colour.getBlue(), colour.getGreen());
-
-			unique_ptr<TranslationVector<> > location(text.getNode()->getTransformation().getTranslation());
-			glRasterPos3f(location->getX(), location->getY(), location->getZ());
-
-			const string& data = text.getText();
-			for (unsigned int index = 0; index < data.length(); index++)
-			{
-				glutBitmapCharacter(text.getFont(), data.at(index));
-			}
 		}
 
-		void SimpleOpenGLRenderer::renderModel(const VertexGroup& vertexGroup)
+		void SimpleOpenGLRenderer::render(const Torus&)
 		{
-			const vector<float>& colours = vertexGroup.getColours();
-			const vector<float>& normals = vertexGroup.getNormals();
-			const vector<float>& textureCoordinates = vertexGroup.getTextureCoordinates();
-			const vector<float>& vertices = vertexGroup.getVertices();
-
-			if (vertexGroup.getTexture().get() != NULL)
-			{
-				vertexGroup.getTexture()->select();
-				glEnable(GL_TEXTURE_2D);
-			}
-
-			glBegin(getOpenGlDrawingMode(drawingMode));
-			{
-				for (unsigned int index = 0; index < vertices.size(); index += ITEMS_IN_CNV)
-				{
-					glColor3f(colours.at(index), colours.at(index + 1), colours.at(index + 2));
-					glNormal3f(normals.at(index), normals.at(index + 1), normals.at(index + 2));
-
-					if (vertexGroup.getTexture().get() != NULL)
-					{
-						unsigned int cnvIndex = index / ITEMS_IN_CNV;
-						glTexCoord2f(textureCoordinates.at(index - cnvIndex),
-							textureCoordinates.at(index - cnvIndex + 1));
-					}
-
-					glVertex3f(vertices.at(index), vertices.at(index + 1), vertices.at(index + 2));
-				}
-			}
-			glEnd();
-
-			if (vertexGroup.getTexture().get() != NULL)
-			{
-				glDisable(GL_TEXTURE_2D);
-			}
-		}
-
-		void SimpleOpenGLRenderer::setDrawingMode(const DrawingMode mode)
-		{
-			this->drawingMode = mode;
 		}
 	}
 }

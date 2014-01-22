@@ -21,6 +21,7 @@
 
 #include <simplicity/graph/Graph.h>
 #include <simplicity/rendering/RenderingEngine.h>
+#include <simplicity/rendering/Shader.h>
 
 namespace simplicity
 {
@@ -67,6 +68,8 @@ namespace simplicity
 
 				void setRendererRoot(const Renderer& renderer, const Graph& root);
 
+				void setShader(std::unique_ptr<Shader> shader);
+
 				void setWidth(int width);
 
 			private:
@@ -83,6 +86,8 @@ namespace simplicity
 				std::map<const Renderer*, const Graph*> rendererRoots;
 
 				std::vector<std::unique_ptr<Renderer>> renderers;
+
+				std::unique_ptr<Shader> shader;
 
 				int width;
 

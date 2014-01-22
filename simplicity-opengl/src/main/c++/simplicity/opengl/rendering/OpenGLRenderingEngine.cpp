@@ -38,6 +38,7 @@ namespace simplicity
 			lights(),
 			rendererRoots(),
 			renderers(),
+			shader(),
 			width(800)
 		{
 		}
@@ -70,15 +71,17 @@ namespace simplicity
 				return;
 			}
 
+			shader->apply();
+
 			/*if (camera->getNode() != NULL)
 			{
 				Matrix44 cameraView = camera->getNode()->getAbsoluteTransformation();
 				cameraView.invert();
 
-				glMultMatrixf(cameraView.getData());
-			}
+				shader->setVar("cameraTransformation", cameraView);
+			}*/
 
-			for (unsigned int index = 0; index < lights.size(); index++)
+			/*for (unsigned int index = 0; index < lights.size(); index++)
 			{
 				lights[index]->apply();
 			}*/
@@ -148,6 +151,8 @@ namespace simplicity
 
 			// Initialise the viewport size.
 			//glViewport(0, 0, width, height);
+
+			shader->init();
 		}
 
 		void OpenGLRenderingEngine::removeEntity(const Entity& entity)
@@ -165,6 +170,8 @@ namespace simplicity
 		{
 			for (Entity* entity : graph.getEntities())
 			{
+				shader->setVar("worldTransformation", entity->getTransformation());
+
 				for (Model* model : entity->getComponents<Model>())
 				{
 					model->render(renderer);
@@ -208,6 +215,11 @@ namespace simplicity
 		void OpenGLRenderingEngine::setRendererRoot(const Renderer& renderer, const Graph& root)
 		{
 			rendererRoots[&renderer] = &root;
+		}
+
+		void OpenGLRenderingEngine::setShader(unique_ptr<Shader> shader)
+		{
+			this->shader.swap(shader);
 		}
 
 		void OpenGLRenderingEngine::setWidth(int width)

@@ -19,6 +19,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include <simplicity/math/MathConstants.h>
+
 #include "OpenGLCamera.h"
 
 using namespace std;
@@ -32,7 +34,8 @@ namespace simplicity
 			frameHeight(0.0f),
 			frameWidth(0.0f),
 			nearClippingDistance(0.1f),
-			node(NULL)
+			node(NULL),
+			projection()
 		{
 		}
 
@@ -59,6 +62,11 @@ namespace simplicity
 		SimpleTree* OpenGLCamera::getNode()
 		{
 			return node;
+		}
+
+		const Matrix44& OpenGLCamera::getProjection() const
+		{
+			return projection;
 		}
 
 		Vector3 OpenGLCamera::getTranslation() const
@@ -111,22 +119,31 @@ namespace simplicity
 
 		void OpenGLCamera::setPerspective(float yAxisFieldOfView, float aspectRatio)
 		{
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
+			float halfEdgeY = nearClippingDistance * tan(yAxisFieldOfView * MathConstants::PI / 360.0f);
+			float halfEdgeX = halfEdgeY * aspectRatio;
 
-			float halfYAxisFieldOfView = yAxisFieldOfView / 2.0f;
-			float unitCircleCos = 1 - pow(cos(halfYAxisFieldOfView), 2.0f);
-			float unitCircleSin = 1 - pow(sin(halfYAxisFieldOfView), 2.0f);
+			frameHeight = halfEdgeY * 2.0f;
+			frameWidth = halfEdgeX * 2.0f;
 
-			float sin = (nearClippingDistance / unitCircleCos) * unitCircleSin;
+			float depth = farClippingDistance - nearClippingDistance;
+			float twoNearClippingDistance = 2.0f * nearClippingDistance;
 
-			frameHeight = sin * 2.0f;
-			frameWidth = frameHeight * aspectRatio;
-
-			glFrustum(-frameWidth / 2, frameWidth / 2, -frameHeight / 2, frameHeight / 2, nearClippingDistance,
-				farClippingDistance);
-
-			glMatrixMode(GL_MODELVIEW);
+			projection[0] = twoNearClippingDistance / frameWidth;
+			projection[1] = 0.0f;
+			projection[2] = 0.0f;
+			projection[3] = 0.0f;
+			projection[4] = 0.0f;
+			projection[5] = twoNearClippingDistance / frameHeight;
+			projection[6] = 0.0f;
+			projection[7] = 0.0f;
+			projection[8] = 0.0f; // (halfEdgeX + -halfEdgeX) / frameWidth;
+			projection[9] = 0.0f; // (halfEdgeY + -halfEdgeY) / frameHeight;
+			projection[10] = (nearClippingDistance + farClippingDistance) * -1.0f / depth;
+			projection[11] = -1.0f;
+			projection[12] = 0.0f;
+			projection[13] = 0.0f;
+			projection[14] = -twoNearClippingDistance * farClippingDistance / depth;
+			projection[15] = 0.0f;
 		}
 
 		void OpenGLCamera::setTranslation(const Vector3&)

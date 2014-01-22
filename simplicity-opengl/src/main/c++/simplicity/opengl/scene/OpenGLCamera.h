@@ -109,6 +109,8 @@ namespace simplicity
 
 				SimpleTree* getNode();
 
+				const Matrix44& getProjection() const;
+
 				Vector3 getTranslation() const;
 
 				void lookAt(const Vector3& target, const Vector3& up);
@@ -139,6 +141,8 @@ namespace simplicity
 				float nearClippingDistance;
 
 				SimpleTree* node;
+
+				Matrix44 projection;
 		};
 	}
 }

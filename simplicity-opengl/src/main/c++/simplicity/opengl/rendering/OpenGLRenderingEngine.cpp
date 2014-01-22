@@ -21,6 +21,7 @@
 #include <GL/glew.h>
 
 #include <simplicity/common/AddressEquals.h>
+#include <simplicity/scene/Camera.h>
 
 #include "OpenGLRenderingEngine.h"
 
@@ -73,13 +74,19 @@ namespace simplicity
 
 			shader->apply();
 
-			/*if (camera->getNode() != NULL)
+			if (camera.get() == NULL)
 			{
-				Matrix44 cameraView = camera->getNode()->getAbsoluteTransformation();
-				cameraView.invert();
+				shader->setVar("cameraTransformation", Matrix44());
+			}
+			else
+			{
+				Matrix44 view = camera->getTransformation();
+				view.invert();
 
-				shader->setVar("cameraTransformation", cameraView);
-			}*/
+				Matrix44 projection = camera->getComponent<Camera>()->getProjection();
+
+				shader->setVar("cameraTransformation", projection * view);
+			}
 
 			/*for (unsigned int index = 0; index < lights.size(); index++)
 			{
@@ -110,7 +117,7 @@ namespace simplicity
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		}
 
-		Camera* OpenGLRenderingEngine::getCamera() const
+		Entity* OpenGLRenderingEngine::getCamera() const
 		{
 			return camera.get();
 		}
@@ -184,7 +191,7 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLRenderingEngine::setCamera(unique_ptr<Camera> camera)
+		void OpenGLRenderingEngine::setCamera(unique_ptr<Entity> camera)
 		{
 			this->camera.swap(camera);
 		}

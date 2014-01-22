@@ -42,7 +42,7 @@ namespace simplicity
 
 				void destroy();
 
-				Camera* getCamera() const;
+				Entity* getCamera() const;
 
 				const Vector4& getClearingColour() const;
 
@@ -58,7 +58,7 @@ namespace simplicity
 
 				void removeRenderer(const Renderer& renderer);
 
-				void setCamera(std::unique_ptr<Camera> camera);
+				void setCamera(std::unique_ptr<Entity> camera);
 
 				void setClearingColour(const Vector4& clearingColour);
 
@@ -73,7 +73,7 @@ namespace simplicity
 				void setWidth(int width);
 
 			private:
-				std::unique_ptr<Camera> camera;
+				std::unique_ptr<Entity> camera;
 
 				Vector4 clearingColour;
 

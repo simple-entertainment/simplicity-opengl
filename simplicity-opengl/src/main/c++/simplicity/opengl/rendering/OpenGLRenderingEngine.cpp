@@ -18,7 +18,7 @@
 
 //#include <windows.h>
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include <simplicity/common/AddressEquals.h>
 
@@ -70,32 +70,28 @@ namespace simplicity
 				return;
 			}
 
-			glPushMatrix();
+			/*if (camera->getNode() != NULL)
 			{
-				if (camera->getNode() != NULL)
-				{
-					Matrix44 cameraView = camera->getNode()->getAbsoluteTransformation();
-					cameraView.invert();
+				Matrix44 cameraView = camera->getNode()->getAbsoluteTransformation();
+				cameraView.invert();
 
-					glMultMatrixf(cameraView.getData());
-				}
-
-				for (unsigned int index = 0; index < lights.size(); index++)
-				{
-					lights[index]->apply();
-				}
-
-				for (unsigned int index = 0; index < renderers.size(); index++)
-				{
-					Renderer& renderer = *renderers[index];
-					renderer.init();
-
-					renderGraph(renderer, *rendererRoots[&renderer]);
-
-					renderer.dispose();
-				}
+				glMultMatrixf(cameraView.getData());
 			}
-			glPopMatrix();
+
+			for (unsigned int index = 0; index < lights.size(); index++)
+			{
+				lights[index]->apply();
+			}*/
+
+			for (unsigned int index = 0; index < renderers.size(); index++)
+			{
+				Renderer& renderer = *renderers[index];
+				renderer.init();
+
+				renderGraph(renderer, *rendererRoots[&renderer]);
+
+				renderer.dispose();
+			}
 		}
 
 		void OpenGLRenderingEngine::destroy()
@@ -106,9 +102,6 @@ namespace simplicity
 
 			// Revert face culling settings.
 			glDisable(GL_CULL_FACE);
-
-			// Revert client state settings.
-			glDisableClientState(GL_VERTEX_ARRAY);
 
 			// Revert clearing settings.
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -150,14 +143,11 @@ namespace simplicity
 			// Only render the front (counter-clockwise) side of a polygon.
 			//glEnable(GL_CULL_FACE);
 
-			// Enable model data arrays.
-			glEnableClientState(GL_VERTEX_ARRAY);
-
 			// Set the colour buffer clearing colour.
 			glClearColor(clearingColour.X(), clearingColour.Y(), clearingColour.Z(), clearingColour.W());
 
 			// Initialise the viewport size.
-			glViewport(0, 0, width, height);
+			//glViewport(0, 0, width, height);
 		}
 
 		void OpenGLRenderingEngine::removeEntity(const Entity& entity)
@@ -175,16 +165,10 @@ namespace simplicity
 		{
 			for (Entity* entity : graph.getEntities())
 			{
-				glPushMatrix();
+				for (Model* model : entity->getComponents<Model>())
 				{
-					glMultMatrixf(entity->getTransformation().getData());
-
-					for (Model* model : entity->getComponents<Model>())
-					{
-						model->render(renderer);
-					}
+					model->render(renderer);
 				}
-				glPopMatrix();
 			}
 
 			for (unsigned int index = 0; index < graph.getChildren().size(); index++)

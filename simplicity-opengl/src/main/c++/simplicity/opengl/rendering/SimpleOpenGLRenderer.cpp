@@ -16,8 +16,7 @@
  */
 //#include <windows.h>
 
-//#include <GL/glew.h>
-#include <GL/gl.h>
+#include <GL/glew.h>
 #include <GL/glu.h>
 
 #include <simplicity/math/MathConstants.h>
@@ -140,24 +139,14 @@ namespace simplicity
 
 		void SimpleOpenGLRenderer::render(const Mesh& model)
 		{
-			const vector<int>& indices = model.getIndices();
-			const vector<Vertex>& vertices = model.getVertices();
+			glBindBuffer(GL_ARRAY_BUFFER, model.getID());
 
-			glBegin(getOpenGLDrawingMode(model.getPrimitiveType()));
-			{
-				for (unsigned int indicesIndex = 0; indicesIndex < indices.size(); indicesIndex++)
-				{
-					int vertexIndex = indices[indicesIndex];
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-					glColor4f(vertices[vertexIndex].color.R(), vertices[vertexIndex].color.G(),
-						vertices[vertexIndex].color.B(), vertices[vertexIndex].color.A());
-					glNormal3f(vertices[vertexIndex].normal.X(), vertices[vertexIndex].normal.Y(),
-						vertices[vertexIndex].normal.Z());
-					glVertex3f(vertices[vertexIndex].position.X(), vertices[vertexIndex].position.Y(),
-						vertices[vertexIndex].position.Z());
-				}
-			}
-			glEnd();
+			glDrawArrays(getOpenGLDrawingMode(model.getPrimitiveType()), 0, model.getVertices().size());
+
+			glDisableVertexAttribArray(0);
 		}
 
 		void SimpleOpenGLRenderer::render(const Sphere& model)

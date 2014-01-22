@@ -33,15 +33,15 @@ namespace simplicity
 			public:
 				OpenGLMesh();
 
-				OpenGLMesh(const std::vector<int>& indices, const std::vector<Vertex>& vertices);
+				OpenGLMesh(const std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices);
 
 				const Vector4& getColour() const;
 
-				unsigned int getID() const;
+				unsigned int getIBO() const;
 
-				std::vector<int>& getIndices();
+				std::vector<unsigned int>& getIndices();
 
-				const std::vector<int>& getIndices() const;
+				const std::vector<unsigned int>& getIndices() const;
 
 				Texture* getNormalMap() const;
 
@@ -50,6 +50,8 @@ namespace simplicity
 				PrimitiveType getPrimitiveType() const;
 
 				Texture* getTexture() const;
+
+				unsigned int getVBO() const;
 
 				std::vector<Vertex>& getVertices();
 
@@ -74,7 +76,9 @@ namespace simplicity
 			private:
 				Vector4 colour;
 
-				std::vector<int> indices;
+				mutable GLuint ibo;
+
+				std::vector<unsigned int> indices;
 
 				mutable bool initialized;
 

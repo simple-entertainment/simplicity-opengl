@@ -28,6 +28,7 @@
 #include <simplicity/model/shape/Sphere.h>
 #include <simplicity/model/shape/Torus.h>
 
+#include "../model/OpenGLMesh.h"
 #include "SimpleOpenGLRenderer.h"
 
 using namespace std;
@@ -139,12 +140,16 @@ namespace simplicity
 
 		void SimpleOpenGLRenderer::render(const Mesh& model)
 		{
-			glBindBuffer(GL_ARRAY_BUFFER, model.getID());
+			const OpenGLMesh& openGlMesh = dynamic_cast<const OpenGLMesh&>(model);
+
+			glBindBuffer(GL_ARRAY_BUFFER, openGlMesh.getVBO());
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGlMesh.getIBO());
 
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-			glDrawArrays(getOpenGLDrawingMode(model.getPrimitiveType()), 0, model.getVertices().size());
+			glDrawElements(getOpenGLDrawingMode(model.getPrimitiveType()), model.getIndices().size(), GL_UNSIGNED_INT,
+					0);
 
 			glDisableVertexAttribArray(0);
 		}

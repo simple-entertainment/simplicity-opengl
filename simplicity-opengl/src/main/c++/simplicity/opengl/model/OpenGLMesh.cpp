@@ -26,6 +26,7 @@ namespace simplicity
 	{
 		OpenGLMesh::OpenGLMesh() :
 			colour(0.0f, 0.0f, 0.0f, 1.0f),
+			ibo(0),
 			indices(),
 			initialized(false),
 			position(0.0f, 0.0f),
@@ -36,8 +37,9 @@ namespace simplicity
 		{
 		}
 
-		OpenGLMesh::OpenGLMesh(const vector<int>& indices, const vector<Vertex>& vertices) :
+		OpenGLMesh::OpenGLMesh(const vector<unsigned int>& indices, const vector<Vertex>& vertices) :
 			colour(0.0f, 0.0f, 0.0f, 1.0f),
+			ibo(0),
 			indices(indices),
 			initialized(false),
 			position(0.0f, 0.0f),
@@ -53,17 +55,17 @@ namespace simplicity
 			return colour;
 		}
 
-		unsigned int OpenGLMesh::getID() const
+		unsigned int OpenGLMesh::getIBO() const
 		{
-			return vbo;
+			return ibo;
 		}
 
-		vector<int>& OpenGLMesh::getIndices()
+		vector<unsigned int>& OpenGLMesh::getIndices()
 		{
 			return indices;
 		}
 
-		const vector<int>& OpenGLMesh::getIndices() const
+		const vector<unsigned int>& OpenGLMesh::getIndices() const
 		{
 			return indices;
 		}
@@ -86,6 +88,11 @@ namespace simplicity
 		Texture* OpenGLMesh::getTexture() const
 		{
 			return NULL;
+		}
+
+		unsigned int OpenGLMesh::getVBO() const
+		{
+			return vbo;
 		}
 
 		vector<Vertex>& OpenGLMesh::getVertices()
@@ -113,6 +120,11 @@ namespace simplicity
 			}
 
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+
+			glGenBuffers(1, &ibo);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(),
+					GL_STATIC_DRAW);
 		}
 
 		bool OpenGLMesh::isVisible() const

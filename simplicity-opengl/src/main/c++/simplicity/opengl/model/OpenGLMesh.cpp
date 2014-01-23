@@ -31,6 +31,7 @@ namespace simplicity
 			initialized(false),
 			position(0.0f, 0.0f),
 			primitiveType(TRIANGLE_LIST),
+			vao(0),
 			vbo(0),
 			vertices(),
 			visible(true)
@@ -44,6 +45,7 @@ namespace simplicity
 			initialized(false),
 			position(0.0f, 0.0f),
 			primitiveType(TRIANGLE_LIST),
+			vao(0),
 			vbo(0),
 			vertices(vertices),
 			visible(true)
@@ -53,11 +55,6 @@ namespace simplicity
 		const Vector4& OpenGLMesh::getColour() const
 		{
 			return colour;
-		}
-
-		unsigned int OpenGLMesh::getIBO() const
-		{
-			return ibo;
 		}
 
 		vector<unsigned int>& OpenGLMesh::getIndices()
@@ -90,9 +87,9 @@ namespace simplicity
 			return NULL;
 		}
 
-		unsigned int OpenGLMesh::getVBO() const
+		unsigned int OpenGLMesh::getVAO() const
 		{
-			return vbo;
+			return vao;
 		}
 
 		vector<Vertex>& OpenGLMesh::getVertices()
@@ -107,24 +104,48 @@ namespace simplicity
 
 		void OpenGLMesh::init() const
 		{
+			glGenVertexArrays(1, &vao);
+			glBindVertexArray(vao);
+
 			glGenBuffers(1, &vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
 			// TODO Slow!!!
-			float vertexData[vertices.size() * 3];
+			float vertexData[vertices.size() * 12];
 			for (unsigned int index = 0; index < vertices.size(); index++)
 			{
-				vertexData[index * 3] = vertices[index].position.X();
-				vertexData[index * 3 + 1] = vertices[index].position.Y();
-				vertexData[index * 3 + 2] = vertices[index].position.Z();
+				vertexData[index * 12] = vertices[index].color.R();
+				vertexData[index * 12 + 1] = vertices[index].color.G();
+				vertexData[index * 12 + 2] = vertices[index].color.B();
+				vertexData[index * 12 + 3] = vertices[index].color.A();
+				vertexData[index * 12 + 4] = vertices[index].normal.X();
+				vertexData[index * 12 + 5] = vertices[index].normal.Y();
+				vertexData[index * 12 + 6] = vertices[index].normal.Z();
+				vertexData[index * 12 + 7] = vertices[index].position.X();
+				vertexData[index * 12 + 8] = vertices[index].position.Y();
+				vertexData[index * 12 + 9] = vertices[index].position.Z();
+				vertexData[index * 12 + 10] = vertices[index].texCoord.X();
+				vertexData[index * 12 + 11] = vertices[index].texCoord.Y();
 			}
 
 			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 12, 0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 4));
+			glEnableVertexAttribArray(2);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 7));
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 10));
 
 			glGenBuffers(1, &ibo);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(),
 					GL_STATIC_DRAW);
+
+			// Make sure the VAO is not changed from outside code
+		    glBindVertexArray(0);
 		}
 
 		bool OpenGLMesh::isVisible() const

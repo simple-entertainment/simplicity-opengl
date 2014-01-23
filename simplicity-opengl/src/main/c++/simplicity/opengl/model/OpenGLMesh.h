@@ -37,8 +37,6 @@ namespace simplicity
 
 				const Vector4& getColour() const;
 
-				unsigned int getIBO() const;
-
 				std::vector<unsigned int>& getIndices();
 
 				const std::vector<unsigned int>& getIndices() const;
@@ -51,7 +49,7 @@ namespace simplicity
 
 				Texture* getTexture() const;
 
-				unsigned int getVBO() const;
+				unsigned int getVAO() const;
 
 				std::vector<Vertex>& getVertices();
 
@@ -85,6 +83,8 @@ namespace simplicity
 				Vector2 position;
 
 				PrimitiveType primitiveType;
+
+				mutable GLuint vao;
 
 				mutable GLuint vbo;
 

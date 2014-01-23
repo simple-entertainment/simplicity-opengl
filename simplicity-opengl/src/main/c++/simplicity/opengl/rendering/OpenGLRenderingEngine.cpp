@@ -39,7 +39,6 @@ namespace simplicity
 			lights(),
 			rendererRoots(),
 			renderers(),
-			shader(),
 			width(800)
 		{
 		}
@@ -72,11 +71,10 @@ namespace simplicity
 				return;
 			}
 
-			shader->apply();
-
+			Matrix44 cameraTransformation;
 			if (camera.get() == NULL)
 			{
-				shader->setVar("cameraTransformation", Matrix44());
+				cameraTransformation.setIdentity();
 			}
 			else
 			{
@@ -85,18 +83,21 @@ namespace simplicity
 
 				Matrix44 projection = camera->getComponent<Camera>()->getProjection();
 
-				shader->setVar("cameraTransformation", projection * view);
+				cameraTransformation = projection * view;
 			}
-
-			/*for (unsigned int index = 0; index < lights.size(); index++)
-			{
-				lights[index]->apply();
-			}*/
 
 			for (unsigned int index = 0; index < renderers.size(); index++)
 			{
 				Renderer& renderer = *renderers[index];
 				renderer.init();
+
+				renderer.getShader()->apply();
+				renderer.getShader()->setVar("cameraTransformation", cameraTransformation);
+
+				for (unsigned int index = 0; index < lights.size(); index++)
+				{
+					lights[index]->apply(*renderer.getShader());
+				}
 
 				renderGraph(renderer, *rendererRoots[&renderer]);
 
@@ -158,8 +159,6 @@ namespace simplicity
 
 			// Initialise the viewport size.
 			//glViewport(0, 0, width, height);
-
-			shader->init();
 		}
 
 		void OpenGLRenderingEngine::removeEntity(const Entity& entity)
@@ -177,7 +176,7 @@ namespace simplicity
 		{
 			for (Entity* entity : graph.getEntities())
 			{
-				shader->setVar("worldTransformation", entity->getTransformation());
+				renderer.getShader()->setVar("worldTransformation", entity->getTransformation());
 
 				for (Model* model : entity->getComponents<Model>())
 				{
@@ -222,11 +221,6 @@ namespace simplicity
 		void OpenGLRenderingEngine::setRendererRoot(const Renderer& renderer, const Graph& root)
 		{
 			rendererRoots[&renderer] = &root;
-		}
-
-		void OpenGLRenderingEngine::setShader(unique_ptr<Shader> shader)
-		{
-			this->shader.swap(shader);
 		}
 
 		void OpenGLRenderingEngine::setWidth(int width)

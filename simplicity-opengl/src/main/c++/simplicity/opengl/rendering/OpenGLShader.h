@@ -40,8 +40,6 @@ namespace simplicity
 
 				void apply();
 
-				void init();
-
 				void setVar(const std::string& name, const Matrix44& value);
 
 				void setVar(const std::string& name, float value);
@@ -61,9 +59,13 @@ namespace simplicity
 			private:
 				std::unique_ptr<OpenGLFragmentShader> fragmentShader;
 
+				bool initialized;
+
 				GLuint program;
 
 				std::unique_ptr<OpenGLVertexShader> vertexShader;
+
+				void init();
 		};
 	}
 }

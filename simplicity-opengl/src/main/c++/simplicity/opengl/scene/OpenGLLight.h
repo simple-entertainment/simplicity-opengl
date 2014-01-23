@@ -30,7 +30,7 @@ namespace simplicity
 
 				virtual void activate();
 
-				void apply();
+				void apply(Shader& shader);
 
 				virtual void deactivate();
 

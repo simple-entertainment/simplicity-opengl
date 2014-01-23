@@ -20,6 +20,7 @@
 #include <GL/glu.h>
 
 #include <simplicity/math/MathConstants.h>
+//#include <simplicity/math/MathFunctions.h>
 
 #include "OpenGLCamera.h"
 
@@ -76,7 +77,25 @@ namespace simplicity
 
 		void OpenGLCamera::lookAt(const Vector3& target, const Vector3& up)
 		{
-			gluLookAt(0.0f, 0.0f, 0.0f, target.X(), target.Y(), target.Z(), up.X(), up.Y(), up.Z());
+			/*Vector3 normalizedTarget = target;
+			normalizedTarget.normalize();
+			Vector3 normalizedUp = up;
+			normalizedUp.normalize();
+			Vector3 upCrossTarget = MathFunctions::crossProduct(normalizedUp, target);
+			Vector3 targetCrossUpCrossTarget = MathFunctions::crossProduct(normalizedTarget, upCrossTarget);
+
+			m[0][0] = upCrossTarget.x;
+			m[0][1] = upCrossTarget.y;
+			m[0][2] = upCrossTarget.z;
+			m[0][3] = 0.0f;
+			m[1][0] = targetCrossUpCrossTarget.x;
+			m[1][1] = targetCrossUpCrossTarget.y;
+			m[1][2] = targetCrossUpCrossTarget.z;
+			m[1][3] = 0.0f;
+			m[2][0] = N.x;
+			m[2][1] = N.y;
+			m[2][2] = N.z;
+			m[2][3] = 0.0f;*/
 		}
 
 		void OpenGLCamera::setFarClippingDistance(float farClippingDistance)

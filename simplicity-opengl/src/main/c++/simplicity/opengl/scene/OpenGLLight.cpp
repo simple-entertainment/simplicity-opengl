@@ -16,8 +16,6 @@
  */
 //#include <windows.h>
 
-#include <GL/gl.h>
-
 #include "OpenGLLight.h"
 
 using namespace std;
@@ -43,31 +41,34 @@ namespace simplicity
 
 		void OpenGLLight::activate()
 		{
-			glEnable(GL_LIGHTING);
-			glEnable(GL_COLOR_MATERIAL);
-			glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-			glEnable(GL_LIGHT0);
-
 			active = true;
 		}
 
-		void OpenGLLight::apply()
+		void OpenGLLight::apply(Shader& shader)
 		{
+			shader.setVar(name + "Light", "attenuation", attenuation);
+			shader.setVar(name + "Light", "direction", direction);
+			shader.setVar(name + "Light", "range", range);
+			shader.setVar(name + "Light", "specular", specular);
+			shader.setVar(name + "Light", "strength", strength);
+			shader.setVar(name + "Light", "position", translation);
+
 			if (active)
 			{
-				glLightfv(GL_LIGHT0, GL_POSITION, translation.getData());
-				glLightfv(GL_LIGHT0, GL_AMBIENT, ambient.getData());
-				glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse.getData());
-				glLightfv(GL_LIGHT0, GL_SPECULAR, specular.getData());
+				shader.setVar(name + "Light", "ambient", ambient);
+				shader.setVar(name + "Light", "diffuse", diffuse);
+				shader.setVar(name + "Light", "specular", specular);
+			}
+			else
+			{
+				shader.setVar(name + "Light", "ambient", Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+				shader.setVar(name + "Light", "diffuse", Vector4(0.0f, 0.0f, 0.0f, 1.0f));
+				shader.setVar(name + "Light", "specular", Vector4(0.0f, 0.0f, 0.0f, 1.0f));
 			}
 		}
 
 		void OpenGLLight::deactivate()
 		{
-			glDisable(GL_LIGHTING);
-			glDisable(GL_COLOR_MATERIAL);
-			glDisable(GL_LIGHT0);
-
 			active = false;
 		}
 

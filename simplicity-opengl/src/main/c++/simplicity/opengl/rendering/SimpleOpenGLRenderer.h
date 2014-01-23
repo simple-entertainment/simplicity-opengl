@@ -26,7 +26,11 @@ namespace simplicity
 		class SimpleOpenGLRenderer : public Renderer
 		{
 			public:
+				SimpleOpenGLRenderer();
+
 				void dispose();
+
+				Shader* getShader();
 
 				void init();
 
@@ -48,7 +52,11 @@ namespace simplicity
 
 				void render(const Torus& model);
 
+				void setShader(std::unique_ptr<Shader> shader);
+
 			private:
+				std::unique_ptr<Shader> shader;
+
 				int getOpenGLDrawingMode(Model::PrimitiveType primitiveType);
 		};
 	}

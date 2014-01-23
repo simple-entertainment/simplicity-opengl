@@ -37,6 +37,11 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		SimpleOpenGLRenderer::SimpleOpenGLRenderer() :
+				shader()
+		{
+		}
+
 		void SimpleOpenGLRenderer::dispose()
 		{
 			glPointSize(1.0f);
@@ -66,6 +71,11 @@ namespace simplicity
 			}
 
 			return -1;
+		}
+
+		Shader* SimpleOpenGLRenderer::getShader()
+		{
+			return shader.get();
 		}
 
 		void SimpleOpenGLRenderer::init()
@@ -142,16 +152,10 @@ namespace simplicity
 		{
 			const OpenGLMesh& openGlMesh = dynamic_cast<const OpenGLMesh&>(model);
 
-			glBindBuffer(GL_ARRAY_BUFFER, openGlMesh.getVBO());
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, openGlMesh.getIBO());
-
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			glBindVertexArray(openGlMesh.getVAO());
 
 			glDrawElements(getOpenGLDrawingMode(model.getPrimitiveType()), model.getIndices().size(), GL_UNSIGNED_INT,
 					0);
-
-			glDisableVertexAttribArray(0);
 		}
 
 		void SimpleOpenGLRenderer::render(const Sphere& model)
@@ -167,6 +171,11 @@ namespace simplicity
 
 		void SimpleOpenGLRenderer::render(const Torus&)
 		{
+		}
+
+		void SimpleOpenGLRenderer::setShader(unique_ptr<Shader> shader)
+		{
+			this->shader.swap(shader);
 		}
 	}
 }

@@ -109,26 +109,7 @@ namespace simplicity
 
 			glGenBuffers(1, &vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-			// TODO Slow!!!
-			float vertexData[vertices.size() * 12];
-			for (unsigned int index = 0; index < vertices.size(); index++)
-			{
-				vertexData[index * 12] = vertices[index].color.R();
-				vertexData[index * 12 + 1] = vertices[index].color.G();
-				vertexData[index * 12 + 2] = vertices[index].color.B();
-				vertexData[index * 12 + 3] = vertices[index].color.A();
-				vertexData[index * 12 + 4] = vertices[index].normal.X();
-				vertexData[index * 12 + 5] = vertices[index].normal.Y();
-				vertexData[index * 12 + 6] = vertices[index].normal.Z();
-				vertexData[index * 12 + 7] = vertices[index].position.X();
-				vertexData[index * 12 + 8] = vertices[index].position.Y();
-				vertexData[index * 12 + 9] = vertices[index].position.Z();
-				vertexData[index * 12 + 10] = vertices[index].texCoord.X();
-				vertexData[index * 12 + 11] = vertices[index].texCoord.Y();
-			}
-
-			glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 12, 0);

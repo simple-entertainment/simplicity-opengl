@@ -95,7 +95,10 @@ namespace simplicity
 				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 
 				Matrix44 transformation;
-				MathFunctions::getTranslation3(transformation).Z() = model.getLength();
+				transformation.setIdentity();
+				Vector4 translation = MathFunctions::getTranslation4(transformation);
+				translation.Z() = model.getLength();
+				MathFunctions::setTranslation(transformation, translation);
 
 				glMultMatrixf(transformation.getData());
 
@@ -122,6 +125,7 @@ namespace simplicity
 			glPushMatrix();
 			{
 				Matrix44 transformation;
+				transformation.setIdentity();
 				Vector4 rotationAxis;
 				rotationAxis.Y() = 1.0f;
 				MathFunctions::rotate(transformation, MathConstants::PI, rotationAxis);
@@ -135,7 +139,10 @@ namespace simplicity
 			glPushMatrix();
 			{
 				Matrix44 transformation;
-				MathFunctions::getTranslation3(transformation).Z() = model.getLength();
+				transformation.setIdentity();
+				Vector4 translation = MathFunctions::getTranslation4(transformation);
+				translation.Z() = model.getLength();
+				MathFunctions::setTranslation(transformation, translation);
 
 				glMultMatrixf(transformation.getData());
 

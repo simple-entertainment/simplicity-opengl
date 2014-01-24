@@ -21,6 +21,7 @@
 #include <GL/glew.h>
 
 #include <simplicity/common/AddressEquals.h>
+#include <simplicity/math/MathFunctions.h>
 #include <simplicity/scene/Camera.h>
 
 #include "OpenGLRenderingEngine.h"
@@ -92,6 +93,7 @@ namespace simplicity
 				renderer.init();
 
 				renderer.getShader()->apply();
+				renderer.getShader()->setVar("cameraPosition", MathFunctions::getTranslation3(cameraTransformation));
 				renderer.getShader()->setVar("cameraTransformation", cameraTransformation);
 
 				for (unsigned int index = 0; index < lights.size(); index++)
@@ -152,13 +154,10 @@ namespace simplicity
 			glEnable(GL_DEPTH_TEST);
 
 			// Only render the front (counter-clockwise) side of a polygon.
-			//glEnable(GL_CULL_FACE);
+			glEnable(GL_CULL_FACE);
 
 			// Set the colour buffer clearing colour.
 			glClearColor(clearingColour.X(), clearingColour.Y(), clearingColour.Z(), clearingColour.W());
-
-			// Initialise the viewport size.
-			//glViewport(0, 0, width, height);
 		}
 
 		void OpenGLRenderingEngine::removeEntity(const Entity& entity)

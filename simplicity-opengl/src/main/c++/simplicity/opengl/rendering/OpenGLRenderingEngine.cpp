@@ -168,7 +168,6 @@ namespace simplicity
 		{
 			renderers.erase(remove_if(renderers.begin(), renderers.end(), AddressEquals<Renderer>(renderer)));
 			rendererRoots.erase(&renderer);
-			delete &renderer;
 		}
 
 		void OpenGLRenderingEngine::renderGraph(Renderer& renderer, const Graph& graph)

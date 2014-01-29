@@ -79,10 +79,16 @@ namespace simplicity
 			}
 			else
 			{
-				Matrix44 view = camera->getTransformation();
+				Camera* cameraComponent = camera->getComponent<Camera>();
+				if (cameraComponent == NULL)
+				{
+					cameraTransformation.setIdentity();
+				}
+
+				Matrix44 view = camera->getTransformation() * cameraComponent->getTransformation();
 				view.invert();
 
-				Matrix44 projection = camera->getComponent<Camera>()->getProjection();
+				Matrix44 projection = cameraComponent->getProjection();
 
 				cameraTransformation = projection * view;
 			}
@@ -174,10 +180,11 @@ namespace simplicity
 		{
 			for (Entity* entity : graph.getEntities())
 			{
-				renderer.getShader()->setVar("worldTransformation", entity->getTransformation());
-
 				for (Model* model : entity->getComponents<Model>())
 				{
+					renderer.getShader()->setVar("worldTransformation",
+							entity->getTransformation() * model->getTransformation());
+
 					model->render(renderer);
 				}
 			}

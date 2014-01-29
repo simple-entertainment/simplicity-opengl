@@ -73,7 +73,7 @@ namespace simplicity
 			}
 
 			Matrix44 cameraTransformation;
-			if (camera.get() == NULL)
+			if (camera == NULL)
 			{
 				cameraTransformation.setIdentity();
 			}
@@ -122,7 +122,7 @@ namespace simplicity
 
 		Entity* OpenGLRenderingEngine::getCamera() const
 		{
-			return camera.get();
+			return camera;
 		}
 
 		const Vector4& OpenGLRenderingEngine::getClearingColour() const
@@ -188,9 +188,9 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLRenderingEngine::setCamera(unique_ptr<Entity> camera)
+		void OpenGLRenderingEngine::setCamera(Entity* camera)
 		{
-			this->camera.swap(camera);
+			this->camera = camera;
 		}
 
 		void OpenGLRenderingEngine::setClearingColour(const Vector4& clearingColour)

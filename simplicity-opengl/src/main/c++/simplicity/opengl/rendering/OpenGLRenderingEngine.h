@@ -19,7 +19,7 @@
 
 #include <map>
 
-#include <simplicity/graph/Graph.h>
+#include <simplicity/model/Model.h>
 #include <simplicity/rendering/RenderingEngine.h>
 
 namespace simplicity
@@ -70,6 +70,14 @@ namespace simplicity
 				void setWidth(int width);
 
 			private:
+				struct CameraProperties
+				{
+					Model* bounds;
+					Vector3 boundsPosition;
+					Vector3 position;
+					Matrix44 transformation;
+				};
+
 				Entity* camera;
 
 				Vector4 clearingColour;
@@ -86,7 +94,11 @@ namespace simplicity
 
 				int width;
 
-				void renderGraph(Renderer& renderer, const Graph& graph);
+				CameraProperties getCameraProperties() const;
+
+				void render(Renderer& renderer, const Entity& entity);
+
+				void render(Renderer& renderer, const Graph& graph);
 		};
 	}
 }

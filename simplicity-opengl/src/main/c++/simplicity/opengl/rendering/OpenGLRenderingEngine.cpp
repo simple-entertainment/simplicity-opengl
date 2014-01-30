@@ -21,8 +21,10 @@
 #include <GL/glew.h>
 
 #include <simplicity/common/AddressEquals.h>
+#include <simplicity/math/Intersection.h>
 #include <simplicity/math/MathFunctions.h>
 #include <simplicity/scene/Camera.h>
+#include <simplicity/Simplicity.h>
 
 #include "OpenGLRenderingEngine.h"
 
@@ -67,31 +69,7 @@ namespace simplicity
 		{
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-			if (graph == NULL)
-			{
-				return;
-			}
-
-			Matrix44 cameraTransformation;
-			if (camera == NULL)
-			{
-				cameraTransformation.setIdentity();
-			}
-			else
-			{
-				Camera* cameraComponent = camera->getComponent<Camera>();
-				if (cameraComponent == NULL)
-				{
-					cameraTransformation.setIdentity();
-				}
-
-				Matrix44 view = camera->getTransformation() * cameraComponent->getTransformation();
-				view.invert();
-
-				Matrix44 projection = cameraComponent->getProjection();
-
-				cameraTransformation = projection * view;
-			}
+			CameraProperties cameraProperties = getCameraProperties();
 
 			for (unsigned int index = 0; index < renderers.size(); index++)
 			{
@@ -99,15 +77,35 @@ namespace simplicity
 				renderer.init();
 
 				renderer.getShader()->apply();
-				renderer.getShader()->setVar("cameraPosition", MathFunctions::getTranslation3(cameraTransformation));
-				renderer.getShader()->setVar("cameraTransformation", cameraTransformation);
+				renderer.getShader()->setVar("cameraPosition", cameraProperties.position);
+				renderer.getShader()->setVar("cameraTransformation", cameraProperties.transformation);
 
 				for (unsigned int index = 0; index < lights.size(); index++)
 				{
 					lights[index]->apply(*renderer.getShader());
 				}
 
-				renderGraph(renderer, *rendererRoots[&renderer]);
+				if (graph == NULL)
+				{
+					for (Entity* entity : Simplicity::getEntities())
+					{
+						render(renderer, *entity);
+					}
+				}
+				else if (cameraProperties.bounds == NULL)
+				{
+					render(renderer, *rendererRoots[&renderer]);
+				}
+				else
+				{
+					vector<Entity*> entities =
+							rendererRoots[&renderer]->getEntitiesWithinBounds(*cameraProperties.bounds,
+									cameraProperties.boundsPosition);
+					for (Entity* entity : entities)
+					{
+						render(renderer, *entity);
+					}
+				}
 
 				renderer.dispose();
 			}
@@ -129,6 +127,43 @@ namespace simplicity
 		Entity* OpenGLRenderingEngine::getCamera() const
 		{
 			return camera;
+		}
+
+		OpenGLRenderingEngine::CameraProperties OpenGLRenderingEngine::getCameraProperties() const
+		{
+			CameraProperties properties;
+			properties.bounds = NULL;
+
+			if (camera == NULL)
+			{
+				properties.position = Vector3(0.0f, 0.0f, 0.0f);
+				properties.transformation.setIdentity();
+			}
+			else
+			{
+				properties.bounds = camera->getComponent<Model>(Categories::BOUNDS);
+				if (properties.bounds != NULL)
+				{
+					properties.boundsPosition = MathFunctions::getTranslation3(camera->getTransformation() *
+							properties.bounds->getTransformation());
+				}
+
+				Camera* cameraComponent = camera->getComponent<Camera>();
+				if (cameraComponent == NULL)
+				{
+					properties.transformation.setIdentity();
+				}
+
+				Matrix44 view = camera->getTransformation() * cameraComponent->getTransformation();
+				properties.position = MathFunctions::getTranslation3(view);
+				view.invert();
+
+				Matrix44 projection = cameraComponent->getProjection();
+
+				properties.transformation = projection * view;
+			}
+
+			return properties;
 		}
 
 		const Vector4& OpenGLRenderingEngine::getClearingColour() const
@@ -176,22 +211,27 @@ namespace simplicity
 			rendererRoots.erase(&renderer);
 		}
 
-		void OpenGLRenderingEngine::renderGraph(Renderer& renderer, const Graph& graph)
+		void OpenGLRenderingEngine::render(Renderer& renderer, const Entity& entity)
+		{
+			for (Model* model : entity.getComponents<Model>(Categories::RENDER))
+			{
+				renderer.getShader()->setVar("worldTransformation",
+						entity.getTransformation() * model->getTransformation());
+
+				model->render(renderer);
+			}
+		}
+
+		void OpenGLRenderingEngine::render(Renderer& renderer, const Graph& graph)
 		{
 			for (Entity* entity : graph.getEntities())
 			{
-				for (Model* model : entity->getComponents<Model>())
-				{
-					renderer.getShader()->setVar("worldTransformation",
-							entity->getTransformation() * model->getTransformation());
-
-					model->render(renderer);
-				}
+				render(renderer, *entity);
 			}
 
 			for (unsigned int index = 0; index < graph.getChildren().size(); index++)
 			{
-				renderGraph(renderer, *graph.getChildren()[index]);
+				render(renderer, *graph.getChildren()[index]);
 			}
 		}
 

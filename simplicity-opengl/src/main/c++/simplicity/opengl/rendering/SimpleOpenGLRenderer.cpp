@@ -151,7 +151,7 @@ namespace simplicity
 			glPopMatrix();
 		}
 
-		void SimpleOpenGLRenderer::render(const Line<2>&)
+		void SimpleOpenGLRenderer::render(const Line&)
 		{
 		}
 
@@ -163,6 +163,10 @@ namespace simplicity
 
 			glDrawElements(getOpenGLDrawingMode(model.getPrimitiveType()), model.getIndices().size(), GL_UNSIGNED_INT,
 					0);
+		}
+
+		void SimpleOpenGLRenderer::render(const Point& model)
+		{
 		}
 
 		void SimpleOpenGLRenderer::render(const Sphere& model)
@@ -177,6 +181,10 @@ namespace simplicity
 		}
 
 		void SimpleOpenGLRenderer::render(const Torus&)
+		{
+		}
+
+		void SimpleOpenGLRenderer::render(const Triangle&)
 		{
 		}
 

@@ -42,15 +42,19 @@ namespace simplicity
 
 				void render(const Cylinder& model);
 
-				void render(const Line<2>& model);
+				void render(const Line& model);
 
 				void render(const Mesh& model);
+
+				void render(const Point& model);
 
 				void render(const Sphere& model);
 
 				void render(const Text& model);
 
 				void render(const Torus& model);
+
+				void render(const Triangle& model);
 
 				void setShader(std::unique_ptr<Shader> shader);
 

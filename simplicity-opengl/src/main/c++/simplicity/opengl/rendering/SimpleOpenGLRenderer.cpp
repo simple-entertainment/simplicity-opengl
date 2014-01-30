@@ -176,6 +176,10 @@ namespace simplicity
 			gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 		}
 
+		void SimpleOpenGLRenderer::render(const Square&)
+		{
+		}
+
 		void SimpleOpenGLRenderer::render(const Text&)
 		{
 		}

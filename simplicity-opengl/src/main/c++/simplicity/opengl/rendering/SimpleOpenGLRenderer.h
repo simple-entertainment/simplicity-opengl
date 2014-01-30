@@ -50,6 +50,8 @@ namespace simplicity
 
 				void render(const Sphere& model);
 
+				void render(const Square& model);
+
 				void render(const Text& model);
 
 				void render(const Torus& model);

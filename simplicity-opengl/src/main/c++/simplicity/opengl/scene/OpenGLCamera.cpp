@@ -35,7 +35,6 @@ namespace simplicity
 			frameHeight(0.0f),
 			frameWidth(0.0f),
 			nearClippingDistance(0.1f),
-			node(NULL),
 			projection()
 		{
 		}
@@ -58,11 +57,6 @@ namespace simplicity
 		float OpenGLCamera::getNearClippingDistance() const
 		{
 			return nearClippingDistance;
-		}
-
-		SimpleTree* OpenGLCamera::getNode()
-		{
-			return node;
 		}
 
 		const Matrix44& OpenGLCamera::getProjection() const
@@ -116,11 +110,6 @@ namespace simplicity
 		void OpenGLCamera::setNearClippingDistance(float nearClippingDistance)
 		{
 			this->nearClippingDistance = nearClippingDistance;
-		}
-
-		void OpenGLCamera::setNode(SimpleTree* node)
-		{
-			this->node = node;
 		}
 
 		void OpenGLCamera::setOrthogonal(float width, float height)

@@ -107,8 +107,6 @@ namespace simplicity
 
 				float getNearClippingDistance() const;
 
-				SimpleTree* getNode();
-
 				const Matrix44& getProjection() const;
 
 				Vector3 getTranslation() const;
@@ -122,8 +120,6 @@ namespace simplicity
 				void setFrameWidth(float frameWidth);
 
 				void setNearClippingDistance(float nearClippingDistance);
-
-				void setNode(SimpleTree* node);
 
 				void setOrthogonal(float width, float height);
 
@@ -139,8 +135,6 @@ namespace simplicity
 				float frameWidth;
 
 				float nearClippingDistance;
-
-				SimpleTree* node;
 
 				Matrix44 projection;
 		};

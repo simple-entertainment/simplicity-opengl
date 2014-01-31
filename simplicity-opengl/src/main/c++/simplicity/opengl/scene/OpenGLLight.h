@@ -50,8 +50,6 @@ namespace simplicity
 
 				virtual float getStrength() const;
 
-				virtual const Vector3& getTranslation() const;
-
 				virtual bool isActive() const;
 
 				void setAmbientComponent(const Vector4& ambient);
@@ -67,8 +65,6 @@ namespace simplicity
 				void setSpecularComponent(const Vector4& specular);
 
 				virtual void setStrength(float strength);
-
-				virtual void setTranslation(const Vector3& translation);
 
 			private:
 				bool active;
@@ -88,8 +84,6 @@ namespace simplicity
 				Vector4 specular;
 
 				float strength;
-
-				Vector3 translation;
 		};
 	}
 }

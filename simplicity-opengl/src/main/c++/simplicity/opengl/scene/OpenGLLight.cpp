@@ -33,8 +33,7 @@ namespace simplicity
 			name(name),
 			range(100.0f),
 			specular(),
-			strength(1.0f),
-			translation()
+			strength(1.0f)
 		{
 			activate();
 		}
@@ -51,7 +50,7 @@ namespace simplicity
 			shader.setVar(name + "Light", "range", range);
 			shader.setVar(name + "Light", "specular", specular);
 			shader.setVar(name + "Light", "strength", strength);
-			shader.setVar(name + "Light", "position", translation);
+			//shader.setVar(name + "Light", "position", position);
 
 			if (active)
 			{
@@ -112,11 +111,6 @@ namespace simplicity
 			return strength;
 		}
 
-		const Vector3& OpenGLLight::getTranslation() const
-		{
-			return translation;
-		}
-
 		bool OpenGLLight::isActive() const
 		{
 			return active;
@@ -155,11 +149,6 @@ namespace simplicity
 		void OpenGLLight::setStrength(float strength)
 		{
 			this->strength = strength;
-		}
-
-		void OpenGLLight::setTranslation(const Vector3& translation)
-		{
-			this->translation = translation;
 		}
 	}
 }

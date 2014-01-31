@@ -75,7 +75,7 @@ namespace simplicity
 					Model* bounds;
 					Vector3 boundsPosition;
 					Vector3 position;
-					Matrix44 transformation;
+					Matrix44 transform;
 				};
 
 				Entity* camera;

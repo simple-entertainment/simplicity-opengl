@@ -64,19 +64,14 @@ namespace simplicity
 			return projection;
 		}
 
-		Vector3 OpenGLCamera::getTranslation() const
-		{
-			return Vector3();
-		}
-
 		void OpenGLCamera::lookAt(const Vector3& target, const Vector3& up)
 		{
 			/*Vector3 normalizedTarget = target;
 			normalizedTarget.normalize();
 			Vector3 normalizedUp = up;
 			normalizedUp.normalize();
-			Vector3 upCrossTarget = MathFunctions::crossProduct(normalizedUp, target);
-			Vector3 targetCrossUpCrossTarget = MathFunctions::crossProduct(normalizedTarget, upCrossTarget);
+			Vector3 upCrossTarget = crossProduct(normalizedUp, target);
+			Vector3 targetCrossUpCrossTarget = crossProduct(normalizedTarget, upCrossTarget);
 
 			m[0][0] = upCrossTarget.x;
 			m[0][1] = upCrossTarget.y;
@@ -152,10 +147,6 @@ namespace simplicity
 			projection[13] = 0.0f;
 			projection[14] = -twoNearClippingDistance * farClippingDistance / depth;
 			projection[15] = 0.0f;
-		}
-
-		void OpenGLCamera::setTranslation(const Vector3&)
-		{
 		}
 	}
 }

@@ -98,13 +98,13 @@ namespace simplicity
 			{
 				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 
-				Matrix44 transformation;
-				transformation.setIdentity();
-				Vector4 translation = MathFunctions::getTranslation4(transformation);
-				translation.Z() = model.getLength();
-				MathFunctions::setTranslation(transformation, translation);
+				Matrix44 transform;
+				transform.setIdentity();
+				Vector4 position = getPosition4(transform);
+				position.Z() = model.getLength();
+				setPosition(transform, position);
 
-				glMultMatrixf(transformation.getData());
+				glMultMatrixf(transform.getData());
 
 				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 			}
@@ -128,13 +128,13 @@ namespace simplicity
 
 			glPushMatrix();
 			{
-				Matrix44 transformation;
-				transformation.setIdentity();
+				Matrix44 transform;
+				transform.setIdentity();
 				Vector4 rotationAxis;
 				rotationAxis.Y() = 1.0f;
-				MathFunctions::rotate(transformation, MathConstants::PI, rotationAxis);
+				rotate(transform, MathConstants::PI, rotationAxis);
 
-				glMultMatrixf(transformation.getData());
+				glMultMatrixf(transform.getData());
 
 				gluDisk(gluNewQuadric(), 0.0f, model.getRadius(), model.getLevelOfDetail(), 1);
 			}
@@ -142,13 +142,13 @@ namespace simplicity
 
 			glPushMatrix();
 			{
-				Matrix44 transformation;
-				transformation.setIdentity();
-				Vector4 translation = MathFunctions::getTranslation4(transformation);
-				translation.Z() = model.getLength();
-				MathFunctions::setTranslation(transformation, translation);
+				Matrix44 transform;
+				transform.setIdentity();
+				Vector4 position = getPosition4(transform);
+				position.Z() = model.getLength();
+				setPosition(transform, position);
 
-				glMultMatrixf(transformation.getData());
+				glMultMatrixf(transform.getData());
 
 				gluDisk(gluNewQuadric(), 0.0f, model.getRadius(), model.getLevelOfDetail(), 1);
 			}

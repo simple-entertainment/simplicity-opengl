@@ -78,7 +78,7 @@ namespace simplicity
 
 				renderer.getShader()->apply();
 				renderer.getShader()->setVar("cameraPosition", cameraProperties.position);
-				renderer.getShader()->setVar("cameraTransformation", cameraProperties.transformation);
+				renderer.getShader()->setVar("cameraTransform", cameraProperties.transform);
 
 				for (unsigned int index = 0; index < lights.size(); index++)
 				{
@@ -137,30 +137,30 @@ namespace simplicity
 			if (camera == NULL)
 			{
 				properties.position = Vector3(0.0f, 0.0f, 0.0f);
-				properties.transformation.setIdentity();
+				properties.transform.setIdentity();
 			}
 			else
 			{
 				properties.bounds = camera->getComponent<Model>(Categories::BOUNDS);
 				if (properties.bounds != NULL)
 				{
-					properties.boundsPosition = MathFunctions::getTranslation3(camera->getTransformation() *
-							properties.bounds->getTransformation());
+					properties.boundsPosition = getPosition3(camera->getTransform() *
+							properties.bounds->getTransform());
 				}
 
 				Camera* cameraComponent = camera->getComponent<Camera>();
 				if (cameraComponent == NULL)
 				{
-					properties.transformation.setIdentity();
+					properties.transform.setIdentity();
 				}
 
-				Matrix44 view = camera->getTransformation() * cameraComponent->getTransformation();
-				properties.position = MathFunctions::getTranslation3(view);
+				Matrix44 view = camera->getTransform() * cameraComponent->getTransform();
+				properties.position = getPosition3(view);
 				view.invert();
 
 				Matrix44 projection = cameraComponent->getProjection();
 
-				properties.transformation = projection * view;
+				properties.transform = projection * view;
 			}
 
 			return properties;
@@ -215,8 +215,7 @@ namespace simplicity
 		{
 			for (Model* model : entity.getComponents<Model>(Categories::RENDER))
 			{
-				renderer.getShader()->setVar("worldTransformation",
-						entity.getTransformation() * model->getTransformation());
+				renderer.getShader()->setVar("worldTransform", entity.getTransform() * model->getTransform());
 
 				model->render(renderer);
 			}

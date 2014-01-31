@@ -109,8 +109,6 @@ namespace simplicity
 
 				const Matrix44& getProjection() const;
 
-				Vector3 getTranslation() const;
-
 				void lookAt(const Vector3& target, const Vector3& up);
 
 				void setFarClippingDistance(float farClippingDistance);
@@ -124,8 +122,6 @@ namespace simplicity
 				void setOrthogonal(float width, float height);
 
 				void setPerspective(float yAxisFieldOfView, float aspectRatio);
-
-				void setTranslation(const Vector3& translation);
 
 			private:
 				float farClippingDistance;

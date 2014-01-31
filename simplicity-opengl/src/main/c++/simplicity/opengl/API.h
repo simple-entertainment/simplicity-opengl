@@ -23,7 +23,7 @@
 #include "rendering/OpenGLRenderingEngine.h"
 #include "rendering/OpenGLShader.h"
 #include "rendering/OpenGLVertexShader.h"
-#include "rendering/SimpleOpenGLRenderer.h"
+#include "rendering/OpenGLRenderer.h"
 
 // Scene
 #include "scene/OpenGLCamera.h"

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef SIMPLEOPENGLRENDERER_H_
-#define SIMPLEOPENGLRENDERER_H_
+#ifndef OPENGLRENDERER_H_
+#define OPENGLRENDERER_H_
 
 #include <simplicity/rendering/Renderer.h>
 
@@ -23,10 +23,10 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		class SimpleOpenGLRenderer : public Renderer
+		class OpenGLRenderer : public Renderer
 		{
 			public:
-				SimpleOpenGLRenderer();
+				OpenGLRenderer();
 
 				void dispose();
 
@@ -70,4 +70,4 @@ namespace simplicity
 	}
 }
 
-#endif /* SIMPLEOPENGLRENDERER_H_ */
+#endif /* OPENGLRENDERER_H_ */

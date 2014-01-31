@@ -29,7 +29,7 @@
 #include <simplicity/model/shape/Torus.h>
 
 #include "../model/OpenGLMesh.h"
-#include "SimpleOpenGLRenderer.h"
+#include "OpenGLRenderer.h"
 
 using namespace std;
 
@@ -37,17 +37,17 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		SimpleOpenGLRenderer::SimpleOpenGLRenderer() :
+		OpenGLRenderer::OpenGLRenderer() :
 				shader()
 		{
 		}
 
-		void SimpleOpenGLRenderer::dispose()
+		void OpenGLRenderer::dispose()
 		{
 			glPointSize(1.0f);
 		}
 
-		int SimpleOpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
+		int OpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
 		{
 			if (primitiveType == Model::POINTS)
 			{
@@ -73,21 +73,21 @@ namespace simplicity
 			return -1;
 		}
 
-		Shader* SimpleOpenGLRenderer::getShader()
+		Shader* OpenGLRenderer::getShader()
 		{
 			return shader.get();
 		}
 
-		void SimpleOpenGLRenderer::init()
+		void OpenGLRenderer::init()
 		{
 			glPointSize(2.0f);
 		}
 
-		void SimpleOpenGLRenderer::render(const Box&)
+		void OpenGLRenderer::render(const Box&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Capsule& model)
+		void OpenGLRenderer::render(const Capsule& model)
 		{
 			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
 
@@ -111,15 +111,15 @@ namespace simplicity
 			glPopMatrix();
 		}
 
-		void SimpleOpenGLRenderer::render(const Circle&)
+		void OpenGLRenderer::render(const Circle&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Cube&)
+		void OpenGLRenderer::render(const Cube&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Cylinder& model)
+		void OpenGLRenderer::render(const Cylinder& model)
 		{
 			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
 
@@ -155,11 +155,11 @@ namespace simplicity
 			glPopMatrix();
 		}
 
-		void SimpleOpenGLRenderer::render(const Line&)
+		void OpenGLRenderer::render(const Line&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Mesh& model)
+		void OpenGLRenderer::render(const Mesh& model)
 		{
 			const OpenGLMesh& openGlMesh = dynamic_cast<const OpenGLMesh&>(model);
 
@@ -169,34 +169,34 @@ namespace simplicity
 					0);
 		}
 
-		void SimpleOpenGLRenderer::render(const Point& model)
+		void OpenGLRenderer::render(const Point& model)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Sphere& model)
+		void OpenGLRenderer::render(const Sphere& model)
 		{
 			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
 
 			gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 		}
 
-		void SimpleOpenGLRenderer::render(const Square&)
+		void OpenGLRenderer::render(const Square&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Text&)
+		void OpenGLRenderer::render(const Text&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Torus&)
+		void OpenGLRenderer::render(const Torus&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::render(const Triangle&)
+		void OpenGLRenderer::render(const Triangle&)
 		{
 		}
 
-		void SimpleOpenGLRenderer::setShader(unique_ptr<Shader> shader)
+		void OpenGLRenderer::setShader(unique_ptr<Shader> shader)
 		{
 			this->shader.swap(shader);
 		}

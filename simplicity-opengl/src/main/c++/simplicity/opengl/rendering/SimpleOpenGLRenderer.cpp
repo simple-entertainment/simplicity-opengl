@@ -83,6 +83,10 @@ namespace simplicity
 			glPointSize(2.0f);
 		}
 
+		void SimpleOpenGLRenderer::render(const Box&)
+		{
+		}
+
 		void SimpleOpenGLRenderer::render(const Capsule& model)
 		{
 			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());

@@ -34,6 +34,8 @@ namespace simplicity
 
 				void init();
 
+				void render(const Box& model);
+
 				void render(const Capsule& model);
 
 				void render(const Circle& model);

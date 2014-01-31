@@ -43,8 +43,6 @@ namespace simplicity
 
 				Texture* getNormalMap() const;
 
-				const Vector2& getPosition() const;
-
 				PrimitiveType getPrimitiveType() const;
 
 				Texture* getTexture() const;
@@ -63,8 +61,6 @@ namespace simplicity
 
 				void setNormalMap(Texture* texture);
 
-				void setPosition(const Vector2& position);
-
 				void setPrimitiveType(PrimitiveType primitiveType);
 
 				void setTexture(Texture* texture);
@@ -79,8 +75,6 @@ namespace simplicity
 				std::vector<unsigned int> indices;
 
 				mutable bool initialized;
-
-				Vector2 position;
 
 				PrimitiveType primitiveType;
 

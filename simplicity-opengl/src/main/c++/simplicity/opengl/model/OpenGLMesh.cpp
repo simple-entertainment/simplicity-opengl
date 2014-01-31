@@ -29,7 +29,6 @@ namespace simplicity
 			ibo(0),
 			indices(),
 			initialized(false),
-			position(0.0f, 0.0f),
 			primitiveType(TRIANGLE_LIST),
 			vao(0),
 			vbo(0),
@@ -43,7 +42,6 @@ namespace simplicity
 			ibo(0),
 			indices(indices),
 			initialized(false),
-			position(0.0f, 0.0f),
 			primitiveType(TRIANGLE_LIST),
 			vao(0),
 			vbo(0),
@@ -70,11 +68,6 @@ namespace simplicity
 		Texture* OpenGLMesh::getNormalMap() const
 		{
 			return NULL;
-		}
-
-		const Vector2& OpenGLMesh::getPosition() const
-		{
-			return position;
 		}
 
 		Model::PrimitiveType OpenGLMesh::getPrimitiveType() const
@@ -154,11 +147,6 @@ namespace simplicity
 
 		void OpenGLMesh::setNormalMap(Texture*)
 		{
-		}
-
-		void OpenGLMesh::setPosition(const Vector2& position)
-		{
-			this->position = position;
 		}
 
 		void OpenGLMesh::setPrimitiveType(PrimitiveType)

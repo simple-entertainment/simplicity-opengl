@@ -25,7 +25,7 @@ namespace simplicity
 	namespace opengl
 	{
 		OpenGLMesh::OpenGLMesh() :
-			colour(0.0f, 0.0f, 0.0f, 1.0f),
+			color(0.0f, 0.0f, 0.0f, 1.0f),
 			ibo(0),
 			indices(),
 			initialized(false),
@@ -38,7 +38,7 @@ namespace simplicity
 		}
 
 		OpenGLMesh::OpenGLMesh(const vector<unsigned int>& indices, const vector<Vertex>& vertices) :
-			colour(0.0f, 0.0f, 0.0f, 1.0f),
+			color(0.0f, 0.0f, 0.0f, 1.0f),
 			ibo(0),
 			indices(indices),
 			initialized(false),
@@ -50,9 +50,9 @@ namespace simplicity
 		{
 		}
 
-		const Vector4& OpenGLMesh::getColour() const
+		const Vector4& OpenGLMesh::getColor() const
 		{
-			return colour;
+			return color;
 		}
 
 		vector<unsigned int>& OpenGLMesh::getIndices()
@@ -140,9 +140,9 @@ namespace simplicity
 			renderer.render(*this);
 		}
 
-		void OpenGLMesh::setColour(const Vector4& colour)
+		void OpenGLMesh::setColor(const Vector4& color)
 		{
-			this->colour = colour;
+			this->color = color;
 		}
 
 		void OpenGLMesh::setNormalMap(Texture*)

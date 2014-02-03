@@ -35,7 +35,7 @@ namespace simplicity
 
 				OpenGLMesh(const std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices);
 
-				const Vector4& getColour() const;
+				const Vector4& getColor() const;
 
 				std::vector<unsigned int>& getIndices();
 
@@ -57,7 +57,7 @@ namespace simplicity
 
 				void render(Renderer& renderer) const;
 
-				void setColour(const Vector4& colour);
+				void setColor(const Vector4& color);
 
 				void setNormalMap(Texture* texture);
 
@@ -68,7 +68,7 @@ namespace simplicity
 				void setVisible(bool visible);
 
 			private:
-				Vector4 colour;
+				Vector4 color;
 
 				mutable GLuint ibo;
 

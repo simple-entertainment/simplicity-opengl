@@ -89,7 +89,7 @@ namespace simplicity
 
 		void OpenGLRenderer::render(const Capsule& model)
 		{
-			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
+			glColor4f(model.getColor().R(), model.getColor().G(), model.getColor().B(), model.getColor().A());
 
 			gluCylinder(gluNewQuadric(), model.getRadius(), model.getRadius(), model.getLength(),
 				model.getLevelOfDetail(), model.getLevelOfDetail());
@@ -121,7 +121,7 @@ namespace simplicity
 
 		void OpenGLRenderer::render(const Cylinder& model)
 		{
-			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
+			glColor4f(model.getColor().R(), model.getColor().G(), model.getColor().B(), model.getColor().A());
 
 			gluCylinder(gluNewQuadric(), model.getRadius(), model.getRadius(), model.getLength(),
 				model.getLevelOfDetail(), model.getLevelOfDetail());
@@ -175,7 +175,7 @@ namespace simplicity
 
 		void OpenGLRenderer::render(const Sphere& model)
 		{
-			glColor4f(model.getColour().R(), model.getColour().G(), model.getColour().B(), model.getColour().A());
+			glColor4f(model.getColor().R(), model.getColor().G(), model.getColor().B(), model.getColor().A());
 
 			gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
 		}

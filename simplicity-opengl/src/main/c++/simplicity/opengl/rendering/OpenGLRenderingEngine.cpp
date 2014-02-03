@@ -36,7 +36,7 @@ namespace simplicity
 	{
 		OpenGLRenderingEngine::OpenGLRenderingEngine() :
 			camera(),
-			clearingColour(0.0f, 0.0f, 0.0f, 1.0f),
+			clearingColor(0.0f, 0.0f, 0.0f, 1.0f),
 			graph(NULL),
 			height(600),
 			lights(),
@@ -166,9 +166,9 @@ namespace simplicity
 			return properties;
 		}
 
-		const Vector4& OpenGLRenderingEngine::getClearingColour() const
+		const Vector4& OpenGLRenderingEngine::getClearingColor() const
 		{
-			return clearingColour;
+			return clearingColor;
 		}
 
 		const Graph* OpenGLRenderingEngine::getGraph() const
@@ -197,8 +197,8 @@ namespace simplicity
 			// Only render the front (counter-clockwise) side of a polygon.
 			glEnable(GL_CULL_FACE);
 
-			// Set the colour buffer clearing colour.
-			glClearColor(clearingColour.X(), clearingColour.Y(), clearingColour.Z(), clearingColour.W());
+			// Set the color buffer clearing color.
+			glClearColor(clearingColor.X(), clearingColor.Y(), clearingColor.Z(), clearingColor.W());
 		}
 
 		void OpenGLRenderingEngine::removeEntity(const Entity& entity)
@@ -239,9 +239,9 @@ namespace simplicity
 			this->camera = camera;
 		}
 
-		void OpenGLRenderingEngine::setClearingColour(const Vector4& clearingColour)
+		void OpenGLRenderingEngine::setClearingColor(const Vector4& clearingColor)
 		{
-			this->clearingColour = clearingColour;
+			this->clearingColor = clearingColor;
 		}
 
 		void OpenGLRenderingEngine::setGraph(Graph* graph)

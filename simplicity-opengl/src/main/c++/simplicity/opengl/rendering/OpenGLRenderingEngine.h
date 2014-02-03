@@ -43,7 +43,7 @@ namespace simplicity
 
 				Entity* getCamera() const;
 
-				const Vector4& getClearingColour() const;
+				const Vector4& getClearingColor() const;
 
 				const Graph* getGraph() const;
 
@@ -59,7 +59,7 @@ namespace simplicity
 
 				void setCamera(Entity* camera);
 
-				void setClearingColour(const Vector4& clearingColour);
+				void setClearingColor(const Vector4& clearingColor);
 
 				void setGraph(Graph* graph);
 
@@ -80,7 +80,7 @@ namespace simplicity
 
 				Entity* camera;
 
-				Vector4 clearingColour;
+				Vector4 clearingColor;
 
 				Graph* graph;
 

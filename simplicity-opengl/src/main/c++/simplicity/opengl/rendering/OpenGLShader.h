@@ -24,6 +24,7 @@
 #include <simplicity/rendering/Shader.h>
 
 #include "OpenGLFragmentShader.h"
+#include "OpenGLGeometryShader.h"
 #include "OpenGLVertexShader.h"
 
 namespace simplicity
@@ -34,6 +35,10 @@ namespace simplicity
 		{
 			public:
 				OpenGLShader(std::unique_ptr<OpenGLVertexShader> vertexShader,
+						std::unique_ptr<OpenGLFragmentShader> fragmentShader);
+
+				OpenGLShader(std::unique_ptr<OpenGLVertexShader> vertexShader,
+						std::unique_ptr<OpenGLGeometryShader> geometryShader,
 						std::unique_ptr<OpenGLFragmentShader> fragmentShader);
 
 				~OpenGLShader();
@@ -58,6 +63,8 @@ namespace simplicity
 
 			private:
 				std::unique_ptr<OpenGLFragmentShader> fragmentShader;
+
+				std::unique_ptr<OpenGLGeometryShader> geometryShader;
 
 				bool initialized;
 

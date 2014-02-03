@@ -16,6 +16,9 @@
  */
 #include <iostream>
 
+#include <simplicity/Events.h>
+#include <simplicity/Messages.h>
+
 #include "OpenGLShader.h"
 
 using namespace std;
@@ -27,6 +30,18 @@ namespace simplicity
 		OpenGLShader::OpenGLShader(unique_ptr<OpenGLVertexShader> vertexShader,
 				unique_ptr<OpenGLFragmentShader> fragmentShader) :
 			fragmentShader(move(fragmentShader)),
+			geometryShader(),
+			initialized(false),
+			program(0),
+			vertexShader(move(vertexShader))
+		{
+		}
+
+		OpenGLShader::OpenGLShader(unique_ptr<OpenGLVertexShader> vertexShader,
+				unique_ptr<OpenGLGeometryShader> geometryShader,
+				unique_ptr<OpenGLFragmentShader> fragmentShader) :
+			fragmentShader(move(fragmentShader)),
+			geometryShader(move(geometryShader)),
 			initialized(false),
 			program(0),
 			vertexShader(move(vertexShader))
@@ -59,6 +74,8 @@ namespace simplicity
 		    }
 
 			glUseProgram(program);
+
+			Messages::send(Events::APPLY_SHADER, this);
 		}
 
 		void OpenGLShader::init()
@@ -69,6 +86,12 @@ namespace simplicity
 			{
 				vertexShader->init();
 				glAttachShader(program, vertexShader->getShader());
+			}
+
+			if (geometryShader.get() != NULL)
+			{
+				geometryShader->init();
+				glAttachShader(program, geometryShader->getShader());
 			}
 
 			if (fragmentShader.get() != NULL)

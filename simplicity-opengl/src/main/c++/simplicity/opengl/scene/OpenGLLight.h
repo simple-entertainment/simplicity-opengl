@@ -28,43 +28,43 @@ namespace simplicity
 			public:
 				OpenGLLight(const std::string& name);
 
-				virtual void activate();
+				void activate();
 
-				void apply(Shader& shader);
+				void apply(Shader& shader, const Vector3& position);
 
-				virtual void deactivate();
+				void deactivate();
 
 				const Vector4& getAmbientComponent() const;
 
-				virtual const Vector3& getAttenuation() const;
+				const Vector3& getAttenuation() const;
 
 				const Vector4& getDiffuseComponent() const;
 
-				virtual const Vector3& getDirection() const;
+				const Vector3& getDirection() const;
 
-				virtual const std::string& getName() const;
+				const std::string& getName() const;
 
-				virtual float getRange() const;
+				float getRange() const;
 
 				const Vector4& getSpecularComponent() const;
 
-				virtual float getStrength() const;
+				float getStrength() const;
 
-				virtual bool isActive() const;
+				bool isActive() const;
 
 				void setAmbientComponent(const Vector4& ambient);
 
-				virtual void setAttenuation(const Vector3& attenuation);
+				void setAttenuation(const Vector3& attenuation);
 
 				void setDiffuseComponent(const Vector4& diffuse);
 
-				virtual void setDirection(const Vector3& direction);
+				void setDirection(const Vector3& direction);
 
-				virtual void setRange(float range);
+				void setRange(float range);
 
 				void setSpecularComponent(const Vector4& specular);
 
-				virtual void setStrength(float strength);
+				void setStrength(float strength);
 
 			private:
 				bool active;

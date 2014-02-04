@@ -43,14 +43,14 @@ namespace simplicity
 			active = true;
 		}
 
-		void OpenGLLight::apply(Shader& shader)
+		void OpenGLLight::apply(Shader& shader, const Vector3& position)
 		{
 			shader.setVar(name + "Light", "attenuation", attenuation);
 			shader.setVar(name + "Light", "direction", direction);
+			shader.setVar(name + "Light", "position", position);
 			shader.setVar(name + "Light", "range", range);
 			shader.setVar(name + "Light", "specular", specular);
 			shader.setVar(name + "Light", "strength", strength);
-			//shader.setVar(name + "Light", "position", position);
 
 			if (active)
 			{

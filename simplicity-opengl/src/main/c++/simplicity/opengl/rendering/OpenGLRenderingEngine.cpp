@@ -50,9 +50,9 @@ namespace simplicity
 		{
 		}
 
-		void OpenGLRenderingEngine::addLight(unique_ptr<Light> light)
+		void OpenGLRenderingEngine::addLight(Entity& light)
 		{
-			lights.push_back(move(light));
+			lights.push_back(&light);
 		}
 
 		void OpenGLRenderingEngine::addRenderer(unique_ptr<Renderer> renderer)
@@ -82,7 +82,8 @@ namespace simplicity
 
 				for (unsigned int index = 0; index < lights.size(); index++)
 				{
-					lights[index]->apply(*renderer.getShader());
+					lights[index]->getComponent<Light>()->apply(*renderer.getShader(),
+							getPosition3(lights[index]->getTransform()));
 				}
 
 				if (graph == NULL)

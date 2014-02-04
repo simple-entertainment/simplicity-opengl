@@ -33,7 +33,7 @@ namespace simplicity
 
 				void addEntity(Entity& entity);
 
-				void addLight(std::unique_ptr<Light> light);
+				void addLight(Entity& light);
 
 				void addRenderer(std::unique_ptr<Renderer> renderer);
 
@@ -86,7 +86,7 @@ namespace simplicity
 
 				int height;
 
-				std::vector<std::unique_ptr<Light>> lights;
+				std::vector<Entity*> lights;
 
 				std::map<const Renderer*, const Graph*> rendererRoots;
 

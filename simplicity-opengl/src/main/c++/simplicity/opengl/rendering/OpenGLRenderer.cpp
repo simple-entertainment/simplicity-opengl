@@ -38,13 +38,40 @@ namespace simplicity
 	namespace opengl
 	{
 		OpenGLRenderer::OpenGLRenderer() :
+				clearColorBuffer(true),
+				clearDepthBuffer(true),
+				clearingColor(0.0f, 0.0f, 0.0f, 1.0f),
+				clearStencilBuffer(true),
 				shader()
 		{
+		}
+
+		bool OpenGLRenderer::clearsColorBuffer()
+		{
+			return clearColorBuffer;
+		}
+
+		bool OpenGLRenderer::clearsDepthBuffer()
+		{
+			return clearDepthBuffer;
+		}
+
+		bool OpenGLRenderer::clearsStencilBuffer()
+		{
+			return clearStencilBuffer;
 		}
 
 		void OpenGLRenderer::dispose()
 		{
 			glPointSize(1.0f);
+
+			// Revert clearing settings.
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		}
+
+		const Vector4& OpenGLRenderer::getClearingColor() const
+		{
+			return clearingColor;
 		}
 
 		int OpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
@@ -81,6 +108,20 @@ namespace simplicity
 		void OpenGLRenderer::init()
 		{
 			glPointSize(2.0f);
+
+			if (clearColorBuffer)
+			{
+				glClear(GL_COLOR_BUFFER_BIT);
+				glClearColor(clearingColor.X(), clearingColor.Y(), clearingColor.Z(), clearingColor.W());
+			}
+			if (clearDepthBuffer)
+			{
+				glClear(GL_DEPTH_BUFFER_BIT);
+			}
+			if (clearStencilBuffer)
+			{
+				glClear(GL_STENCIL_BUFFER_BIT);
+			}
 		}
 
 		void OpenGLRenderer::render(const Box&)
@@ -196,8 +237,29 @@ namespace simplicity
 		{
 		}
 
+		void OpenGLRenderer::setClearColorBuffer(bool clearColorBuffer)
+		{
+			this->clearColorBuffer = clearColorBuffer;
+		}
+
+		void OpenGLRenderer::setClearDepthBuffer(bool clearDepthBuffer)
+		{
+			this->clearDepthBuffer = clearDepthBuffer;
+		}
+
+		void OpenGLRenderer::setClearingColor(const Vector4& clearingColor)
+		{
+			this->clearingColor = clearingColor;
+		}
+
+		void OpenGLRenderer::setClearStencilBuffer(bool clearStencilBuffer)
+		{
+			this->clearStencilBuffer = clearStencilBuffer;
+		}
+
 		void OpenGLRenderer::setShader(unique_ptr<Shader> shader)
 		{
+			this->shader.release();
 			this->shader.swap(shader);
 		}
 	}

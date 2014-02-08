@@ -113,14 +113,19 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLShader::setVar(const string& name, const Matrix44& value)
-		{
-			glUniformMatrix4fv(glGetUniformLocation(program, name.data()), 1, GL_FALSE, value.getData());
-		}
-
 		void OpenGLShader::setVar(const string& name, float value)
 		{
 			glUniform1f(glGetUniformLocation(program, name.data()), value);
+		}
+
+		void OpenGLShader::setVar(const string& name, int value)
+		{
+			glUniform1i(glGetUniformLocation(program, name.data()), value);
+		}
+
+		void OpenGLShader::setVar(const string& name, const Matrix44& value)
+		{
+			glUniformMatrix4fv(glGetUniformLocation(program, name.data()), 1, GL_FALSE, value.getData());
 		}
 
 		void OpenGLShader::setVar(const string& name, const Vector3& value)
@@ -133,16 +138,22 @@ namespace simplicity
 			glUniform4fv(glGetUniformLocation(program, name.data()), 1, value.getData());
 		}
 
-		void OpenGLShader::setVar(const string& structName, const string& name, const Matrix44& value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniformMatrix4fv(glGetUniformLocation(program, qualifiedName.data()), 1, GL_FALSE, value.getData());
-		}
-
 		void OpenGLShader::setVar(const string& structName, const string& name, float value)
 		{
 			string qualifiedName = structName + "." + name;
 			glUniform1f(glGetUniformLocation(program, qualifiedName.data()), value);
+		}
+
+		void OpenGLShader::setVar(const string& structName, const string& name, int value)
+		{
+			string qualifiedName = structName + "." + name;
+			glUniform1i(glGetUniformLocation(program, qualifiedName.data()), value);
+		}
+
+		void OpenGLShader::setVar(const string& structName, const string& name, const Matrix44& value)
+		{
+			string qualifiedName = structName + "." + name;
+			glUniformMatrix4fv(glGetUniformLocation(program, qualifiedName.data()), 1, GL_FALSE, value.getData());
 		}
 
 		void OpenGLShader::setVar(const string& structName, const string& name, const Vector3& value)

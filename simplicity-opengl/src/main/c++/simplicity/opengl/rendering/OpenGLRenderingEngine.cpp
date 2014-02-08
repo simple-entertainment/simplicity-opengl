@@ -36,7 +36,6 @@ namespace simplicity
 	{
 		OpenGLRenderingEngine::OpenGLRenderingEngine() :
 			camera(),
-			clearingColor(0.0f, 0.0f, 0.0f, 1.0f),
 			graph(NULL),
 			height(600),
 			lights(),
@@ -67,8 +66,6 @@ namespace simplicity
 
 		void OpenGLRenderingEngine::advance()
 		{
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
 			CameraProperties cameraProperties = getCameraProperties();
 
 			for (unsigned int index = 0; index < renderers.size(); index++)
@@ -121,8 +118,9 @@ namespace simplicity
 			// Revert face culling settings.
 			glDisable(GL_CULL_FACE);
 
-			// Revert clearing settings.
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			// Revert blending settings.
+			glBlendFunc(GL_ONE, GL_ZERO);
+			glDisable(GL_BLEND);
 		}
 
 		Entity* OpenGLRenderingEngine::getCamera() const
@@ -167,11 +165,6 @@ namespace simplicity
 			return properties;
 		}
 
-		const Vector4& OpenGLRenderingEngine::getClearingColor() const
-		{
-			return clearingColor;
-		}
-
 		const Graph* OpenGLRenderingEngine::getGraph() const
 		{
 			return graph;
@@ -198,8 +191,9 @@ namespace simplicity
 			// Only render the front (counter-clockwise) side of a polygon.
 			glEnable(GL_CULL_FACE);
 
-			// Set the color buffer clearing color.
-			glClearColor(clearingColor.X(), clearingColor.Y(), clearingColor.Z(), clearingColor.W());
+			// Enable blending for rendering transparency.
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		void OpenGLRenderingEngine::removeEntity(const Entity& entity)
@@ -238,11 +232,6 @@ namespace simplicity
 		void OpenGLRenderingEngine::setCamera(Entity* camera)
 		{
 			this->camera = camera;
-		}
-
-		void OpenGLRenderingEngine::setClearingColor(const Vector4& clearingColor)
-		{
-			this->clearingColor = clearingColor;
 		}
 
 		void OpenGLRenderingEngine::setGraph(Graph* graph)

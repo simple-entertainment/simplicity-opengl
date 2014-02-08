@@ -28,7 +28,15 @@ namespace simplicity
 			public:
 				OpenGLRenderer();
 
+				bool clearsColorBuffer();
+
+				bool clearsDepthBuffer();
+
+				bool clearsStencilBuffer();
+
 				void dispose();
+
+				const Vector4& getClearingColor() const;
 
 				Shader* getShader();
 
@@ -60,9 +68,25 @@ namespace simplicity
 
 				void render(const Triangle& model);
 
+				void setClearColorBuffer(bool clearColorBuffer);
+
+				void setClearDepthBuffer(bool clearDepthBuffer);
+
+				void setClearingColor(const Vector4& clearingColor);
+
+				void setClearStencilBuffer(bool clearStencilBuffer);
+
 				void setShader(std::unique_ptr<Shader> shader);
 
 			private:
+				bool clearColorBuffer;
+
+				bool clearDepthBuffer;
+
+				Vector4 clearingColor;
+
+				bool clearStencilBuffer;
+
 				std::unique_ptr<Shader> shader;
 
 				int getOpenGLDrawingMode(Model::PrimitiveType primitiveType);

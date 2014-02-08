@@ -14,18 +14,50 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+#ifndef OPENGLTEXTURE_H_
+#define OPENGLTEXTURE_H_
 
-// Model
-#include "model/OpenGLModelFactory.h"
+#include <string>
 
-// Rendering
-#include "rendering/OpenGLFragmentShader.h"
-#include "rendering/OpenGLRenderingEngine.h"
-#include "rendering/OpenGLRenderingFactory.h"
-#include "rendering/OpenGLShader.h"
-#include "rendering/OpenGLVertexShader.h"
-#include "rendering/OpenGLRenderer.h"
+#include <GL/glew.h>
 
-// Scene
-#include "scene/OpenGLCamera.h"
-#include "scene/OpenGLLight.h"
+#include <simplicity/rendering/Texture.h>
+
+namespace simplicity
+{
+	namespace opengl
+	{
+		class OpenGLTexture : public Texture
+		{
+			public:
+				OpenGLTexture(const unsigned char* data, unsigned int width, unsigned int height);
+
+				OpenGLTexture(const std::string& fileName);
+
+				~OpenGLTexture();
+
+				void apply(Shader& shader);
+
+				unsigned int getHeight();
+
+				unsigned int getWidth();
+
+				void init();
+
+			private:
+				const unsigned char* data;
+
+				std::string fileName;
+
+				unsigned int height;
+
+				bool initialized;
+
+				GLuint texture;
+
+				unsigned int width;
+		};
+	}
+}
+
+#endif /* OPENGLTEXTURE_H_ */

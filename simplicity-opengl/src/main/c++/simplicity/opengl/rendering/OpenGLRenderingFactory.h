@@ -14,18 +14,24 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+#ifndef OPENGLRENDERINGFACTORY_H_
+#define OPENGLRENDERINGFACTORY_H_
 
-// Model
-#include "model/OpenGLModelFactory.h"
+#include <simplicity/rendering/RenderingFactory.h>
 
-// Rendering
-#include "rendering/OpenGLFragmentShader.h"
-#include "rendering/OpenGLRenderingEngine.h"
-#include "rendering/OpenGLRenderingFactory.h"
-#include "rendering/OpenGLShader.h"
-#include "rendering/OpenGLVertexShader.h"
-#include "rendering/OpenGLRenderer.h"
+namespace simplicity
+{
+	namespace opengl
+	{
+		class OpenGLRenderingFactory : public RenderingFactory
+		{
+			public:
+				std::unique_ptr<Texture> createTexture(const unsigned char* data, unsigned int width,
+					unsigned int height);
 
-// Scene
-#include "scene/OpenGLCamera.h"
-#include "scene/OpenGLLight.h"
+				std::unique_ptr<Texture> createTexture(const std::string& fileName);
+		};
+	}
+}
+
+#endif /* OPENGLRENDERINGFACTORY_H_ */

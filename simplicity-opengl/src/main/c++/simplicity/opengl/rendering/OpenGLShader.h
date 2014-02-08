@@ -45,17 +45,21 @@ namespace simplicity
 
 				void apply();
 
-				void setVar(const std::string& name, const Matrix44& value);
-
 				void setVar(const std::string& name, float value);
+
+				void setVar(const std::string& name, int value);
+
+				void setVar(const std::string& name, const Matrix44& value);
 
 				void setVar(const std::string& name, const Vector3& value);
 
 				void setVar(const std::string& name, const Vector4& value);
 
-				void setVar(const std::string& structName, const std::string& name, const Matrix44& value);
-
 				void setVar(const std::string& structName, const std::string& name, float value);
+
+				void setVar(const std::string& structName, const std::string& name, int value);
+
+				void setVar(const std::string& structName, const std::string& name, const Matrix44& value);
 
 				void setVar(const std::string& structName, const std::string& name, const Vector3& value);
 

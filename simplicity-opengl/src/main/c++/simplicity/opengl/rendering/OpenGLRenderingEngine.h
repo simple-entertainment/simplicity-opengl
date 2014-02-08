@@ -43,8 +43,6 @@ namespace simplicity
 
 				Entity* getCamera() const;
 
-				const Vector4& getClearingColor() const;
-
 				const Graph* getGraph() const;
 
 				int getHeight() const;
@@ -58,8 +56,6 @@ namespace simplicity
 				void removeRenderer(const Renderer& renderer);
 
 				void setCamera(Entity* camera);
-
-				void setClearingColor(const Vector4& clearingColor);
 
 				void setGraph(Graph* graph);
 
@@ -79,8 +75,6 @@ namespace simplicity
 				};
 
 				Entity* camera;
-
-				Vector4 clearingColor;
 
 				Graph* graph;
 

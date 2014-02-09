@@ -28,11 +28,11 @@ namespace simplicity
 			public:
 				OpenGLRenderer();
 
-				bool clearsColorBuffer();
+				bool clearsColorBuffer() const;
 
-				bool clearsDepthBuffer();
+				bool clearsDepthBuffer() const;
 
-				bool clearsStencilBuffer();
+				bool clearsStencilBuffer() const;
 
 				void dispose();
 
@@ -41,6 +41,8 @@ namespace simplicity
 				Shader* getShader();
 
 				void init();
+
+				bool isScissorEnabled() const;
 
 				void render(const Box& model);
 
@@ -68,6 +70,8 @@ namespace simplicity
 
 				void render(const Triangle& model);
 
+				void setClearBuffers(bool clearBuffers);
+
 				void setClearColorBuffer(bool clearColorBuffer);
 
 				void setClearDepthBuffer(bool clearDepthBuffer);
@@ -75,6 +79,10 @@ namespace simplicity
 				void setClearingColor(const Vector4& clearingColor);
 
 				void setClearStencilBuffer(bool clearStencilBuffer);
+
+				void setScissor(const Vector<unsigned int, 2>& topLeft, const Vector<unsigned int, 2>& bottomRight);
+
+				void setScissorEnabled(bool scissorEnabled);
 
 				void setShader(std::unique_ptr<Shader> shader);
 

@@ -128,6 +128,11 @@ namespace simplicity
 			glUniformMatrix4fv(glGetUniformLocation(program, name.data()), 1, GL_FALSE, value.getData());
 		}
 
+		void OpenGLShader::setVar(const string& name, const Vector2& value)
+		{
+			glUniform2fv(glGetUniformLocation(program, name.data()), 1, value.getData());
+		}
+
 		void OpenGLShader::setVar(const string& name, const Vector3& value)
 		{
 			glUniform3fv(glGetUniformLocation(program, name.data()), 1, value.getData());
@@ -154,6 +159,12 @@ namespace simplicity
 		{
 			string qualifiedName = structName + "." + name;
 			glUniformMatrix4fv(glGetUniformLocation(program, qualifiedName.data()), 1, GL_FALSE, value.getData());
+		}
+
+		void OpenGLShader::setVar(const string& structName, const string& name, const Vector2& value)
+		{
+			string qualifiedName = structName + "." + name;
+			glUniform2fv(glGetUniformLocation(program, qualifiedName.data()), 1, value.getData());
 		}
 
 		void OpenGLShader::setVar(const string& structName, const string& name, const Vector3& value)

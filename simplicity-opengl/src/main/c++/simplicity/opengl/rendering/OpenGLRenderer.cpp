@@ -46,17 +46,17 @@ namespace simplicity
 		{
 		}
 
-		bool OpenGLRenderer::clearsColorBuffer()
+		bool OpenGLRenderer::clearsColorBuffer() const
 		{
 			return clearColorBuffer;
 		}
 
-		bool OpenGLRenderer::clearsDepthBuffer()
+		bool OpenGLRenderer::clearsDepthBuffer() const
 		{
 			return clearDepthBuffer;
 		}
 
-		bool OpenGLRenderer::clearsStencilBuffer()
+		bool OpenGLRenderer::clearsStencilBuffer() const
 		{
 			return clearStencilBuffer;
 		}
@@ -122,6 +122,11 @@ namespace simplicity
 			{
 				glClear(GL_STENCIL_BUFFER_BIT);
 			}
+		}
+
+		bool OpenGLRenderer::isScissorEnabled() const
+		{
+			return glIsEnabled(GL_SCISSOR_TEST);
 		}
 
 		void OpenGLRenderer::render(const Box&)
@@ -237,6 +242,13 @@ namespace simplicity
 		{
 		}
 
+		void OpenGLRenderer::setClearBuffers(bool clearBuffers)
+		{
+			clearColorBuffer = clearBuffers;
+			clearDepthBuffer = clearBuffers;
+			clearStencilBuffer = clearBuffers;
+		}
+
 		void OpenGLRenderer::setClearColorBuffer(bool clearColorBuffer)
 		{
 			this->clearColorBuffer = clearColorBuffer;
@@ -257,10 +269,31 @@ namespace simplicity
 			this->clearStencilBuffer = clearStencilBuffer;
 		}
 
+		void OpenGLRenderer::setScissor(const Vector<unsigned int, 2>& topLeft,
+				const Vector<unsigned int, 2>& bottomRight)
+		{
+			GLint viewport[4];
+			glGetIntegerv(GL_VIEWPORT, viewport);
+
+			glScissor(topLeft.X(), viewport[3] - bottomRight.Y(), bottomRight.X() - topLeft.X(),
+					bottomRight.Y() - topLeft.Y());
+		}
+
+		void OpenGLRenderer::setScissorEnabled(bool scissorEnabled)
+		{
+			if (scissorEnabled)
+			{
+				glEnable(GL_SCISSOR_TEST);
+			}
+			else
+			{
+				glDisable(GL_SCISSOR_TEST);
+			}
+		}
+
 		void OpenGLRenderer::setShader(unique_ptr<Shader> shader)
 		{
-			this->shader.release();
-			this->shader.swap(shader);
+			this->shader = move(shader);
 		}
 	}
 }

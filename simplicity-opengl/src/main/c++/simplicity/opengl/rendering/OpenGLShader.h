@@ -51,6 +51,8 @@ namespace simplicity
 
 				void setVar(const std::string& name, const Matrix44& value);
 
+				void setVar(const std::string& name, const Vector2& value);
+
 				void setVar(const std::string& name, const Vector3& value);
 
 				void setVar(const std::string& name, const Vector4& value);
@@ -60,6 +62,8 @@ namespace simplicity
 				void setVar(const std::string& structName, const std::string& name, int value);
 
 				void setVar(const std::string& structName, const std::string& name, const Matrix44& value);
+
+				void setVar(const std::string& structName, const std::string& name, const Vector2& value);
 
 				void setVar(const std::string& structName, const std::string& name, const Vector3& value);
 

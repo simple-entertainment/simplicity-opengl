@@ -16,8 +16,8 @@
  */
 #include <iostream>
 
-#include <simplicity/Events.h>
-#include <simplicity/Messages.h>
+#include <simplicity/messaging/Events.h>
+#include <simplicity/messaging/Messages.h>
 
 #include "OpenGLShader.h"
 

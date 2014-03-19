@@ -17,7 +17,7 @@
 #ifndef OPENGLLIGHT_H_
 #define OPENGLLIGHT_H_
 
-#include <simplicity/scene/Light.h>
+#include <simplicity/rendering/Light.h>
 
 namespace simplicity
 {

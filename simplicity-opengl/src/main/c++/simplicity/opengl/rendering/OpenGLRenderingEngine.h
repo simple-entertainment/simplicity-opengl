@@ -53,7 +53,7 @@ namespace simplicity
 
 				void removeEntity(const Entity& entity);
 
-				void removeRenderer(const Renderer& renderer);
+				std::unique_ptr<Renderer> removeRenderer(Renderer* renderer);
 
 				void setCamera(Entity* camera);
 

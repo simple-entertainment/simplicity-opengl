@@ -23,7 +23,8 @@
 #include <simplicity/common/AddressEquals.h>
 #include <simplicity/math/Intersection.h>
 #include <simplicity/math/MathFunctions.h>
-#include <simplicity/scene/Camera.h>
+#include <simplicity/rendering/Camera.h>
+#include <simplicity/rendering/Light.h>
 #include <simplicity/Simplicity.h>
 
 #include "OpenGLRenderingEngine.h"
@@ -200,10 +201,21 @@ namespace simplicity
 		{
 		}
 
-		void OpenGLRenderingEngine::removeRenderer(const Renderer& renderer)
+		unique_ptr<Renderer> OpenGLRenderingEngine::removeRenderer(Renderer* renderer)
 		{
-			renderers.erase(remove_if(renderers.begin(), renderers.end(), AddressEquals<Renderer>(renderer)));
-			rendererRoots.erase(&renderer);
+			unique_ptr<Renderer> removedRenderer;
+
+			vector<unique_ptr<Renderer>>::iterator result =
+					find_if(renderers.begin(), renderers.end(), AddressEquals<Renderer>(*renderer));
+			if (result != renderers.end())
+			{
+				removedRenderer = move(*result);
+				renderers.erase(result);
+				rendererRoots.erase(renderer);
+				renderer = NULL;
+			}
+
+			return move(removedRenderer);
 		}
 
 		void OpenGLRenderingEngine::render(Renderer& renderer, const Entity& entity)

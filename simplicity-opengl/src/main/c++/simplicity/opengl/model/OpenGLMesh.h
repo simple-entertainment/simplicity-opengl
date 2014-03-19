@@ -59,7 +59,7 @@ namespace simplicity
 
 				void setColor(const Vector4& color);
 
-				void setNormalMap(Texture* texture);
+				void setNormalMap(Texture* normalMap);
 
 				void setPrimitiveType(PrimitiveType primitiveType);
 

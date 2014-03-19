@@ -145,7 +145,7 @@ namespace simplicity
 			this->color = color;
 		}
 
-		void OpenGLMesh::setNormalMap(Texture*)
+		void OpenGLMesh::setNormalMap(Texture* /* normalMap */)
 		{
 		}
 

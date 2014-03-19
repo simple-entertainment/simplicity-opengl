@@ -17,7 +17,7 @@
 #ifndef OPENGLCAMERA_H_
 #define OPENGLCAMERA_H_
 
-#include <simplicity/scene/Camera.h>
+#include <simplicity/rendering/Camera.h>
 
 /**
  * <p>

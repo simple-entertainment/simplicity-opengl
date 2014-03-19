@@ -55,7 +55,6 @@ namespace simplicity
 			if (!initialized)
 			{
 				init();
-				initialized = true;
 			}
 
 			glActiveTexture(GL_TEXTURE0);
@@ -96,6 +95,8 @@ namespace simplicity
 
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			initialized = true;
 		}
 	}
 }

@@ -19,13 +19,11 @@
 #include "model/OpenGLModelFactory.h"
 
 // Rendering
+#include "rendering/OpenGLCamera.h"
+#include "rendering/OpenGLLight.h"
 #include "rendering/OpenGLFragmentShader.h"
 #include "rendering/OpenGLRenderingEngine.h"
 #include "rendering/OpenGLRenderingFactory.h"
 #include "rendering/OpenGLShader.h"
 #include "rendering/OpenGLVertexShader.h"
 #include "rendering/OpenGLRenderer.h"
-
-// Scene
-#include "scene/OpenGLCamera.h"
-#include "scene/OpenGLLight.h"

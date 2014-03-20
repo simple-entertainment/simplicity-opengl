@@ -17,10 +17,11 @@
 #ifndef OPENGLGEOMETRYSHADER_H_
 #define OPENGLGEOMETRYSHADER_H_
 
-#include <istream>
 #include <string>
 
 #include <GL/glew.h>
+
+#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
@@ -29,7 +30,7 @@ namespace simplicity
 		class OpenGLGeometryShader
 		{
 			public:
-				OpenGLGeometryShader(std::istream& source);
+				OpenGLGeometryShader(Resource& source);
 
 				~OpenGLGeometryShader();
 

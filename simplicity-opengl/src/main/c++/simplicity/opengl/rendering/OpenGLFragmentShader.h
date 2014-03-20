@@ -17,10 +17,11 @@
 #ifndef OPENGLFRAGMENTSHADER_H_
 #define OPENGLFRAGMENTSHADER_H_
 
-#include <istream>
 #include <string>
 
 #include <GL/glew.h>
+
+#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
@@ -29,7 +30,7 @@ namespace simplicity
 		class OpenGLFragmentShader
 		{
 			public:
-				OpenGLFragmentShader(std::istream& source);
+				OpenGLFragmentShader(Resource& source);
 
 				~OpenGLFragmentShader();
 

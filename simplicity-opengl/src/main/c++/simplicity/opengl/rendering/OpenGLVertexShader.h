@@ -17,10 +17,11 @@
 #ifndef OPENGLVERTEXSHADER_H_
 #define OPENGLVERTEXSHADER_H_
 
-#include <istream>
 #include <string>
 
 #include <GL/glew.h>
+
+#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
@@ -29,7 +30,7 @@ namespace simplicity
 		class OpenGLVertexShader
 		{
 			public:
-				OpenGLVertexShader(std::istream& source);
+				OpenGLVertexShader(Resource& source);
 
 				~OpenGLVertexShader();
 

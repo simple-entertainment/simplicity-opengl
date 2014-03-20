@@ -24,16 +24,10 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLFragmentShader::OpenGLFragmentShader(istream& source) :
+		OpenGLFragmentShader::OpenGLFragmentShader(Resource& source) :
 			shader(0),
-			source()
+			source(source.getData())
 		{
-			while (!source.eof())
-			{
-				char next;
-				source.get(next);
-				this->source += next;
-			}
 		}
 
 		OpenGLFragmentShader::~OpenGLFragmentShader()

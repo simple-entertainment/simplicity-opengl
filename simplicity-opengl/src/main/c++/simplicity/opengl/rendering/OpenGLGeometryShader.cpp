@@ -24,16 +24,10 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLGeometryShader::OpenGLGeometryShader(istream& source) :
+		OpenGLGeometryShader::OpenGLGeometryShader(Resource& source) :
 			shader(0),
-			source()
+			source(source.getData())
 		{
-			while (!source.eof())
-			{
-				char next;
-				source.get(next);
-				this->source += next;
-			}
 		}
 
 		OpenGLGeometryShader::~OpenGLGeometryShader()

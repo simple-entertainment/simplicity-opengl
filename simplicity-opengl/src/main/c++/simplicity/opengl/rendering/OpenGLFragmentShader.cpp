@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include <iostream>
+#include <simplicity/entity/Categories.h>
+#include <simplicity/logging/Logs.h>
 
 #include "OpenGLFragmentShader.h"
 
@@ -58,7 +59,8 @@ namespace simplicity
 			    GLchar infoLog[1024];
 			    glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
 
-			    cout << "Error compiling fragment shader:" << endl << infoLog;
+			    Logs::log(Categories::ERROR, "Error compiling fragment shader:");
+			    Logs::log(Categories::ERROR, infoLog);
 			}
 		}
 	}

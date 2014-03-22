@@ -1,7 +1,8 @@
 # Eclipse project management
 *.metadata
 *.settings
-simplicity-opengl/Debug
-simplicity-opengl-demo/Debug
-simplicity-opengl-test/Debug
+simplicity-opengl/Debug (Linux)
+simplicity-opengl/Debug (Windows)
+simplicity-opengl/Release (Linux)
+simplicity-opengl/Release (Windows)
 

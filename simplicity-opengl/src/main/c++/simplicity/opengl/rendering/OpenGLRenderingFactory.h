@@ -18,7 +18,6 @@
 #define OPENGLRENDERINGFACTORY_H_
 
 #include <simplicity/rendering/RenderingFactory.h>
-#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
@@ -32,6 +31,8 @@ namespace simplicity
 		class OpenGLRenderingFactory : public RenderingFactory
 		{
 			public:
+				std::unique_ptr<Texture> createTexture(const char* data, unsigned int length);
+
 				std::unique_ptr<Texture> createTexture(const char* data, unsigned int width,
 					unsigned int height);
 

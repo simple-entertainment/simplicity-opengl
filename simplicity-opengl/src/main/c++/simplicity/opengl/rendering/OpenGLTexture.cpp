@@ -28,8 +28,18 @@ namespace simplicity
 			data(data, length),
 			height(0),
 			initialized(false),
+			rawData(NULL),
 			texture(0),
 			width(0)
+		{
+		}
+
+		OpenGLTexture::OpenGLTexture(const char* rawData, unsigned int width, unsigned int height) :
+			height(height),
+			initialized(false),
+			rawData(rawData),
+			texture(0),
+			width(width)
 		{
 		}
 
@@ -37,6 +47,7 @@ namespace simplicity
 			data(image.getData()),
 			height(0),
 			initialized(false),
+			rawData(NULL),
 			texture(0),
 			width(0)
 		{
@@ -72,14 +83,21 @@ namespace simplicity
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
 
-			Magick::Blob encodedBlob(data.data(), data.size());
-			Magick::Image image(encodedBlob);
-			width = image.columns();
-			height = image.rows();
-			Magick::Blob rgbaBlob;
-			image.write(&rgbaBlob, "RGBA");
+			if (rawData == NULL)
+			{
+				Magick::Blob encodedBlob(data.data(), data.size());
+				Magick::Image image(encodedBlob);
+				width = image.columns();
+				height = image.rows();
+				Magick::Blob rgbaBlob;
+				image.write(&rgbaBlob, "RGBA");
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgbaBlob.data());
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgbaBlob.data());
+			}
+			else
+			{
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rawData);
+			}
 
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

@@ -23,6 +23,11 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int length)
+		{
+			return unique_ptr<Texture>(new OpenGLTexture(data, length));
+		}
+
 		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int width,
 				unsigned int height)
 		{

@@ -36,8 +36,22 @@ namespace simplicity
 		class OpenGLTexture : public Texture
 		{
 			public:
+				/**
+				 * @param data The texture data.
+				 * @param length The length of the data.
+				 */
 				OpenGLTexture(const char* data, unsigned int length);
 
+				/**
+				 * @param rawData The raw RGBA texture data.
+				 * @param width The width of the texture.
+				 * @param height The height of the texture.
+				 */
+				OpenGLTexture(const char* rawData, unsigned int width, unsigned int height);
+
+				/**
+				 * @param image The image resource.
+				 */
 				OpenGLTexture(Resource& image);
 
 				void apply(Shader& shader);
@@ -54,6 +68,8 @@ namespace simplicity
 				unsigned int height;
 
 				bool initialized;
+
+				const char* rawData;
 
 				GLuint texture;
 

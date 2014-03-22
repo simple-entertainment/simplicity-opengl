@@ -18,18 +18,24 @@
 #define OPENGLRENDERINGFACTORY_H_
 
 #include <simplicity/rendering/RenderingFactory.h>
+#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
 	namespace opengl
 	{
+		/**
+		 * <p>
+		 * A factory that creates textures implemented using OpenGL.
+		 * </p>
+		 */
 		class OpenGLRenderingFactory : public RenderingFactory
 		{
 			public:
-				std::unique_ptr<Texture> createTexture(const unsigned char* data, unsigned int width,
+				std::unique_ptr<Texture> createTexture(const char* data, unsigned int width,
 					unsigned int height);
 
-				std::unique_ptr<Texture> createTexture(const std::string& fileName);
+				std::unique_ptr<Texture> createTexture(Resource& image);
 		};
 	}
 }

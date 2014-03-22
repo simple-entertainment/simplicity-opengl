@@ -23,6 +23,11 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		/**
+		 * <p>
+		 * A factory that creates meshes implemented using OpenGL.
+		 * </p>
+		 */
 		class OpenGLModelFactory : public ModelFactory
 		{
 			public:

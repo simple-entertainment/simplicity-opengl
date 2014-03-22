@@ -23,15 +23,15 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const unsigned char* data, unsigned int width,
+		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int width,
 				unsigned int height)
 		{
 			return unique_ptr<Texture>(new OpenGLTexture(data, width, height));
 		}
 
-		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const string& fileName)
+		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(Resource& image)
 		{
-			return unique_ptr<Texture>(new OpenGLTexture(fileName));
+			return unique_ptr<Texture>(new OpenGLTexture(image));
 		}
 	}
 }

@@ -22,19 +22,23 @@
 #include <GL/glew.h>
 
 #include <simplicity/rendering/Texture.h>
+#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
 	namespace opengl
 	{
+		/**
+		 * <p>
+		 * A texture implemented using OpenGL.
+		 * </p>
+		 */
 		class OpenGLTexture : public Texture
 		{
 			public:
-				OpenGLTexture(const unsigned char* data, unsigned int width, unsigned int height);
+				OpenGLTexture(const char* data, unsigned int length);
 
-				OpenGLTexture(const std::string& fileName);
-
-				~OpenGLTexture();
+				OpenGLTexture(Resource& image);
 
 				void apply(Shader& shader);
 
@@ -45,9 +49,7 @@ namespace simplicity
 				void init();
 
 			private:
-				const unsigned char* data;
-
-				std::string fileName;
+				std::string data;
 
 				unsigned int height;
 

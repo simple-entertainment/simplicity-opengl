@@ -23,9 +23,20 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		/**
+		 * <p>
+		 * A light implemented using OpenGL.
+		 * </p>
+		 *
+		 * TODO In modern pipelines, the light is just something that will set variabnles in the shader - it isn't
+		 * really dependent on any graphics implementation. Should we move this to simplicity?
+		 */
 		class OpenGLLight : public Light
 		{
 			public:
+				/**
+				 * @param name The name of the light. This name will be used to identify it in the shader code.
+				 */
 				OpenGLLight(const std::string& name);
 
 				void activate();
@@ -34,11 +45,11 @@ namespace simplicity
 
 				void deactivate();
 
-				const Vector4& getAmbientComponent() const;
+				const Vector4& getAmbient() const;
 
 				const Vector3& getAttenuation() const;
 
-				const Vector4& getDiffuseComponent() const;
+				const Vector4& getDiffuse() const;
 
 				const Vector3& getDirection() const;
 
@@ -46,23 +57,23 @@ namespace simplicity
 
 				float getRange() const;
 
-				const Vector4& getSpecularComponent() const;
+				const Vector4& getSpecular() const;
 
 				float getStrength() const;
 
 				bool isActive() const;
 
-				void setAmbientComponent(const Vector4& ambient);
+				void setAmbient(const Vector4& ambient);
 
 				void setAttenuation(const Vector3& attenuation);
 
-				void setDiffuseComponent(const Vector4& diffuse);
+				void setDiffuse(const Vector4& diffuse);
 
 				void setDirection(const Vector3& direction);
 
 				void setRange(float range);
 
-				void setSpecularComponent(const Vector4& specular);
+				void setSpecular(const Vector4& specular);
 
 				void setStrength(float strength);
 

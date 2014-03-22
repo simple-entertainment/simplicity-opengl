@@ -26,6 +26,11 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		/**
+		 * <p>
+		 * A rendering engine implemented using OpenGL.
+		 * </p>
+		 */
 		class OpenGLRenderingEngine : public RenderingEngine
 		{
 			public:

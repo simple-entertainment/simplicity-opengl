@@ -97,13 +97,16 @@ namespace simplicity
 
 		void OpenGLMesh::init() const
 		{
+			// The configuration buffer (saves all the following state together).
 			glGenVertexArrays(1, &vao);
 			glBindVertexArray(vao);
 
+			// The vertex buffer.
 			glGenBuffers(1, &vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
+			// A vertex format that matches the Vertex struct.
 			glEnableVertexAttribArray(0);
 			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 12, 0);
 			glEnableVertexAttribArray(1);
@@ -113,6 +116,7 @@ namespace simplicity
 			glEnableVertexAttribArray(3);
 			glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 10));
 
+			// The index buffer.
 			glGenBuffers(1, &ibo);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(),
@@ -120,6 +124,8 @@ namespace simplicity
 
 			// Make sure the VAO is not changed from outside code
 		    glBindVertexArray(0);
+
+			initialized = true;
 		}
 
 		bool OpenGLMesh::isVisible() const
@@ -134,7 +140,6 @@ namespace simplicity
 			if (!initialized)
 			{
 				init();
-				initialized = true;
 			}
 
 			renderer.render(*this);
@@ -154,7 +159,7 @@ namespace simplicity
 			this->primitiveType = primitiveType;
 		}
 
-		void OpenGLMesh::setTexture(Texture*)
+		void OpenGLMesh::setTexture(Texture* /* texture */)
 		{
 		}
 

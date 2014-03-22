@@ -71,7 +71,7 @@ namespace simplicity
 			active = false;
 		}
 
-		const Vector4& OpenGLLight::getAmbientComponent() const
+		const Vector4& OpenGLLight::getAmbient() const
 		{
 			return ambient;
 		}
@@ -81,7 +81,7 @@ namespace simplicity
 			return attenuation;
 		}
 
-		const Vector4& OpenGLLight::getDiffuseComponent() const
+		const Vector4& OpenGLLight::getDiffuse() const
 		{
 			return diffuse;
 		}
@@ -101,7 +101,7 @@ namespace simplicity
 			return range;
 		}
 
-		const Vector4& OpenGLLight::getSpecularComponent() const
+		const Vector4& OpenGLLight::getSpecular() const
 		{
 			return specular;
 		}
@@ -116,7 +116,7 @@ namespace simplicity
 			return active;
 		}
 
-		void OpenGLLight::setAmbientComponent(const Vector4& ambient)
+		void OpenGLLight::setAmbient(const Vector4& ambient)
 		{
 			this->ambient = ambient;
 		}
@@ -126,7 +126,7 @@ namespace simplicity
 			this->attenuation = attenuation;
 		}
 
-		void OpenGLLight::setDiffuseComponent(const Vector4& diffuse)
+		void OpenGLLight::setDiffuse(const Vector4& diffuse)
 		{
 			this->diffuse = diffuse;
 		}
@@ -141,7 +141,7 @@ namespace simplicity
 			this->range = range;
 		}
 
-		void OpenGLLight::setSpecularComponent(const Vector4& specular)
+		void OpenGLLight::setSpecular(const Vector4& specular)
 		{
 			this->specular = specular;
 		}

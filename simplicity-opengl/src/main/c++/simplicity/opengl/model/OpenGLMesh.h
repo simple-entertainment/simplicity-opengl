@@ -28,11 +28,20 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		/**
+		 * <p>
+		 * A mesh implemented using OpenGL buffer objects.
+		 * </p>
+		 */
 		class OpenGLMesh : public Mesh
 		{
 			public:
 				OpenGLMesh();
 
+				/**
+				 * @param indices The indices into the collection of vertices.
+				 * @param vertices The collection of vertices.
+				 */
 				OpenGLMesh(const std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices);
 
 				const Vector4& getColor() const;
@@ -47,6 +56,13 @@ namespace simplicity
 
 				Texture* getTexture() const;
 
+				/**
+				 * <p>
+				 * Retrieves the OpenGL Vertex Array Object used to implement this mesh.
+				 * </p>
+				 *
+				 * @return The OpenGL Vertex Array Object.
+				 */
 				unsigned int getVAO() const;
 
 				std::vector<Vertex>& getVertices();

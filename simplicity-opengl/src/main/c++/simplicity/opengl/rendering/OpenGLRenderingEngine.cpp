@@ -16,8 +16,6 @@
  */
 #include <algorithm>
 
-//#include <windows.h>
-
 #include <GL/glew.h>
 
 #include <simplicity/common/AddressEquals.h>

@@ -84,7 +84,7 @@ namespace simplicity
 
 				if (graph == NULL)
 				{
-					for (Entity* entity : Simplicity::getEntities())
+					for (Entity* entity : Simplicity::getScene()->getEntities())
 					{
 						render(renderer, *entity);
 					}

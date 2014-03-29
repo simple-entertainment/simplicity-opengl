@@ -1,8 +1,15 @@
-# Eclipse project management
+# Eclipse
+#########################
 *.metadata
 *.settings
-simplicity-opengl/Debug (Linux)
-simplicity-opengl/Debug (Windows)
-simplicity-opengl/Release (Linux)
-simplicity-opengl/Release (Windows)
+
+# Visual Studio
+#########################
+*.filters
+*.user
+
+# Output
+#########################
+Debug*/
+Release*/
 

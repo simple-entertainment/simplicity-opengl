@@ -71,8 +71,8 @@ namespace simplicity
 			    GLchar infoLog[1024];
 		        glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
 
-			    Logs::log(Categories::ERROR, "Error validating shader program:");
-			    Logs::log(Categories::ERROR, infoLog);
+			    Logs::log(Categories::ERR, "Error validating shader program:");
+			    Logs::log(Categories::ERR, infoLog);
 		    }
 
 			glUseProgram(program);
@@ -111,8 +111,8 @@ namespace simplicity
 			    GLchar infoLog[1024];
 			    glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
 
-			    Logs::log(Categories::ERROR, "Error linking shader program:");
-			    Logs::log(Categories::ERROR, infoLog);
+			    Logs::log(Categories::ERR, "Error linking shader program:");
+			    Logs::log(Categories::ERR, infoLog);
 			}
 		}
 

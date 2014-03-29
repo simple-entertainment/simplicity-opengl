@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "ImageMagick/Magick++.h"
+#include "FreeImagePlus.h"
 
 #include "OpenGLTexture.h"
 
@@ -35,6 +35,7 @@ namespace simplicity
 		}
 
 		OpenGLTexture::OpenGLTexture(const char* rawData, unsigned int width, unsigned int height) :
+			data(),
 			height(height),
 			initialized(false),
 			rawData(rawData),
@@ -85,14 +86,12 @@ namespace simplicity
 
 			if (rawData == NULL)
 			{
-				Magick::Blob encodedBlob(data.data(), data.size());
-				Magick::Image image(encodedBlob);
-				width = image.columns();
-				height = image.rows();
-				Magick::Blob rgbaBlob;
-				image.write(&rgbaBlob, "RGBA");
+				fipImage image;
 
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgbaBlob.data());
+				fipMemoryIO memory(reinterpret_cast<BYTE*>(&data[0]), data.size());
+				image.loadFromMemory(memory);
+
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.accessPixels());
 			}
 			else
 			{

@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{E47761BF-7A28-4A20-AB5C-4B7A2BD2D1F3}</ProjectGuid>
+    <RootNamespace>simplicityopengl</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>dep/freeimageplus/include;dep/glew/include;../../simplicity/simplicity/src/main/c++</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <DisableSpecificWarnings>4351</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>dep/freeimageplus/include;dep/glew/include;../../simplicity/simplicity/src/main/c++</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\main\c++\simplicity\opengl\API.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\model\OpenGLMesh.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\model\OpenGLModelFactory.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLCamera.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLFragmentShader.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLGeometryShader.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLLight.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderer.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingEngine.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingFactory.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLShader.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLTexture.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLVertexShader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main\c++\simplicity\opengl\model\OpenGLMesh.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\model\OpenGLModelFactory.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLCamera.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLFragmentShader.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLGeometryShader.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLLight.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderer.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingEngine.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingFactory.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLShader.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLTexture.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLVertexShader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\simplicity\simplicity\simplicity.vcxproj">
+      <Project>{19eb601f-a765-4e02-a16a-6222bda83439}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -59,8 +59,8 @@ namespace simplicity
 				GLchar infoLog[1024];
 				glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
 
-				Logs::log(Categories::ERROR, "Error compiling vertex shader:");
-				Logs::log(Categories::ERROR, infoLog);
+				Logs::log(Categories::ERR, "Error compiling vertex shader:");
+				Logs::log(Categories::ERR, infoLog);
 			}
 		}
 	}

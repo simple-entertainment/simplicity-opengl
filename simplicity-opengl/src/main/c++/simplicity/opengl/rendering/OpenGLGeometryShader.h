@@ -27,7 +27,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		class OpenGLGeometryShader
+		class SIMPLE_API OpenGLGeometryShader
 		{
 			public:
 				OpenGLGeometryShader(Resource& source);

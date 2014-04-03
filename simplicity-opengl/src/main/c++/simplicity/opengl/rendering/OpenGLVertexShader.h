@@ -27,7 +27,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		class OpenGLVertexShader
+		class SIMPLE_API OpenGLVertexShader
 		{
 			public:
 				OpenGLVertexShader(Resource& source);

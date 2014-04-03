@@ -33,7 +33,7 @@ namespace simplicity
 		 * A texture implemented using OpenGL.
 		 * </p>
 		 */
-		class OpenGLTexture : public Texture
+		class SIMPLE_API OpenGLTexture : public Texture
 		{
 			public:
 				/**

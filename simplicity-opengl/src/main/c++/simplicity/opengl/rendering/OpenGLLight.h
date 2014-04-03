@@ -31,7 +31,7 @@ namespace simplicity
 		 * TODO In modern pipelines, the light is just something that will set variabnles in the shader - it isn't
 		 * really dependent on any graphics implementation. Should we move this to simplicity?
 		 */
-		class OpenGLLight : public Light
+		class SIMPLE_API OpenGLLight : public Light
 		{
 			public:
 				/**

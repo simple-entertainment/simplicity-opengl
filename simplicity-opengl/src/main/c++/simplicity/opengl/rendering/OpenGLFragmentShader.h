@@ -27,7 +27,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		class OpenGLFragmentShader
+		class SIMPLE_API OpenGLFragmentShader
 		{
 			public:
 				OpenGLFragmentShader(Resource& source);

@@ -28,7 +28,7 @@ namespace simplicity
 		 * A camera implemented using OpenGL.
 		 * </p>
 		 */
-		class OpenGLCamera : public Camera
+		class SIMPLE_API OpenGLCamera : public Camera
 		{
 			public:
 				OpenGLCamera();

@@ -28,7 +28,7 @@ namespace simplicity
 		 * A factory that creates meshes implemented using OpenGL.
 		 * </p>
 		 */
-		class OpenGLModelFactory : public ModelFactory
+		class SIMPLE_API OpenGLModelFactory : public ModelFactory
 		{
 			public:
 				std::unique_ptr<Mesh> createMesh(const std::vector<Vertex>& vertices);

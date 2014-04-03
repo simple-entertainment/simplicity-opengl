@@ -28,7 +28,7 @@ namespace simplicity
 		 * A renderer implemented using OpenGL.
 		 * </p>
 		 */
-		class OpenGLRenderer : public Renderer
+		class SIMPLE_API OpenGLRenderer : public Renderer
 		{
 			public:
 				OpenGLRenderer();

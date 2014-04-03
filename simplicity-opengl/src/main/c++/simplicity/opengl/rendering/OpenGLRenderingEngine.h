@@ -31,7 +31,7 @@ namespace simplicity
 		 * A rendering engine implemented using OpenGL.
 		 * </p>
 		 */
-		class OpenGLRenderingEngine : public RenderingEngine
+		class SIMPLE_API OpenGLRenderingEngine : public RenderingEngine
 		{
 			public:
 				OpenGLRenderingEngine();

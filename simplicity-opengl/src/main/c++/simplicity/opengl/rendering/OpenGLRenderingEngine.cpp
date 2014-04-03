@@ -65,6 +65,13 @@ namespace simplicity
 
 		void OpenGLRenderingEngine::advance()
 		{
+			// If we are using FreeGLUT the window may have been closed during this frame.
+			// This is a bit ugly but we need to check for it since OpenGL would no longer be available.
+			if (!Simplicity::isPlaying())
+			{
+				return;
+			}
+
 			CameraProperties cameraProperties = getCameraProperties();
 
 			for (unsigned int index = 0; index < renderers.size(); index++)
@@ -195,7 +202,7 @@ namespace simplicity
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		void OpenGLRenderingEngine::removeEntity(const Entity& entity)
+		void OpenGLRenderingEngine::removeEntity(const Entity& /* entity */)
 		{
 		}
 

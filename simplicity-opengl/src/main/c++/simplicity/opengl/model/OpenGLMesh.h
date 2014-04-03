@@ -33,7 +33,7 @@ namespace simplicity
 		 * A mesh implemented using OpenGL buffer objects.
 		 * </p>
 		 */
-		class OpenGLMesh : public Mesh
+		class SIMPLE_API OpenGLMesh : public Mesh
 		{
 			public:
 				OpenGLMesh();

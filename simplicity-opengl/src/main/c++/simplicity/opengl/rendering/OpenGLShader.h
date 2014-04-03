@@ -31,7 +31,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		class OpenGLShader : public Shader
+		class SIMPLE_API OpenGLShader : public Shader
 		{
 			public:
 				OpenGLShader(std::unique_ptr<OpenGLVertexShader> vertexShader,

@@ -126,7 +126,7 @@ namespace simplicity
 
 		bool OpenGLRenderer::isScissorEnabled() const
 		{
-			return glIsEnabled(GL_SCISSOR_TEST);
+			return glIsEnabled(GL_SCISSOR_TEST) == GL_TRUE;
 		}
 
 		void OpenGLRenderer::render(const Box&)
@@ -215,7 +215,7 @@ namespace simplicity
 					0);
 		}
 
-		void OpenGLRenderer::render(const Point& model)
+		void OpenGLRenderer::render(const Point&)
 		{
 		}
 

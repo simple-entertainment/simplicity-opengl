@@ -28,7 +28,7 @@ namespace simplicity
 		 * A factory that creates textures implemented using OpenGL.
 		 * </p>
 		 */
-		class OpenGLRenderingFactory : public RenderingFactory
+		class SIMPLE_API OpenGLRenderingFactory : public RenderingFactory
 		{
 			public:
 				std::unique_ptr<Texture> createTexture(const char* data, unsigned int length);

@@ -44,10 +44,6 @@ namespace simplicity
 		{
 		}
 
-		void OpenGLRenderingEngine::addEntity(Entity&)
-		{
-		}
-
 		void OpenGLRenderingEngine::addLight(Entity& light)
 		{
 			lights.push_back(&light);
@@ -115,20 +111,6 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLRenderingEngine::destroy()
-		{
-			// Revert depth test settings.
-			glDepthFunc(GL_LESS);
-			glDisable(GL_DEPTH_TEST);
-
-			// Revert face culling settings.
-			glDisable(GL_CULL_FACE);
-
-			// Revert blending settings.
-			glBlendFunc(GL_ONE, GL_ZERO);
-			glDisable(GL_BLEND);
-		}
-
 		Entity* OpenGLRenderingEngine::getCamera() const
 		{
 			return camera;
@@ -186,7 +168,7 @@ namespace simplicity
 			return width;
 		}
 
-		void OpenGLRenderingEngine::init()
+		void OpenGLRenderingEngine::onPlay()
 		{
 			// Ensure objects further from the viewpoint are not drawn over the top of closer objects. To assist multi
 			// pass rendering, objects at the exact same distance can be rendered over (i.e. the object will be rendered
@@ -202,8 +184,18 @@ namespace simplicity
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		void OpenGLRenderingEngine::removeEntity(const Entity& /* entity */)
+		void OpenGLRenderingEngine::onStop()
 		{
+			// Revert depth test settings.
+			glDepthFunc(GL_LESS);
+			glDisable(GL_DEPTH_TEST);
+
+			// Revert face culling settings.
+			glDisable(GL_CULL_FACE);
+
+			// Revert blending settings.
+			glBlendFunc(GL_ONE, GL_ZERO);
+			glDisable(GL_BLEND);
 		}
 
 		unique_ptr<Renderer> OpenGLRenderingEngine::removeRenderer(Renderer* renderer)

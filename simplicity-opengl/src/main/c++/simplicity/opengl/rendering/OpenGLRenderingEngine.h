@@ -36,15 +36,11 @@ namespace simplicity
 			public:
 				OpenGLRenderingEngine();
 
-				void addEntity(Entity& entity);
-
 				void addLight(Entity& light);
 
 				void addRenderer(std::unique_ptr<Renderer> renderer);
 
 				void advance();
-
-				void destroy();
 
 				Entity* getCamera() const;
 
@@ -54,9 +50,9 @@ namespace simplicity
 
 				int getWidth() const;
 
-				void init();
+				void onPlay();
 
-				void removeEntity(const Entity& entity);
+				void onStop();
 
 				std::unique_ptr<Renderer> removeRenderer(Renderer* renderer);
 

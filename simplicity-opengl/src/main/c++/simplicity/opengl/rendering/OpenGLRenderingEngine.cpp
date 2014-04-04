@@ -221,7 +221,7 @@ namespace simplicity
 			{
 				renderer.getShader()->setVar("worldTransform", entity.getTransform() * model->getTransform());
 
-				model->render(renderer);
+				renderer.render(*model);
 			}
 		}
 

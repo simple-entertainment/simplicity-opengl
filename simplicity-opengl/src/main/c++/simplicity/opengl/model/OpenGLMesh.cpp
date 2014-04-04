@@ -80,6 +80,11 @@ namespace simplicity
 			return NULL;
 		}
 
+		unsigned short OpenGLMesh::getTypeID() const
+		{
+			return TYPE_ID;
+		}
+
 		unsigned int OpenGLMesh::getVAO() const
 		{
 			return vao;
@@ -97,6 +102,11 @@ namespace simplicity
 
 		void OpenGLMesh::init() const
 		{
+			if (initialized)
+			{
+				return;
+			}
+
 			// The configuration buffer (saves all the following state together).
 			glGenVertexArrays(1, &vao);
 			glBindVertexArray(vao);
@@ -131,18 +141,6 @@ namespace simplicity
 		bool OpenGLMesh::isVisible() const
 		{
 			return visible;
-		}
-
-		void OpenGLMesh::render(Renderer& renderer) const
-		{
-			// Initialization needs to occur after OpenGL is initialized, this might not have happened when the
-			// constructor is called.
-			if (!initialized)
-			{
-				init();
-			}
-
-			renderer.render(*this);
 		}
 
 		void OpenGLMesh::setColor(const Vector4& color)

@@ -63,8 +63,6 @@ namespace simplicity
 
 		void OpenGLRenderer::dispose()
 		{
-			glPointSize(1.0f);
-
 			// Revert clearing settings.
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		}
@@ -107,12 +105,10 @@ namespace simplicity
 
 		void OpenGLRenderer::init()
 		{
-			glPointSize(2.0f);
-
 			if (clearColorBuffer)
 			{
-				glClear(GL_COLOR_BUFFER_BIT);
 				glClearColor(clearingColor.X(), clearingColor.Y(), clearingColor.Z(), clearingColor.W());
+				glClear(GL_COLOR_BUFFER_BIT);
 			}
 			if (clearDepthBuffer)
 			{
@@ -129,117 +125,21 @@ namespace simplicity
 			return glIsEnabled(GL_SCISSOR_TEST) == GL_TRUE;
 		}
 
-		void OpenGLRenderer::render(const Box&)
+		void OpenGLRenderer::render(const Model& model)
 		{
-		}
-
-		void OpenGLRenderer::render(const Capsule& model)
-		{
-			glColor4f(model.getColor().R(), model.getColor().G(), model.getColor().B(), model.getColor().A());
-
-			gluCylinder(gluNewQuadric(), model.getRadius(), model.getRadius(), model.getLength(),
-				model.getLevelOfDetail(), model.getLevelOfDetail());
-
-			glPushMatrix();
+			if (model.getTypeID() == OpenGLMesh::TYPE_ID)
 			{
-				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
+				const OpenGLMesh& openGlMesh = static_cast<const OpenGLMesh&>(model);
 
-				Matrix44 transform;
-				transform.setIdentity();
-				Vector4 position = getPosition4(transform);
-				position.Z() = model.getLength();
-				setPosition(transform, position);
+				// Initialization needs to occur after OpenGL is initialized, this might not have happened when the
+				// constructor is called.
+				openGlMesh.init();
 
-				glMultMatrixf(transform.getData());
+				glBindVertexArray(openGlMesh.getVAO());
 
-				gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
+				glDrawElements(getOpenGLDrawingMode(openGlMesh.getPrimitiveType()), openGlMesh.getIndices().size(),
+						GL_UNSIGNED_INT, 0);
 			}
-			glPopMatrix();
-		}
-
-		void OpenGLRenderer::render(const Circle&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Cube&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Cylinder& model)
-		{
-			glColor4f(model.getColor().R(), model.getColor().G(), model.getColor().B(), model.getColor().A());
-
-			gluCylinder(gluNewQuadric(), model.getRadius(), model.getRadius(), model.getLength(),
-				model.getLevelOfDetail(), model.getLevelOfDetail());
-
-			glPushMatrix();
-			{
-				Matrix44 transform;
-				transform.setIdentity();
-				Vector4 rotationAxis;
-				rotationAxis.Y() = 1.0f;
-				rotate(transform, MathConstants::PI, rotationAxis);
-
-				glMultMatrixf(transform.getData());
-
-				gluDisk(gluNewQuadric(), 0.0f, model.getRadius(), model.getLevelOfDetail(), 1);
-			}
-			glPopMatrix();
-
-			glPushMatrix();
-			{
-				Matrix44 transform;
-				transform.setIdentity();
-				Vector4 position = getPosition4(transform);
-				position.Z() = model.getLength();
-				setPosition(transform, position);
-
-				glMultMatrixf(transform.getData());
-
-				gluDisk(gluNewQuadric(), 0.0f, model.getRadius(), model.getLevelOfDetail(), 1);
-			}
-			glPopMatrix();
-		}
-
-		void OpenGLRenderer::render(const Line&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Mesh& model)
-		{
-			const OpenGLMesh& openGlMesh = dynamic_cast<const OpenGLMesh&>(model);
-
-			glBindVertexArray(openGlMesh.getVAO());
-
-			glDrawElements(getOpenGLDrawingMode(model.getPrimitiveType()), model.getIndices().size(), GL_UNSIGNED_INT,
-					0);
-		}
-
-		void OpenGLRenderer::render(const Point&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Sphere& model)
-		{
-			glColor4f(model.getColor().R(), model.getColor().G(), model.getColor().B(), model.getColor().A());
-
-			gluSphere(gluNewQuadric(), model.getRadius(), model.getLevelOfDetail(), model.getLevelOfDetail());
-		}
-
-		void OpenGLRenderer::render(const Square&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Text&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Torus&)
-		{
-		}
-
-		void OpenGLRenderer::render(const Triangle&)
-		{
 		}
 
 		void OpenGLRenderer::setClearBuffers(bool clearBuffers)

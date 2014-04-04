@@ -49,31 +49,7 @@ namespace simplicity
 
 				bool isScissorEnabled() const;
 
-				void render(const Box& model);
-
-				void render(const Capsule& model);
-
-				void render(const Circle& model);
-
-				void render(const Cube& model);
-
-				void render(const Cylinder& model);
-
-				void render(const Line& model);
-
-				void render(const Mesh& model);
-
-				void render(const Point& model);
-
-				void render(const Sphere& model);
-
-				void render(const Square& model);
-
-				void render(const Text& model);
-
-				void render(const Torus& model);
-
-				void render(const Triangle& model);
+				void render(const Model& model);
 
 				void setClearBuffers(bool clearBuffers);
 

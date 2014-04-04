@@ -36,6 +36,13 @@ namespace simplicity
 		class SIMPLE_API OpenGLMesh : public Mesh
 		{
 			public:
+				/**
+			 * <p>
+			 * An ID unique to the this model class.
+			 * </p>
+			 */
+			static const unsigned int TYPE_ID = 14;
+
 				OpenGLMesh();
 
 				/**
@@ -56,6 +63,8 @@ namespace simplicity
 
 				Texture* getTexture() const;
 
+				unsigned short getTypeID() const;
+
 				/**
 				 * <p>
 				 * Retrieves the OpenGL Vertex Array Object used to implement this mesh.
@@ -69,9 +78,9 @@ namespace simplicity
 
 				const std::vector<Vertex>& getVertices() const;
 
-				bool isVisible() const;
+				void init() const;
 
-				void render(Renderer& renderer) const;
+				bool isVisible() const;
 
 				void setColor(const Vector4& color);
 
@@ -101,8 +110,6 @@ namespace simplicity
 				std::vector<Vertex> vertices;
 
 				bool visible;
-
-				void init() const;
 		};
 	}
 }

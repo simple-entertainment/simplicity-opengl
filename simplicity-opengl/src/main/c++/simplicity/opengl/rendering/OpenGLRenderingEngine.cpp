@@ -128,7 +128,7 @@ namespace simplicity
 			}
 			else
 			{
-				properties.bounds = camera->getComponent<Model>(Categories::BOUNDS);
+				properties.bounds = camera->getComponent<Model>(Category::BOUNDS);
 				if (properties.bounds != NULL)
 				{
 					properties.boundsPosition = getPosition3(camera->getTransform() *
@@ -217,7 +217,7 @@ namespace simplicity
 
 		void OpenGLRenderingEngine::render(Renderer& renderer, const Entity& entity)
 		{
-			for (Model* model : entity.getComponents<Model>(Categories::RENDER))
+			for (Model* model : entity.getComponents<Model>(Category::RENDER))
 			{
 				renderer.getShader()->setVar("worldTransform", entity.getTransform() * model->getTransform());
 

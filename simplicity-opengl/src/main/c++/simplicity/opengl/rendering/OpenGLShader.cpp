@@ -14,11 +14,10 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include <simplicity/entity/Categories.h>
+#include <simplicity/common/Category.h>
 #include <simplicity/logging/Logs.h>
-
-#include <simplicity/messaging/Events.h>
 #include <simplicity/messaging/Messages.h>
+#include <simplicity/messaging/Subject.h>
 
 #include "OpenGLShader.h"
 
@@ -71,13 +70,13 @@ namespace simplicity
 			    GLchar infoLog[1024];
 		        glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
 
-			    Logs::log(Categories::ERR, "Error validating shader program:");
-			    Logs::log(Categories::ERR, infoLog);
+				Logs::log(Category::ERROR_LOG, "Error validating shader program:");
+				Logs::log(Category::ERROR_LOG, infoLog);
 		    }
 
 			glUseProgram(program);
 
-			Messages::send(Events::APPLY_SHADER, this);
+			Messages::send(Subject::APPLY_SHADER, this);
 		}
 
 		void OpenGLShader::init()
@@ -111,8 +110,8 @@ namespace simplicity
 			    GLchar infoLog[1024];
 			    glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
 
-			    Logs::log(Categories::ERR, "Error linking shader program:");
-			    Logs::log(Categories::ERR, infoLog);
+				Logs::log(Category::ERROR_LOG, "Error linking shader program:");
+				Logs::log(Category::ERROR_LOG, infoLog);
 			}
 		}
 

@@ -28,7 +28,7 @@ namespace simplicity
 			data(data, length),
 			height(0),
 			initialized(false),
-			rawData(NULL),
+			rawData(nullptr),
 			texture(0),
 			width(0)
 		{
@@ -48,7 +48,7 @@ namespace simplicity
 			data(image.getData()),
 			height(0),
 			initialized(false),
-			rawData(NULL),
+			rawData(nullptr),
 			texture(0),
 			width(0)
 		{
@@ -84,7 +84,7 @@ namespace simplicity
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
 
-			if (rawData == NULL)
+			if (rawData == nullptr)
 			{
 				fipImage image;
 
@@ -104,7 +104,7 @@ namespace simplicity
 
 				// libRocket doesn't like this... TODO
 				//delete rawData;
-				//rawData = NULL;
+				//rawData = nullptr;
 			}
 
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

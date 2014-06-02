@@ -61,7 +61,7 @@ namespace simplicity
 			}
 
 			// TODO
-			return NULL;
+			return nullptr;
 		}
 
 		const unsigned int* OpenGLMesh::getIndices() const
@@ -72,12 +72,12 @@ namespace simplicity
 			}
 
 			// TODO
-			return NULL;
+			return nullptr;
 		}
 
 		Texture* OpenGLMesh::getNormalMap() const
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		Model::PrimitiveType OpenGLMesh::getPrimitiveType() const
@@ -87,7 +87,7 @@ namespace simplicity
 
 		Texture* OpenGLMesh::getTexture() const
 		{
-			return NULL;
+			return nullptr;
 		}
 
 		unsigned short OpenGLMesh::getTypeID() const
@@ -119,7 +119,7 @@ namespace simplicity
 			}
 
 			// TODO
-			return NULL;
+			return nullptr;
 		}
 
 		const Vertex* OpenGLMesh::getVertices() const
@@ -130,7 +130,7 @@ namespace simplicity
 			}
 
 			// TODO
-			return NULL;
+			return nullptr;
 		}
 
 		void OpenGLMesh::init()

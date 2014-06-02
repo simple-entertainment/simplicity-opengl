@@ -68,7 +68,7 @@ namespace simplicity
 			if (compileStatus == 0)
 			{
 				GLchar infoLog[1024];
-				glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
+				glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
 
 				Logs::log(Category::ERROR_LOG, "Error compiling shader:");
 				Logs::log(Category::ERROR_LOG, infoLog);

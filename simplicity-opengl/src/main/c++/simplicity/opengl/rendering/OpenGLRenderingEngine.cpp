@@ -35,7 +35,7 @@ namespace simplicity
 	{
 		OpenGLRenderingEngine::OpenGLRenderingEngine() :
 			camera(),
-			graph(NULL),
+			graph(nullptr),
 			height(768),
 			lights(),
 			renderers(),
@@ -65,7 +65,7 @@ namespace simplicity
 			CameraProperties cameraProperties = getCameraProperties();
 
 			std::vector<Entity*> entities;
-			if (cameraProperties.bounds == NULL || graph == NULL)
+			if (cameraProperties.bounds == nullptr || graph == nullptr)
 			{
 				entities = Simplicity::getScene()->getEntities();
 			}
@@ -107,9 +107,9 @@ namespace simplicity
 		OpenGLRenderingEngine::CameraProperties OpenGLRenderingEngine::getCameraProperties() const
 		{
 			CameraProperties properties;
-			properties.bounds = NULL;
+			properties.bounds = nullptr;
 
-			if (camera == NULL)
+			if (camera == nullptr)
 			{
 				properties.position = Vector3(0.0f, 0.0f, 0.0f);
 				properties.transform.setIdentity();
@@ -117,14 +117,14 @@ namespace simplicity
 			else
 			{
 				properties.bounds = camera->getComponent<Model>(Category::BOUNDS);
-				if (properties.bounds != NULL)
+				if (properties.bounds != nullptr)
 				{
 					properties.boundsPosition = getPosition3(camera->getTransform() *
 							properties.bounds->getTransform());
 				}
 
 				Camera* cameraComponent = camera->getComponent<Camera>();
-				if (cameraComponent == NULL)
+				if (cameraComponent == nullptr)
 				{
 					properties.transform.setIdentity();
 				}
@@ -196,7 +196,7 @@ namespace simplicity
 			{
 				removedRenderer = move(*result);
 				renderers.erase(result);
-				renderer = NULL;
+				renderer = nullptr;
 			}
 
 			return move(removedRenderer);

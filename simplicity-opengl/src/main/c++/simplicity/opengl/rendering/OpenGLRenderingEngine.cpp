@@ -36,11 +36,10 @@ namespace simplicity
 		OpenGLRenderingEngine::OpenGLRenderingEngine() :
 			camera(),
 			graph(NULL),
-			height(600),
+			height(768),
 			lights(),
-			rendererRoots(),
 			renderers(),
-			width(800)
+			width(1024)
 		{
 		}
 
@@ -51,11 +50,6 @@ namespace simplicity
 
 		void OpenGLRenderingEngine::addRenderer(unique_ptr<Renderer> renderer)
 		{
-			if (graph != NULL)
-			{
-				rendererRoots[renderer.get()] = graph;
-			}
-
 			renderers.push_back(move(renderer));
 		}
 
@@ -70,44 +64,38 @@ namespace simplicity
 
 			CameraProperties cameraProperties = getCameraProperties();
 
-			for (unsigned int index = 0; index < renderers.size(); index++)
+			std::vector<Entity*> entities;
+			if (cameraProperties.bounds == NULL || graph == NULL)
 			{
-				Renderer& renderer = *renderers[index];
-				renderer.init();
+				entities = Simplicity::getScene()->getEntities();
+			}
+			else
+			{
+				entities =
+					graph->getEntitiesWithinBounds(*cameraProperties.bounds,
+					cameraProperties.boundsPosition);
+			}
 
-				renderer.getShader()->apply();
-				renderer.getShader()->setVar("cameraPosition", cameraProperties.position);
-				renderer.getShader()->setVar("cameraTransform", cameraProperties.transform);
+			for (unique_ptr<Renderer>& renderer : renderers)
+			{
+				renderer->init();
+
+				renderer->getDefaultPipeline()->apply();
+				renderer->getDefaultPipeline()->set("cameraPosition", cameraProperties.position);
+				renderer->getDefaultPipeline()->set("cameraTransform", cameraProperties.transform);
 
 				for (unsigned int index = 0; index < lights.size(); index++)
 				{
-					lights[index]->getComponent<Light>()->apply(*renderer.getShader(),
+					lights[index]->getComponent<Light>()->apply(*renderer->getDefaultPipeline(),
 							getPosition3(lights[index]->getTransform()));
 				}
 
-				if (graph == NULL)
+				for (Entity* entity : entities)
 				{
-					for (Entity* entity : Simplicity::getScene()->getEntities())
-					{
-						render(renderer, *entity);
-					}
-				}
-				else if (cameraProperties.bounds == NULL)
-				{
-					render(renderer, *rendererRoots[&renderer]);
-				}
-				else
-				{
-					vector<Entity*> entities =
-							rendererRoots[&renderer]->getEntitiesWithinBounds(*cameraProperties.bounds,
-									cameraProperties.boundsPosition);
-					for (Entity* entity : entities)
-					{
-						render(renderer, *entity);
-					}
+					render(*renderer, *entity);
 				}
 
-				renderer.dispose();
+				renderer->dispose();
 			}
 		}
 
@@ -208,7 +196,6 @@ namespace simplicity
 			{
 				removedRenderer = move(*result);
 				renderers.erase(result);
-				rendererRoots.erase(renderer);
 				renderer = NULL;
 			}
 
@@ -219,22 +206,9 @@ namespace simplicity
 		{
 			for (Model* model : entity.getComponents<Model>(Category::RENDER))
 			{
-				renderer.getShader()->setVar("worldTransform", entity.getTransform() * model->getTransform());
+				renderer.getDefaultPipeline()->set("worldTransform", entity.getTransform() * model->getTransform());
 
 				renderer.render(*model);
-			}
-		}
-
-		void OpenGLRenderingEngine::render(Renderer& renderer, const Graph& graph)
-		{
-			for (Entity* entity : graph.getEntities())
-			{
-				render(renderer, *entity);
-			}
-
-			for (unsigned int index = 0; index < graph.getChildren().size(); index++)
-			{
-				render(renderer, *graph.getChildren()[index]);
 			}
 		}
 
@@ -246,24 +220,11 @@ namespace simplicity
 		void OpenGLRenderingEngine::setGraph(Graph* graph)
 		{
 			this->graph = graph;
-
-			for (unsigned int index = 0; index < renderers.size(); index++)
-			{
-				if (rendererRoots.find(renderers[index].get()) == rendererRoots.end())
-				{
-					rendererRoots[renderers[index].get()] = graph;
-				}
-			}
 		}
 
 		void OpenGLRenderingEngine::setHeight(int height)
 		{
 			this->height = height;
-		}
-
-		void OpenGLRenderingEngine::setRendererRoot(const Renderer& renderer, const Graph& root)
-		{
-			rendererRoots[&renderer] = &root;
 		}
 
 		void OpenGLRenderingEngine::setWidth(int width)

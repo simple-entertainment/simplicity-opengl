@@ -16,8 +16,6 @@
  */
 #include <simplicity/common/Category.h>
 #include <simplicity/logging/Logs.h>
-#include <simplicity/messaging/Messages.h>
-#include <simplicity/messaging/Subject.h>
 
 #include "OpenGLShader.h"
 
@@ -27,158 +25,54 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLShader::OpenGLShader(unique_ptr<OpenGLVertexShader> vertexShader,
-				unique_ptr<OpenGLFragmentShader> fragmentShader) :
-			fragmentShader(move(fragmentShader)),
-			geometryShader(),
-			initialized(false),
-			program(0),
-			vertexShader(move(vertexShader))
-		{
-		}
-
-		OpenGLShader::OpenGLShader(unique_ptr<OpenGLVertexShader> vertexShader,
-				unique_ptr<OpenGLGeometryShader> geometryShader,
-				unique_ptr<OpenGLFragmentShader> fragmentShader) :
-			fragmentShader(move(fragmentShader)),
-			geometryShader(move(geometryShader)),
-			initialized(false),
-			program(0),
-			vertexShader(move(vertexShader))
+		OpenGLShader::OpenGLShader(Type type, Resource& source) :
+			shader(0),
+			source(source.getData()),
+			type(type)
 		{
 		}
 
 		OpenGLShader::~OpenGLShader()
 		{
+			// TODO Clean up the shader?
 		}
 
-		void OpenGLShader::apply()
+		GLuint OpenGLShader::getShader()
 		{
-			if (!initialized)
-			{
-				init();
-				initialized = true;
-			}
-
-			// TODO Only needed for debugging apparently...
-			glValidateProgram(program);
-
-			GLint ValidateStatus;
-		    glGetProgramiv(program, GL_VALIDATE_STATUS, &ValidateStatus);
-		    if (ValidateStatus == 0)
-		    {
-			    GLchar infoLog[1024];
-		        glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
-
-				Logs::log(Category::ERROR_LOG, "Error validating shader program:");
-				Logs::log(Category::ERROR_LOG, infoLog);
-		    }
-
-			glUseProgram(program);
-
-			Messages::send(Subject::APPLY_SHADER, this);
+			return shader;
 		}
 
 		void OpenGLShader::init()
 		{
-			program = glCreateProgram();
-
-			if (vertexShader.get() != NULL)
+			if (type == Type::FRAGMENT)
 			{
-				vertexShader->init();
-				glAttachShader(program, vertexShader->getShader());
+				shader = glCreateShader(GL_FRAGMENT_SHADER);
+			}
+			else if (type == Type::GEOMETRY)
+			{
+				shader = glCreateShader(GL_GEOMETRY_SHADER);
+			}
+			else if (type == Type::VERTEX)
+			{
+				shader = glCreateShader(GL_VERTEX_SHADER);
 			}
 
-			if (geometryShader.get() != NULL)
+			const char* sourcePtr = source.data();
+			const int sourceLength = -1;
+			glShaderSource(shader, 1, &sourcePtr, &sourceLength);
+
+			glCompileShader(shader);
+
+			GLint compileStatus;
+			glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+			if (compileStatus == 0)
 			{
-				geometryShader->init();
-				glAttachShader(program, geometryShader->getShader());
-			}
+				GLchar infoLog[1024];
+				glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
 
-			if (fragmentShader.get() != NULL)
-			{
-				fragmentShader->init();
-				glAttachShader(program, fragmentShader->getShader());
-			}
-
-			glLinkProgram(program);
-
-			GLint linkStatus;
-			glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-			if (linkStatus == 0)
-			{
-			    GLchar infoLog[1024];
-			    glGetProgramInfoLog(program, sizeof(infoLog), NULL, infoLog);
-
-				Logs::log(Category::ERROR_LOG, "Error linking shader program:");
+				Logs::log(Category::ERROR_LOG, "Error compiling shader:");
 				Logs::log(Category::ERROR_LOG, infoLog);
 			}
-		}
-
-		void OpenGLShader::setVar(const string& name, float value)
-		{
-			glUniform1f(glGetUniformLocation(program, name.data()), value);
-		}
-
-		void OpenGLShader::setVar(const string& name, int value)
-		{
-			glUniform1i(glGetUniformLocation(program, name.data()), value);
-		}
-
-		void OpenGLShader::setVar(const string& name, const Matrix44& value)
-		{
-			glUniformMatrix4fv(glGetUniformLocation(program, name.data()), 1, GL_FALSE, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& name, const Vector2& value)
-		{
-			glUniform2fv(glGetUniformLocation(program, name.data()), 1, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& name, const Vector3& value)
-		{
-			glUniform3fv(glGetUniformLocation(program, name.data()), 1, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& name, const Vector4& value)
-		{
-			glUniform4fv(glGetUniformLocation(program, name.data()), 1, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& structName, const string& name, float value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniform1f(glGetUniformLocation(program, qualifiedName.data()), value);
-		}
-
-		void OpenGLShader::setVar(const string& structName, const string& name, int value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniform1i(glGetUniformLocation(program, qualifiedName.data()), value);
-		}
-
-		void OpenGLShader::setVar(const string& structName, const string& name, const Matrix44& value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniformMatrix4fv(glGetUniformLocation(program, qualifiedName.data()), 1, GL_FALSE, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& structName, const string& name, const Vector2& value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniform2fv(glGetUniformLocation(program, qualifiedName.data()), 1, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& structName, const string& name, const Vector3& value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniform3fv(glGetUniformLocation(program, qualifiedName.data()), 1, value.getData());
-		}
-
-		void OpenGLShader::setVar(const string& structName, const string& name, const Vector4& value)
-		{
-			string qualifiedName = structName + "." + name;
-			glUniform4fv(glGetUniformLocation(program, qualifiedName.data()), 1, value.getData());
 		}
 	}
 }

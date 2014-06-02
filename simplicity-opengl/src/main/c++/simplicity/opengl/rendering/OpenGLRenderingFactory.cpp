@@ -28,10 +28,10 @@ namespace simplicity
 			return unique_ptr<Texture>(new OpenGLTexture(data, length));
 		}
 
-		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int width,
+		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* rawData, unsigned int width,
 				unsigned int height)
 		{
-			return unique_ptr<Texture>(new OpenGLTexture(data, width, height));
+			return unique_ptr<Texture>(new OpenGLTexture(rawData, width, height));
 		}
 
 		unique_ptr<Texture> OpenGLRenderingFactory::createTexture(Resource& image)

@@ -37,13 +37,11 @@ namespace simplicity
 		{
 			public:
 				/**
-			 * <p>
-			 * An ID unique to the this model class.
-			 * </p>
-			 */
-			static const unsigned int TYPE_ID = 14;
-
-				OpenGLMesh();
+				 * <p>
+				 * An ID unique to the this model class.
+				 * </p>
+				 */
+				static const unsigned int TYPE_ID = 14;
 
 				/**
 				 * @param indices The indices into the collection of vertices.
@@ -53,9 +51,11 @@ namespace simplicity
 
 				const Vector4& getColor() const;
 
-				std::vector<unsigned int>& getIndices();
+				unsigned int getIndexCount() const;
 
-				const std::vector<unsigned int>& getIndices() const;
+				unsigned int* getIndices();
+
+				const unsigned int* getIndices() const;
 
 				Texture* getNormalMap() const;
 
@@ -74,13 +74,19 @@ namespace simplicity
 				 */
 				unsigned int getVAO() const;
 
-				std::vector<Vertex>& getVertices();
+				unsigned int getVertexCount() const;
 
-				const std::vector<Vertex>& getVertices() const;
+				Vertex* getVertices();
 
-				void init() const;
+				const Vertex* getVertices() const;
+
+				void init();
 
 				bool isVisible() const;
+
+				void resizeIndices(unsigned int size);
+
+				void resizeVertices(unsigned int size);
 
 				void setColor(const Vector4& color);
 
@@ -97,17 +103,19 @@ namespace simplicity
 
 				mutable GLuint ibo;
 
-				std::vector<unsigned int> indices;
+				unsigned int indexCount;
+
+				std::vector<unsigned int> initialIndices;
 
 				mutable bool initialized;
+
+				std::vector<Vertex> initialVertices;
 
 				PrimitiveType primitiveType;
 
 				mutable GLuint vao;
 
 				mutable GLuint vbo;
-
-				std::vector<Vertex> vertices;
 
 				bool visible;
 		};

@@ -42,7 +42,7 @@ namespace simplicity
 				clearDepthBuffer(true),
 				clearingColor(0.0f, 0.0f, 0.0f, 1.0f),
 				clearStencilBuffer(true),
-				shader()
+				pipeline()
 		{
 		}
 
@@ -98,9 +98,9 @@ namespace simplicity
 			return -1;
 		}
 
-		Shader* OpenGLRenderer::getShader()
+		Pipeline* OpenGLRenderer::getDefaultPipeline()
 		{
-			return shader.get();
+			return pipeline.get();
 		}
 
 		void OpenGLRenderer::init()
@@ -131,13 +131,9 @@ namespace simplicity
 			{
 				const OpenGLMesh& openGlMesh = static_cast<const OpenGLMesh&>(model);
 
-				// Initialization needs to occur after OpenGL is initialized, this might not have happened when the
-				// constructor is called.
-				openGlMesh.init();
-
 				glBindVertexArray(openGlMesh.getVAO());
 
-				glDrawElements(getOpenGLDrawingMode(openGlMesh.getPrimitiveType()), openGlMesh.getIndices().size(),
+				glDrawElements(getOpenGLDrawingMode(openGlMesh.getPrimitiveType()), openGlMesh.getIndexCount(),
 						GL_UNSIGNED_INT, 0);
 			}
 		}
@@ -191,9 +187,9 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLRenderer::setShader(unique_ptr<Shader> shader)
+		void OpenGLRenderer::setDefaultPipeline(unique_ptr<Pipeline> pipeline)
 		{
-			this->shader = move(shader);
+			this->pipeline = move(pipeline);
 		}
 	}
 }

@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef OPENGLRENDERER_H_
-#define OPENGLRENDERER_H_
+#ifndef OPENGLRENDERPASS_H_
+#define OPENGLRENDERPASS_H_
 
 #include <simplicity/rendering/Renderer.h>
 
@@ -43,7 +43,7 @@ namespace simplicity
 
 				const Vector4& getClearingColor() const;
 
-				Shader* getShader();
+				Pipeline* getDefaultPipeline();
 
 				void init();
 
@@ -65,7 +65,7 @@ namespace simplicity
 
 				void setScissorEnabled(bool scissorEnabled);
 
-				void setShader(std::unique_ptr<Shader> shader);
+				void setDefaultPipeline(std::unique_ptr<Pipeline> pipeline);
 
 			private:
 				bool clearColorBuffer;
@@ -76,11 +76,11 @@ namespace simplicity
 
 				bool clearStencilBuffer;
 
-				std::unique_ptr<Shader> shader;
+				std::unique_ptr<Pipeline> pipeline;
 
 				int getOpenGLDrawingMode(Model::PrimitiveType primitiveType);
 		};
 	}
 }
 
-#endif /* OPENGLRENDERER_H_ */
+#endif /* OPENGLRENDERPASS_H_ */

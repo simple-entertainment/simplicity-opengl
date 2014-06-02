@@ -54,7 +54,7 @@ namespace simplicity
 		{
 		}
 
-		void OpenGLTexture::apply(Shader& shader)
+		void OpenGLTexture::apply(Pipeline& pipeline)
 		{
 			// Initialization needs to occur after OpenGL is initialized, this might not have happened when the
 			// constructor is called.
@@ -66,7 +66,7 @@ namespace simplicity
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, texture);
 
-			shader.setVar("sampler", 0);
+			pipeline.set("sampler", 0);
 		}
 
 		unsigned int OpenGLTexture::getHeight()
@@ -91,11 +91,20 @@ namespace simplicity
 				fipMemoryIO memory(reinterpret_cast<BYTE*>(&data[0]), data.size());
 				image.loadFromMemory(memory);
 
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.accessPixels());
+				height = image.getHeight();
+				width = image.getWidth();
+
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.accessPixels());
+
+				data.resize(0);
 			}
 			else
 			{
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rawData);
+
+				// libRocket doesn't like this... TODO
+				//delete rawData;
+				//rawData = NULL;
 			}
 
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

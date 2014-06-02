@@ -33,7 +33,7 @@ namespace simplicity
 			public:
 				std::unique_ptr<Texture> createTexture(const char* data, unsigned int length);
 
-				std::unique_ptr<Texture> createTexture(const char* data, unsigned int width,
+				std::unique_ptr<Texture> createTexture(const char* rawData, unsigned int width,
 					unsigned int height);
 
 				std::unique_ptr<Texture> createTexture(Resource& image);

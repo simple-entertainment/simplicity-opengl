@@ -17,15 +17,12 @@
 #ifndef OPENGLSHADER_H_
 #define OPENGLSHADER_H_
 
-#include <memory>
+#include <string>
 
 #include <GL/glew.h>
 
 #include <simplicity/rendering/Shader.h>
-
-#include "OpenGLFragmentShader.h"
-#include "OpenGLGeometryShader.h"
-#include "OpenGLVertexShader.h"
+#include <simplicity/resources/Resource.h>
 
 namespace simplicity
 {
@@ -34,53 +31,20 @@ namespace simplicity
 		class SIMPLE_API OpenGLShader : public Shader
 		{
 			public:
-				OpenGLShader(std::unique_ptr<OpenGLVertexShader> vertexShader,
-						std::unique_ptr<OpenGLFragmentShader> fragmentShader);
-
-				OpenGLShader(std::unique_ptr<OpenGLVertexShader> vertexShader,
-						std::unique_ptr<OpenGLGeometryShader> geometryShader,
-						std::unique_ptr<OpenGLFragmentShader> fragmentShader);
+				OpenGLShader(Type type, Resource& source);
 
 				~OpenGLShader();
 
-				void apply();
-
-				void setVar(const std::string& name, float value);
-
-				void setVar(const std::string& name, int value);
-
-				void setVar(const std::string& name, const Matrix44& value);
-
-				void setVar(const std::string& name, const Vector2& value);
-
-				void setVar(const std::string& name, const Vector3& value);
-
-				void setVar(const std::string& name, const Vector4& value);
-
-				void setVar(const std::string& structName, const std::string& name, float value);
-
-				void setVar(const std::string& structName, const std::string& name, int value);
-
-				void setVar(const std::string& structName, const std::string& name, const Matrix44& value);
-
-				void setVar(const std::string& structName, const std::string& name, const Vector2& value);
-
-				void setVar(const std::string& structName, const std::string& name, const Vector3& value);
-
-				void setVar(const std::string& structName, const std::string& name, const Vector4& value);
-
-			private:
-				std::unique_ptr<OpenGLFragmentShader> fragmentShader;
-
-				std::unique_ptr<OpenGLGeometryShader> geometryShader;
-
-				bool initialized;
-
-				GLuint program;
-
-				std::unique_ptr<OpenGLVertexShader> vertexShader;
+				GLuint getShader();
 
 				void init();
+
+			private:
+				GLuint shader;
+
+				std::string source;
+
+				Type type;
 		};
 	}
 }

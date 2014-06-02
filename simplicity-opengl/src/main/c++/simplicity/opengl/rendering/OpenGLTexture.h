@@ -54,7 +54,7 @@ namespace simplicity
 				 */
 				OpenGLTexture(Resource& image);
 
-				void apply(Shader& shader);
+				void apply(Pipeline& pipeline);
 
 				unsigned int getHeight();
 

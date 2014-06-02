@@ -145,30 +145,22 @@
     <ClInclude Include="src\main\c++\simplicity\opengl\API.h" />
     <ClInclude Include="src\main\c++\simplicity\opengl\model\OpenGLMesh.h" />
     <ClInclude Include="src\main\c++\simplicity\opengl\model\OpenGLModelFactory.h" />
-    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLCamera.h" />
-    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLFragmentShader.h" />
-    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLGeometryShader.h" />
-    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLLight.h" />
     <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderer.h" />
     <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingEngine.h" />
     <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingFactory.h" />
-    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLShader.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLPipeline.h" />
     <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLTexture.h" />
-    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLVertexShader.h" />
+    <ClInclude Include="src\main\c++\simplicity\opengl\rendering\OpenGLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main\c++\simplicity\opengl\model\OpenGLMesh.cpp" />
     <ClCompile Include="src\main\c++\simplicity\opengl\model\OpenGLModelFactory.cpp" />
-    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLCamera.cpp" />
-    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLFragmentShader.cpp" />
-    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLGeometryShader.cpp" />
-    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLLight.cpp" />
     <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderer.cpp" />
     <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingEngine.cpp" />
     <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLRenderingFactory.cpp" />
-    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLShader.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLPipeline.cpp" />
     <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLTexture.cpp" />
-    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLVertexShader.cpp" />
+    <ClCompile Include="src\main\c++\simplicity\opengl\rendering\OpenGLShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\simplicity\simplicity\simplicity.vcxproj">

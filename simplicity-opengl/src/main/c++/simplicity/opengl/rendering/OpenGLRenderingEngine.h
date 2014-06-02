@@ -62,8 +62,6 @@ namespace simplicity
 
 				void setHeight(int height);
 
-				void setRendererRoot(const Renderer& renderer, const Graph& root);
-
 				void setWidth(int width);
 
 			private:
@@ -83,8 +81,6 @@ namespace simplicity
 
 				std::vector<Entity*> lights;
 
-				std::map<const Renderer*, const Graph*> rendererRoots;
-
 				std::vector<std::unique_ptr<Renderer>> renderers;
 
 				int width;
@@ -92,8 +88,6 @@ namespace simplicity
 				CameraProperties getCameraProperties() const;
 
 				void render(Renderer& renderer, const Entity& entity);
-
-				void render(Renderer& renderer, const Graph& graph);
 		};
 	}
 }

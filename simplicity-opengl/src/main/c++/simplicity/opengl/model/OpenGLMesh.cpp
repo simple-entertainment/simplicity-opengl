@@ -24,28 +24,16 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLMesh::OpenGLMesh() :
-			color(0.0f, 0.0f, 0.0f, 1.0f),
-			ibo(0),
-			indices(),
-			initialized(false),
-			primitiveType(TRIANGLE_LIST),
-			vao(0),
-			vbo(0),
-			vertices(),
-			visible(true)
-		{
-		}
-
 		OpenGLMesh::OpenGLMesh(const vector<unsigned int>& indices, const vector<Vertex>& vertices) :
 			color(0.0f, 0.0f, 0.0f, 1.0f),
 			ibo(0),
-			indices(indices),
+			indexCount(0),
+			initialIndices(indices),
 			initialized(false),
+			initialVertices(vertices),
 			primitiveType(TRIANGLE_LIST),
 			vao(0),
 			vbo(0),
-			vertices(vertices),
 			visible(true)
 		{
 		}
@@ -55,14 +43,36 @@ namespace simplicity
 			return color;
 		}
 
-		vector<unsigned int>& OpenGLMesh::getIndices()
+		unsigned int OpenGLMesh::getIndexCount() const
 		{
-			return indices;
+			if (!initialized)
+			{
+				return initialIndices.size();
+			}
+
+			return indexCount;
 		}
 
-		const vector<unsigned int>& OpenGLMesh::getIndices() const
+		unsigned int* OpenGLMesh::getIndices()
 		{
-			return indices;
+			if (!initialized)
+			{
+				return initialIndices.data();
+			}
+
+			// TODO
+			return NULL;
+		}
+
+		const unsigned int* OpenGLMesh::getIndices() const
+		{
+			if (!initialized)
+			{
+				return initialIndices.data();
+			}
+
+			// TODO
+			return NULL;
 		}
 
 		Texture* OpenGLMesh::getNormalMap() const
@@ -90,17 +100,40 @@ namespace simplicity
 			return vao;
 		}
 
-		vector<Vertex>& OpenGLMesh::getVertices()
+		unsigned int OpenGLMesh::getVertexCount() const
 		{
-			return vertices;
+			if (!initialized)
+			{
+				return initialVertices.size();
+			}
+
+			// TODO
+			return 0;
 		}
 
-		const vector<Vertex>& OpenGLMesh::getVertices() const
+		Vertex* OpenGLMesh::getVertices()
 		{
-			return vertices;
+			if (!initialized)
+			{
+				return initialVertices.data();
+			}
+
+			// TODO
+			return NULL;
 		}
 
-		void OpenGLMesh::init() const
+		const Vertex* OpenGLMesh::getVertices() const
+		{
+			if (!initialized)
+			{
+				return initialVertices.data();
+			}
+
+			// TODO
+			return NULL;
+		}
+
+		void OpenGLMesh::init()
 		{
 			if (initialized)
 			{
@@ -114,7 +147,8 @@ namespace simplicity
 			// The vertex buffer.
 			glGenBuffers(1, &vbo);
 			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * initialVertices.size(), initialVertices.data(),
+					GL_STATIC_DRAW);
 
 			// A vertex format that matches the Vertex struct.
 			glEnableVertexAttribArray(0);
@@ -129,11 +163,16 @@ namespace simplicity
 			// The index buffer.
 			glGenBuffers(1, &ibo);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(),
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * initialIndices.size(), initialIndices.data(),
 					GL_STATIC_DRAW);
 
 			// Make sure the VAO is not changed from outside code
 		    glBindVertexArray(0);
+
+			initialVertices.resize(0);
+
+			indexCount = initialIndices.size();
+			initialIndices.resize(0);
 
 			initialized = true;
 		}
@@ -141,6 +180,26 @@ namespace simplicity
 		bool OpenGLMesh::isVisible() const
 		{
 			return visible;
+		}
+
+		void OpenGLMesh::resizeIndices(unsigned int size)
+		{
+			if (!initialized)
+			{
+				initialIndices.resize(size);
+			}
+
+			// TODO
+		}
+
+		void OpenGLMesh::resizeVertices(unsigned int size)
+		{
+			if (!initialized)
+			{
+				initialVertices.resize(size);
+			}
+
+			// TODO
 		}
 
 		void OpenGLMesh::setColor(const Vector4& color)

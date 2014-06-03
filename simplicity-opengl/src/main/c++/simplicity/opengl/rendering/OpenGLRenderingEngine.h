@@ -36,33 +36,33 @@ namespace simplicity
 			public:
 				OpenGLRenderingEngine();
 
-				void addLight(Entity& light);
+				void addLight(Entity& light) override;
 
-				void addRenderer(std::unique_ptr<Renderer> renderer);
+				void addRenderer(std::unique_ptr<Renderer> renderer) override;
 
-				void advance();
+				void advance() override;
 
-				Entity* getCamera() const;
+				Entity* getCamera() const override;
 
-				const Graph* getGraph() const;
+				const Graph* getGraph() const override;
 
-				int getHeight() const;
+				int getHeight() const override;
 
-				int getWidth() const;
+				int getWidth() const override;
 
-				void onPlay();
+				void onPlay() override;
 
-				void onStop();
+				void onStop() override;
 
-				std::unique_ptr<Renderer> removeRenderer(Renderer* renderer);
+				std::unique_ptr<Renderer> removeRenderer(Renderer* renderer) override;
 
-				void setCamera(Entity* camera);
+				void setCamera(Entity* camera) override;
 
-				void setGraph(Graph* graph);
+				void setGraph(Graph* graph) override;
 
-				void setHeight(int height);
+				void setHeight(int height) override;
 
-				void setWidth(int width);
+				void setWidth(int width) override;
 
 			private:
 				struct CameraProperties

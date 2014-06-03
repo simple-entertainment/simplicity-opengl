@@ -41,31 +41,31 @@ namespace simplicity
 
 				~OpenGLPipeline();
 
-				void apply();
+				void apply() override;
 
-				void set(const std::string& name, float value);
+				void set(const std::string& name, float value) override;
 
-				void set(const std::string& name, int value);
+				void set(const std::string& name, int value) override;
 
-				void set(const std::string& name, const Matrix44& value);
+				void set(const std::string& name, const Matrix44& value) override;
 
-				void set(const std::string& name, const Vector2& value);
+				void set(const std::string& name, const Vector2& value) override;
 
-				void set(const std::string& name, const Vector3& value);
+				void set(const std::string& name, const Vector3& value) override;
 
-				void set(const std::string& name, const Vector4& value);
+				void set(const std::string& name, const Vector4& value) override;
 
-				void set(const std::string& structName, const std::string& name, float value);
+				void set(const std::string& structName, const std::string& name, float value) override;
 
-				void set(const std::string& structName, const std::string& name, int value);
+				void set(const std::string& structName, const std::string& name, int value) override;
 
-				void set(const std::string& structName, const std::string& name, const Matrix44& value);
+				void set(const std::string& structName, const std::string& name, const Matrix44& value) override;
 
-				void set(const std::string& structName, const std::string& name, const Vector2& value);
+				void set(const std::string& structName, const std::string& name, const Vector2& value) override;
 
-				void set(const std::string& structName, const std::string& name, const Vector3& value);
+				void set(const std::string& structName, const std::string& name, const Vector3& value) override;
 
-				void set(const std::string& structName, const std::string& name, const Vector4& value);
+				void set(const std::string& structName, const std::string& name, const Vector4& value) override;
 
 			private:
 				std::unique_ptr<OpenGLShader> fragmentShader;

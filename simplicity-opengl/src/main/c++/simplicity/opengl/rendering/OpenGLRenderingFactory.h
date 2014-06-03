@@ -31,12 +31,12 @@ namespace simplicity
 		class SIMPLE_API OpenGLRenderingFactory : public RenderingFactory
 		{
 			public:
-				std::unique_ptr<Texture> createTexture(const char* data, unsigned int length);
+				std::unique_ptr<Texture> createTexture(const char* data, unsigned int length) override;
 
 				std::unique_ptr<Texture> createTexture(const char* rawData, unsigned int width,
-					unsigned int height);
+					unsigned int height) override;
 
-				std::unique_ptr<Texture> createTexture(Resource& image);
+				std::unique_ptr<Texture> createTexture(Resource& image) override;
 		};
 	}
 }

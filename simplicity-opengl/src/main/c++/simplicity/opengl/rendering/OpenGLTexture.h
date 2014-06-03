@@ -54,13 +54,13 @@ namespace simplicity
 				 */
 				OpenGLTexture(Resource& image);
 
-				void apply(Pipeline& pipeline);
+				void apply(Pipeline& pipeline) override;
 
-				unsigned int getHeight();
+				unsigned int getHeight() override;
 
-				unsigned int getWidth();
+				unsigned int getWidth() override;
 
-				void init();
+				void init() override;
 
 			private:
 				std::string data;

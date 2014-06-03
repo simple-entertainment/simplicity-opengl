@@ -33,39 +33,40 @@ namespace simplicity
 			public:
 				OpenGLRenderer();
 
-				bool clearsColorBuffer() const;
+				bool clearsColorBuffer() const override;
 
-				bool clearsDepthBuffer() const;
+				bool clearsDepthBuffer() const override;
 
-				bool clearsStencilBuffer() const;
+				bool clearsStencilBuffer() const override;
 
-				void dispose();
+				void dispose() override;
 
-				const Vector4& getClearingColor() const;
+				const Vector4& getClearingColor() const override;
 
-				Pipeline* getDefaultPipeline();
+				Pipeline* getDefaultPipeline() override;
 
-				void init();
+				void init() override;
 
-				bool isScissorEnabled() const;
+				bool isScissorEnabled() const override;
 
-				void render(const Model& model);
+				void render(const Model& model) override;
 
-				void setClearBuffers(bool clearBuffers);
+				void setClearBuffers(bool clearBuffers) override;
 
-				void setClearColorBuffer(bool clearColorBuffer);
+				void setClearColorBuffer(bool clearColorBuffer) override;
 
-				void setClearDepthBuffer(bool clearDepthBuffer);
+				void setClearDepthBuffer(bool clearDepthBuffer) override;
 
-				void setClearingColor(const Vector4& clearingColor);
+				void setClearingColor(const Vector4& clearingColor) override;
 
-				void setClearStencilBuffer(bool clearStencilBuffer);
+				void setClearStencilBuffer(bool clearStencilBuffer) override;
 
-				void setScissor(const Vector<unsigned int, 2>& topLeft, const Vector<unsigned int, 2>& bottomRight);
+				void setScissor(const Vector<unsigned int, 2>& topLeft, const Vector<unsigned int, 2>& bottomRight)
+					override;
 
-				void setScissorEnabled(bool scissorEnabled);
+				void setScissorEnabled(bool scissorEnabled) override;
 
-				void setDefaultPipeline(std::unique_ptr<Pipeline> pipeline);
+				void setDefaultPipeline(std::unique_ptr<Pipeline> pipeline) override;
 
 			private:
 				bool clearColorBuffer;

@@ -74,23 +74,23 @@ namespace simplicity
 
 		int OpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
 		{
-			if (primitiveType == Model::POINTS)
+			if (primitiveType == Model::PrimitiveType::POINTS)
 			{
 				return GL_POINTS;
 			}
-			else if (primitiveType == Model::LINE_LIST)
+			else if (primitiveType == Model::PrimitiveType::LINE_LIST)
 			{
 				return GL_LINE;
 			}
-			else if (primitiveType == Model::LINE_STRIP)
+			else if (primitiveType == Model::PrimitiveType::LINE_STRIP)
 			{
 				return GL_LINE_STRIP;
 			}
-			else if (primitiveType == Model::TRIANGLE_LIST)
+			else if (primitiveType == Model::PrimitiveType::TRIANGLE_LIST)
 			{
 				return GL_TRIANGLES;
 			}
-			else if (primitiveType == Model::TRIANGLE_STRIP)
+			else if (primitiveType == Model::PrimitiveType::TRIANGLE_STRIP)
 			{
 				return GL_TRIANGLE_STRIP;
 			}

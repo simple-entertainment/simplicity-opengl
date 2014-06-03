@@ -31,7 +31,7 @@ namespace simplicity
 			initialIndices(indices),
 			initialized(false),
 			initialVertices(vertices),
-			primitiveType(TRIANGLE_LIST),
+			primitiveType(PrimitiveType::TRIANGLE_LIST),
 			vao(0),
 			vbo(0),
 			visible(true)

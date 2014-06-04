@@ -46,8 +46,13 @@ namespace simplicity
 				/**
 				 * @param indices The indices into the collection of vertices.
 				 * @param vertices The collection of vertices.
+				 * @param access The access to grant to this mesh's internal data i.e. vertices and indices after
+				 * initialization.
 				 */
-				OpenGLMesh(const std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices);
+				OpenGLMesh(const std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices,
+					Access access = Access::NONE);
+
+				Access getAccess() const override;
 
 				const Vector4& getColor() const override;
 
@@ -99,6 +104,8 @@ namespace simplicity
 				void setVisible(bool visible) override;
 
 			private:
+				Access access;
+
 				Vector4 color;
 
 				mutable GLuint ibo;

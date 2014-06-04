@@ -24,7 +24,8 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLMesh::OpenGLMesh(const vector<unsigned int>& indices, const vector<Vertex>& vertices) :
+		OpenGLMesh::OpenGLMesh(const vector<unsigned int>& indices, const vector<Vertex>& vertices, Access access) :
+			access(access),
 			color(0.0f, 0.0f, 0.0f, 1.0f),
 			ibo(0),
 			indexCount(0),
@@ -38,6 +39,11 @@ namespace simplicity
 		{
 		}
 
+		Mesh::Access OpenGLMesh::getAccess() const
+		{
+			return access;
+		}
+
 		const Vector4& OpenGLMesh::getColor() const
 		{
 			return color;
@@ -45,7 +51,7 @@ namespace simplicity
 
 		unsigned int OpenGLMesh::getIndexCount() const
 		{
-			if (!initialized)
+			if (!initialized || access == Access::READ_LOCAL)
 			{
 				return initialIndices.size();
 			}
@@ -55,7 +61,7 @@ namespace simplicity
 
 		unsigned int* OpenGLMesh::getIndices()
 		{
-			if (!initialized)
+			if (!initialized || access == Access::READ_LOCAL)
 			{
 				return initialIndices.data();
 			}
@@ -66,7 +72,7 @@ namespace simplicity
 
 		const unsigned int* OpenGLMesh::getIndices() const
 		{
-			if (!initialized)
+			if (!initialized || access == Access::READ_LOCAL)
 			{
 				return initialIndices.data();
 			}
@@ -102,7 +108,7 @@ namespace simplicity
 
 		unsigned int OpenGLMesh::getVertexCount() const
 		{
-			if (!initialized)
+			if (!initialized || access == Access::READ_LOCAL)
 			{
 				return initialVertices.size();
 			}
@@ -113,7 +119,7 @@ namespace simplicity
 
 		Vertex* OpenGLMesh::getVertices()
 		{
-			if (!initialized)
+			if (!initialized || access == Access::READ_LOCAL)
 			{
 				return initialVertices.data();
 			}
@@ -124,7 +130,7 @@ namespace simplicity
 
 		const Vertex* OpenGLMesh::getVertices() const
 		{
-			if (!initialized)
+			if (!initialized || access == Access::READ_LOCAL)
 			{
 				return initialVertices.data();
 			}
@@ -169,10 +175,13 @@ namespace simplicity
 			// Make sure the VAO is not changed from outside code
 		    glBindVertexArray(0);
 
-			initialVertices.resize(0);
+			if (access != Access::READ_LOCAL)
+			{
+				initialVertices.resize(0);
 
-			indexCount = initialIndices.size();
-			initialIndices.resize(0);
+				indexCount = initialIndices.size();
+				initialIndices.resize(0);
+			}
 
 			initialized = true;
 		}

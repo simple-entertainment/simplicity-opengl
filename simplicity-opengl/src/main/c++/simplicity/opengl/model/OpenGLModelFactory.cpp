@@ -23,7 +23,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		unique_ptr<Mesh> OpenGLModelFactory::createMesh(const vector<Vertex>& vertices)
+		unique_ptr<Mesh> OpenGLModelFactory::createMesh(const vector<Vertex>& vertices, Mesh::Access access)
 		{
 			vector<unsigned int> indices;
 			indices.reserve(vertices.size());
@@ -32,13 +32,13 @@ namespace simplicity
 				indices.push_back(index);
 			}
 
-			return createMesh(vertices, indices);
+			return createMesh(vertices, indices, access);
 		}
 
 		unique_ptr<Mesh> OpenGLModelFactory::createMesh(const vector<Vertex>& vertices,
-			const vector<unsigned int>& indices)
+			const vector<unsigned int>& indices, Mesh::Access access)
 		{
-			return unique_ptr<Mesh>(new OpenGLMesh(indices, vertices));
+			return unique_ptr<Mesh>(new OpenGLMesh(indices, vertices, access));
 		}
 	}
 }

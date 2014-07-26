@@ -25,6 +25,7 @@
 #include <simplicity/rendering/Light.h>
 #include <simplicity/Simplicity.h>
 
+#include "OpenGL.h"
 #include "OpenGLRenderingEngine.h"
 
 using namespace std;
@@ -162,28 +163,38 @@ namespace simplicity
 			// pass rendering, objects at the exact same distance can be rendered over (i.e. the object will be rendered
 			// using the result of the last Renderer executed).
 			glDepthFunc(GL_LEQUAL);
+			OpenGL::checkError();
 			glEnable(GL_DEPTH_TEST);
+			OpenGL::checkError();
 
 			// Only render the front (counter-clockwise) side of a polygon.
 			glEnable(GL_CULL_FACE);
+			OpenGL::checkError();
 
 			// Enable blending for rendering transparency.
 			glEnable(GL_BLEND);
+			OpenGL::checkError();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			OpenGL::checkError();
 		}
 
 		void OpenGLRenderingEngine::onStop()
 		{
 			// Revert depth test settings.
 			glDepthFunc(GL_LESS);
+			OpenGL::checkError();
 			glDisable(GL_DEPTH_TEST);
+			OpenGL::checkError();
 
 			// Revert face culling settings.
 			glDisable(GL_CULL_FACE);
+			OpenGL::checkError();
 
 			// Revert blending settings.
 			glBlendFunc(GL_ONE, GL_ZERO);
+			OpenGL::checkError();
 			glDisable(GL_BLEND);
+			OpenGL::checkError();
 		}
 
 		unique_ptr<Renderer> OpenGLRenderingEngine::removeRenderer(Renderer* renderer)

@@ -17,6 +17,7 @@
 #include <simplicity/common/Category.h>
 #include <simplicity/logging/Logs.h>
 
+#include "OpenGL.h"
 #include "OpenGLShader.h"
 
 using namespace std;
@@ -47,28 +48,36 @@ namespace simplicity
 			if (type == Type::FRAGMENT)
 			{
 				shader = glCreateShader(GL_FRAGMENT_SHADER);
+				OpenGL::checkError();
 			}
 			else if (type == Type::GEOMETRY)
 			{
 				shader = glCreateShader(GL_GEOMETRY_SHADER);
+				OpenGL::checkError();
 			}
 			else if (type == Type::VERTEX)
 			{
 				shader = glCreateShader(GL_VERTEX_SHADER);
+				OpenGL::checkError();
 			}
 
 			const char* sourcePtr = source.data();
 			const int sourceLength = -1;
 			glShaderSource(shader, 1, &sourcePtr, &sourceLength);
+			OpenGL::checkError();
 
 			glCompileShader(shader);
+			OpenGL::checkError();
 
 			GLint compileStatus;
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &compileStatus);
+			OpenGL::checkError();
+
 			if (compileStatus == 0)
 			{
 				GLchar infoLog[1024];
 				glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
+				OpenGL::checkError();
 
 				Logs::log(Category::ERROR_LOG, "Error compiling shader:");
 				Logs::log(Category::ERROR_LOG, infoLog);

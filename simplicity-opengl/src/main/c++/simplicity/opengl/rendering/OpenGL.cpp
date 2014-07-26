@@ -14,19 +14,27 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "OpenGLMeshBuffer.h"
-#include "OpenGLModelFactory.h"
+#include <GL/glew.h>
 
-using namespace std;
+#include <simplicity/logging/Logs.h>
+
+#include "OpenGL.h"
 
 namespace simplicity
 {
 	namespace opengl
 	{
-		shared_ptr<MeshBuffer> OpenGLModelFactory::createBuffer(const unsigned int vertexCount, unsigned int indexCount,
-				MeshBuffer::AccessHint accessHint)
+		namespace OpenGL
 		{
-			return shared_ptr<MeshBuffer>(new OpenGLMeshBuffer(vertexCount, indexCount, accessHint));
+			void checkError()
+			{
+				GLenum error = glGetError();
+
+				if (error != GL_NO_ERROR)
+				{
+					Logs::log(Category::ERROR_LOG, "OpenGL error: %i", error);
+				}
+			}
 		}
 	}
 }

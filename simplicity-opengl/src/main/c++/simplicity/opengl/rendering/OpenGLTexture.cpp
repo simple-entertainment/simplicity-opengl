@@ -16,6 +16,7 @@
  */
 #include "FreeImagePlus.h"
 
+#include "OpenGL.h"
 #include "OpenGLTexture.h"
 
 using namespace std;
@@ -64,7 +65,9 @@ namespace simplicity
 			}
 
 			glActiveTexture(GL_TEXTURE0);
+			OpenGL::checkError();
 			glBindTexture(GL_TEXTURE_2D, texture);
+			OpenGL::checkError();
 
 			pipeline.set("sampler", 0);
 		}
@@ -82,7 +85,9 @@ namespace simplicity
 		void OpenGLTexture::init()
 		{
 			glGenTextures(1, &texture);
+			OpenGL::checkError();
 			glBindTexture(GL_TEXTURE_2D, texture);
+			OpenGL::checkError();
 
 			if (rawData == nullptr)
 			{
@@ -95,12 +100,14 @@ namespace simplicity
 				width = image.getWidth();
 
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.accessPixels());
+				OpenGL::checkError();
 
 				data.resize(0);
 			}
 			else
 			{
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rawData);
+				OpenGL::checkError();
 
 				// libRocket doesn't like this... TODO
 				//delete rawData;
@@ -108,7 +115,9 @@ namespace simplicity
 			}
 
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			OpenGL::checkError();
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			OpenGL::checkError();
 
 			initialized = true;
 		}

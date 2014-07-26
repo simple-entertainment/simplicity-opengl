@@ -28,7 +28,8 @@
 #include <simplicity/model/shape/Sphere.h>
 #include <simplicity/model/shape/Torus.h>
 
-#include "../model/OpenGLMesh.h"
+#include "../model/OpenGLMeshBuffer.h"
+#include "OpenGL.h"
 #include "OpenGLRenderer.h"
 
 using namespace std;
@@ -65,6 +66,7 @@ namespace simplicity
 		{
 			// Revert clearing settings.
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			OpenGL::checkError();
 		}
 
 		const Vector4& OpenGLRenderer::getClearingColor() const
@@ -108,33 +110,56 @@ namespace simplicity
 			if (clearColorBuffer)
 			{
 				glClearColor(clearingColor.X(), clearingColor.Y(), clearingColor.Z(), clearingColor.W());
+				OpenGL::checkError();
 				glClear(GL_COLOR_BUFFER_BIT);
+				OpenGL::checkError();
 			}
 			if (clearDepthBuffer)
 			{
 				glClear(GL_DEPTH_BUFFER_BIT);
+				OpenGL::checkError();
 			}
 			if (clearStencilBuffer)
 			{
 				glClear(GL_STENCIL_BUFFER_BIT);
+				OpenGL::checkError();
 			}
 		}
 
 		bool OpenGLRenderer::isScissorEnabled() const
 		{
-			return glIsEnabled(GL_SCISSOR_TEST) == GL_TRUE;
+			GLboolean enabled = glIsEnabled(GL_SCISSOR_TEST);
+			OpenGL::checkError();
+
+			return enabled == GL_TRUE;
 		}
 
 		void OpenGLRenderer::render(const Model& model)
 		{
-			if (model.getTypeID() == OpenGLMesh::TYPE_ID)
+			if (model.getTypeID() != Mesh::TYPE_ID)
 			{
-				const OpenGLMesh& openGlMesh = static_cast<const OpenGLMesh&>(model);
+				return;
+			}
 
-				glBindVertexArray(openGlMesh.getVAO());
+			const Mesh& mesh = static_cast<const Mesh&>(model);
+			const OpenGLMeshBuffer* meshBuffer = static_cast<const OpenGLMeshBuffer*>(mesh.getBuffer());
 
-				glDrawElements(getOpenGLDrawingMode(openGlMesh.getPrimitiveType()), openGlMesh.getIndexCount(),
-						GL_UNSIGNED_INT, 0);
+			glBindVertexArray(meshBuffer->getVAO());
+			OpenGL::checkError();
+
+			if (meshBuffer->isIndexed())
+			{
+				glDrawElementsBaseVertex(getOpenGLDrawingMode(mesh.getPrimitiveType()),
+						meshBuffer->getIndexCount(mesh), GL_UNSIGNED_INT,
+						(GLvoid*) (meshBuffer->getBaseIndex(mesh) * sizeof(unsigned int)),
+						meshBuffer->getBaseVertex(mesh));
+				OpenGL::checkError();
+			}
+			else
+			{
+				glDrawArrays(getOpenGLDrawingMode(mesh.getPrimitiveType()), meshBuffer->getBaseVertex(mesh),
+						meshBuffer->getVertexCount(mesh));
+				OpenGL::checkError();
 			}
 		}
 
@@ -170,9 +195,11 @@ namespace simplicity
 		{
 			GLint viewport[4];
 			glGetIntegerv(GL_VIEWPORT, viewport);
+			OpenGL::checkError();
 
 			glScissor(topLeft.X(), viewport[3] - bottomRight.Y(), bottomRight.X() - topLeft.X(),
 					bottomRight.Y() - topLeft.Y());
+			OpenGL::checkError();
 		}
 
 		void OpenGLRenderer::setScissorEnabled(bool scissorEnabled)
@@ -180,10 +207,12 @@ namespace simplicity
 			if (scissorEnabled)
 			{
 				glEnable(GL_SCISSOR_TEST);
+				OpenGL::checkError();
 			}
 			else
 			{
 				glDisable(GL_SCISSOR_TEST);
+				OpenGL::checkError();
 			}
 		}
 

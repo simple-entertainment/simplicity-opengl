@@ -144,9 +144,6 @@ namespace simplicity
 			const Mesh& mesh = static_cast<const Mesh&>(model);
 			const OpenGLMeshBuffer* meshBuffer = static_cast<const OpenGLMeshBuffer*>(mesh.getBuffer());
 
-			glBindVertexArray(meshBuffer->getVAO());
-			OpenGL::checkError();
-
 			if (meshBuffer->isIndexed())
 			{
 				glDrawElementsBaseVertex(getOpenGLDrawingMode(mesh.getPrimitiveType()),

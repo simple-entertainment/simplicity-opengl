@@ -17,10 +17,7 @@
 #ifndef OPENGLRENDERINGENGINE_H_
 #define OPENGLRENDERINGENGINE_H_
 
-#include <map>
-
-#include <simplicity/model/Model.h>
-#include <simplicity/rendering/RenderingEngine.h>
+#include <simplicity/rendering/AbstractRenderingEngine.h>
 
 namespace simplicity
 {
@@ -31,63 +28,18 @@ namespace simplicity
 		 * A rendering engine implemented using OpenGL.
 		 * </p>
 		 */
-		class SIMPLE_API OpenGLRenderingEngine : public RenderingEngine
+		class SIMPLE_API OpenGLRenderingEngine : public AbstractRenderingEngine
 		{
-			public:
-				OpenGLRenderingEngine();
-
-				void addLight(Entity& light) override;
-
-				void addRenderer(std::unique_ptr<Renderer> renderer) override;
-
-				void advance() override;
-
-				Entity* getCamera() const override;
-
-				const Graph* getGraph() const override;
-
-				int getHeight() const override;
-
-				int getWidth() const override;
-
-				void onPlay() override;
-
-				void onStop() override;
-
-				std::unique_ptr<Renderer> removeRenderer(Renderer* renderer) override;
-
-				void setCamera(Entity* camera) override;
-
-				void setGraph(Graph* graph) override;
-
-				void setHeight(int height) override;
-
-				void setWidth(int width) override;
-
 			private:
-				struct CameraProperties
-				{
-					Model* bounds;
-					Vector3 boundsPosition;
-					Vector3 position;
-					Matrix44 transform;
-				};
+				void bind(const MeshBuffer& buffer) override;
 
-				Entity* camera;
+				void dispose() override;
 
-				Graph* graph;
+				void init() override;
 
-				int height;
+				void postAdvance() override;
 
-				std::vector<Entity*> lights;
-
-				std::vector<std::unique_ptr<Renderer>> renderers;
-
-				int width;
-
-				CameraProperties getCameraProperties() const;
-
-				void render(Renderer& renderer, const Entity& entity);
+				bool preAdvance() override;
 		};
 	}
 }

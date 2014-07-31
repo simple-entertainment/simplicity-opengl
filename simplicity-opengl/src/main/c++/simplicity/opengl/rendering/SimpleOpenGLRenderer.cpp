@@ -30,7 +30,7 @@
 
 #include "../model/OpenGLMeshBuffer.h"
 #include "OpenGL.h"
-#include "OpenGLRenderer.h"
+#include "SimpleOpenGLRenderer.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLRenderer::OpenGLRenderer() :
+		SimpleOpenGLRenderer::SimpleOpenGLRenderer() :
 				clearColorBuffer(true),
 				clearDepthBuffer(true),
 				clearingColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -47,34 +47,34 @@ namespace simplicity
 		{
 		}
 
-		bool OpenGLRenderer::clearsColorBuffer() const
+		bool SimpleOpenGLRenderer::clearsColorBuffer() const
 		{
 			return clearColorBuffer;
 		}
 
-		bool OpenGLRenderer::clearsDepthBuffer() const
+		bool SimpleOpenGLRenderer::clearsDepthBuffer() const
 		{
 			return clearDepthBuffer;
 		}
 
-		bool OpenGLRenderer::clearsStencilBuffer() const
+		bool SimpleOpenGLRenderer::clearsStencilBuffer() const
 		{
 			return clearStencilBuffer;
 		}
 
-		void OpenGLRenderer::dispose()
+		void SimpleOpenGLRenderer::dispose()
 		{
 			// Revert clearing settings.
 			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			OpenGL::checkError();
 		}
 
-		const Vector4& OpenGLRenderer::getClearingColor() const
+		const Vector4& SimpleOpenGLRenderer::getClearingColor() const
 		{
 			return clearingColor;
 		}
 
-		int OpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
+		int SimpleOpenGLRenderer::getOpenGLDrawingMode(Model::PrimitiveType primitiveType)
 		{
 			if (primitiveType == Model::PrimitiveType::POINTS)
 			{
@@ -100,12 +100,12 @@ namespace simplicity
 			return -1;
 		}
 
-		Pipeline* OpenGLRenderer::getDefaultPipeline()
+		Pipeline* SimpleOpenGLRenderer::getDefaultPipeline()
 		{
 			return pipeline.get();
 		}
 
-		void OpenGLRenderer::init()
+		void SimpleOpenGLRenderer::init()
 		{
 			if (clearColorBuffer)
 			{
@@ -126,7 +126,7 @@ namespace simplicity
 			}
 		}
 
-		bool OpenGLRenderer::isScissorEnabled() const
+		bool SimpleOpenGLRenderer::isScissorEnabled() const
 		{
 			GLboolean enabled = glIsEnabled(GL_SCISSOR_TEST);
 			OpenGL::checkError();
@@ -134,60 +134,68 @@ namespace simplicity
 			return enabled == GL_TRUE;
 		}
 
-		void OpenGLRenderer::render(const Model& model)
+		void SimpleOpenGLRenderer::render(const MeshBuffer& buffer,
+				const vector<pair<Model*, Matrix44>>& modelsAndTransforms)
 		{
-			if (model.getTypeID() != Mesh::TYPE_ID)
-			{
-				return;
-			}
+			const OpenGLMeshBuffer& openGLBuffer = static_cast<const OpenGLMeshBuffer&>(buffer);
+			glBindVertexArray(openGLBuffer.getVAO());
+			OpenGL::checkError();
 
-			const Mesh& mesh = static_cast<const Mesh&>(model);
-			const OpenGLMeshBuffer* meshBuffer = static_cast<const OpenGLMeshBuffer*>(mesh.getBuffer());
+			for (const pair<Model*, Matrix44>& modelAndTransform : modelsAndTransforms)
+			{
+				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
+				{
+					continue;
+				}
 
-			if (meshBuffer->isIndexed())
-			{
-				glDrawElementsBaseVertex(getOpenGLDrawingMode(mesh.getPrimitiveType()),
-						meshBuffer->getIndexCount(mesh), GL_UNSIGNED_INT,
-						(GLvoid*) (meshBuffer->getBaseIndex(mesh) * sizeof(unsigned int)),
-						meshBuffer->getBaseVertex(mesh));
-				OpenGL::checkError();
-			}
-			else
-			{
-				glDrawArrays(getOpenGLDrawingMode(mesh.getPrimitiveType()), meshBuffer->getBaseVertex(mesh),
-						meshBuffer->getVertexCount(mesh));
-				OpenGL::checkError();
+				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
+				pipeline->set("worldTransform", modelAndTransform.second);
+
+				if (buffer.isIndexed())
+				{
+					glDrawElementsBaseVertex(getOpenGLDrawingMode(mesh->getPrimitiveType()),
+							buffer.getIndexCount(*mesh), GL_UNSIGNED_INT,
+							reinterpret_cast<GLvoid*>(buffer.getBaseIndex(*mesh) * sizeof(unsigned int)),
+							buffer.getBaseVertex(*mesh));
+					OpenGL::checkError();
+				}
+				else
+				{
+					glDrawArrays(getOpenGLDrawingMode(mesh->getPrimitiveType()), buffer.getBaseVertex(*mesh),
+							buffer.getVertexCount(*mesh));
+					OpenGL::checkError();
+				}
 			}
 		}
 
-		void OpenGLRenderer::setClearBuffers(bool clearBuffers)
+		void SimpleOpenGLRenderer::setClearBuffers(bool clearBuffers)
 		{
 			clearColorBuffer = clearBuffers;
 			clearDepthBuffer = clearBuffers;
 			clearStencilBuffer = clearBuffers;
 		}
 
-		void OpenGLRenderer::setClearColorBuffer(bool clearColorBuffer)
+		void SimpleOpenGLRenderer::setClearColorBuffer(bool clearColorBuffer)
 		{
 			this->clearColorBuffer = clearColorBuffer;
 		}
 
-		void OpenGLRenderer::setClearDepthBuffer(bool clearDepthBuffer)
+		void SimpleOpenGLRenderer::setClearDepthBuffer(bool clearDepthBuffer)
 		{
 			this->clearDepthBuffer = clearDepthBuffer;
 		}
 
-		void OpenGLRenderer::setClearingColor(const Vector4& clearingColor)
+		void SimpleOpenGLRenderer::setClearingColor(const Vector4& clearingColor)
 		{
 			this->clearingColor = clearingColor;
 		}
 
-		void OpenGLRenderer::setClearStencilBuffer(bool clearStencilBuffer)
+		void SimpleOpenGLRenderer::setClearStencilBuffer(bool clearStencilBuffer)
 		{
 			this->clearStencilBuffer = clearStencilBuffer;
 		}
 
-		void OpenGLRenderer::setScissor(const Vector<unsigned int, 2>& topLeft,
+		void SimpleOpenGLRenderer::setScissor(const Vector<unsigned int, 2>& topLeft,
 				const Vector<unsigned int, 2>& bottomRight)
 		{
 			GLint viewport[4];
@@ -199,7 +207,7 @@ namespace simplicity
 			OpenGL::checkError();
 		}
 
-		void OpenGLRenderer::setScissorEnabled(bool scissorEnabled)
+		void SimpleOpenGLRenderer::setScissorEnabled(bool scissorEnabled)
 		{
 			if (scissorEnabled)
 			{
@@ -213,7 +221,7 @@ namespace simplicity
 			}
 		}
 
-		void OpenGLRenderer::setDefaultPipeline(unique_ptr<Pipeline> pipeline)
+		void SimpleOpenGLRenderer::setDefaultPipeline(unique_ptr<Pipeline> pipeline)
 		{
 			this->pipeline = move(pipeline);
 		}

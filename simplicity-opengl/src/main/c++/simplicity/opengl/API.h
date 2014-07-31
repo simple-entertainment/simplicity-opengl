@@ -23,4 +23,4 @@
 #include "rendering/OpenGLRenderingEngine.h"
 #include "rendering/OpenGLRenderingFactory.h"
 #include "rendering/OpenGLShader.h"
-#include "rendering/OpenGLRenderer.h"
+#include "rendering/SimpleOpenGLRenderer.h"

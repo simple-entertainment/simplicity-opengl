@@ -177,6 +177,11 @@ namespace simplicity
 			return meshData;
 		}
 
+		unsigned int OpenGLMeshBuffer::getIndexCount(const Mesh& mesh) const
+		{
+			return indexCounts[&mesh];
+		}
+
 		GLenum OpenGLMeshBuffer::getOpenGLAccess(bool readable, bool writable) const
 		{
 			if (readable && !writable)
@@ -189,13 +194,10 @@ namespace simplicity
 			}
 			else
 			{
+				// Passing false + false to this function is just silly, why would you want data without any access?
+				// Lets ignore that case.
 				return GL_READ_WRITE;
 			}
-		}
-
-		unsigned int OpenGLMeshBuffer::getIndexCount(const Mesh& mesh) const
-		{
-			return indexCounts[&mesh];
 		}
 
 		GLuint OpenGLMeshBuffer::getVAO() const

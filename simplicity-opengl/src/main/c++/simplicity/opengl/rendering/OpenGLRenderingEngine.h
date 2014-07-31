@@ -31,8 +31,6 @@ namespace simplicity
 		class SIMPLE_API OpenGLRenderingEngine : public AbstractRenderingEngine
 		{
 			private:
-				void bind(const MeshBuffer& buffer) override;
-
 				void dispose() override;
 
 				void init() override;

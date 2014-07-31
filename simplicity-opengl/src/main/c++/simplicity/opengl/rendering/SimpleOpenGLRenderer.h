@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef OPENGLRENDERPASS_H_
-#define OPENGLRENDERPASS_H_
+#ifndef SIMPLEOPENGLRENDER_H_
+#define SIMPLEOPENGLRENDER_H_
 
 #include <simplicity/rendering/Renderer.h>
 
@@ -28,10 +28,10 @@ namespace simplicity
 		 * A renderer implemented using OpenGL.
 		 * </p>
 		 */
-		class SIMPLE_API OpenGLRenderer : public Renderer
+		class SIMPLE_API SimpleOpenGLRenderer : public Renderer
 		{
 			public:
-				OpenGLRenderer();
+				SimpleOpenGLRenderer();
 
 				bool clearsColorBuffer() const override;
 
@@ -49,7 +49,8 @@ namespace simplicity
 
 				bool isScissorEnabled() const override;
 
-				void render(const Model& model) override;
+				void render(const MeshBuffer& buffer,
+						const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) override;
 
 				void setClearBuffers(bool clearBuffers) override;
 
@@ -84,4 +85,4 @@ namespace simplicity
 	}
 }
 
-#endif /* OPENGLRENDERPASS_H_ */
+#endif /* SIMPLEOPENGLRENDER_H_ */

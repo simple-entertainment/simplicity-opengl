@@ -35,14 +35,6 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		void OpenGLRenderingEngine::bind(const MeshBuffer& buffer)
-		{
-			const OpenGLMeshBuffer& openGLBuffer = static_cast<const OpenGLMeshBuffer&>(buffer);
-
-			glBindVertexArray(openGLBuffer.getVAO());
-			OpenGL::checkError();
-		}
-
 		void OpenGLRenderingEngine::dispose()
 		{
 			// Revert depth test settings.

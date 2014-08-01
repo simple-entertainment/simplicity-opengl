@@ -14,10 +14,11 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef OPENGLMODELFACTORY_H_
-#define OPENGLMODELFACTORY_H_
+#ifndef MULTIDRAWOPENGLRENDER_H_
+#define MULTIDRAWOPENGLRENDER_H_
 
-#include <simplicity/model/ModelFactory.h>
+#include "../common/SimpleOpenGLBuffer.h"
+#include "AbstractOpenGLRenderer.h"
 
 namespace simplicity
 {
@@ -25,16 +26,24 @@ namespace simplicity
 	{
 		/**
 		 * <p>
-		 * A factory that creates meshes implemented using OpenGL.
+		 * A renderer implemented using OpenGL.
 		 * </p>
 		 */
-		class SIMPLE_API OpenGLModelFactory : public ModelFactory
+		class SIMPLE_API MultiDrawOpenGLRenderer : public AbstractOpenGLRenderer
 		{
 			public:
-				std::shared_ptr<MeshBuffer> createMeshBuffer(const unsigned int vertexCount, unsigned int indexCount,
-						Buffer::AccessHint accessHint) override;
+				MultiDrawOpenGLRenderer();
+
+				void render(const MeshBuffer& buffer,
+						const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) override;
+
+			private:
+				SimpleOpenGLBuffer worldTransformBuffer;
+
+				void draw(const MeshBuffer& buffer, const std::vector<int>& counts,
+						const std::vector<GLvoid*>& baseIndexLocations, const std::vector<int>& baseVertices);
 		};
 	}
 }
 
-#endif /* OPENGLMODELFACTORY_H_ */
+#endif /* MULTIDRAWOPENGLRENDER_H_ */

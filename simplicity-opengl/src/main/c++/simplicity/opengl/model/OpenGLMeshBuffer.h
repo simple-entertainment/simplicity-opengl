@@ -19,9 +19,9 @@
 
 #include <map>
 
-#include <GL/glew.h>
-
 #include <simplicity/model/MeshBuffer.h>
+
+#include "../common/SimpleOpenGLBuffer.h"
 
 namespace simplicity
 {
@@ -35,23 +35,26 @@ namespace simplicity
 		class SIMPLE_API OpenGLMeshBuffer : public MeshBuffer
 		{
 			public:
-				OpenGLMeshBuffer(const unsigned int vertexCount, unsigned int indexCount, AccessHint accessHint);
+				OpenGLMeshBuffer(const unsigned int vertexCount, unsigned int indexCount,
+						Buffer::AccessHint accessHint);
 
 				~OpenGLMeshBuffer();
 
-				AccessHint getAccessHint() const override;
+				Buffer::AccessHint getAccessHint() const override;
 
 				unsigned int getBaseIndex(const Mesh& mesh) const override;
 
 				unsigned int getBaseVertex(const Mesh& mesh) const override;
 
-				MeshData& getData(const Mesh& mesh, bool readable, bool writable) override;
+				MeshData& getData(const Mesh& mesh, bool readable) override;
 
 				const MeshData& getData(const Mesh& mesh) const override;
 
 				unsigned int getIndexCount(const Mesh& mesh) const override;
 
-				GLuint getVAO() const;
+				PrimitiveType getPrimitiveType() const override;
+
+				GLuint getVAOName() const;
 
 				unsigned int getVertexCount(const Mesh& mesh) const override;
 
@@ -59,32 +62,43 @@ namespace simplicity
 
 				void releaseData(const Mesh& mesh) const override;
 
+				void setPrimitiveType(PrimitiveType primitiveType) override;
+
 			private:
-				AccessHint accessHint;
+				struct MetaData
+				{
+					MetaData();
 
-				mutable std::map<const Mesh*, unsigned int> baseIndices;
+					std::map<const Mesh*, unsigned int> baseIndices;
 
-				mutable std::map<const Mesh*, unsigned int> baseVertices;
+					std::map<const Mesh*, unsigned int> baseVertices;
 
-				GLuint ibo;
+					std::map<const Mesh*, unsigned int> indexCounts;
 
-				mutable std::map<const Mesh*, unsigned int> indexCounts;
+					unsigned int nextFreeIndex;
+
+					unsigned int nextFreeVertex;
+
+					std::map<const Mesh*, unsigned int> vertexCounts;
+
+					void addMesh(const Mesh& mesh, bool indexed);
+
+					void updateNextFree(const Mesh& mesh, bool indexed);
+				};
+
+				std::unique_ptr<SimpleOpenGLBuffer> indexBuffer;
 
 				bool indexed;
 
 				mutable MeshData meshData;
 
-				mutable unsigned int nextFreeIndex;
+				mutable MetaData metaData;
 
-				mutable unsigned int nextFreeVertex;
+				PrimitiveType primitiveType;
 
-				GLuint vao;
+				GLuint vaoName;
 
-				GLuint vbo;
-
-				mutable std::map<const Mesh*, unsigned int> vertexCounts;
-
-				GLenum getOpenGLAccess(bool readable, bool writable) const;
+				std::unique_ptr<SimpleOpenGLBuffer> vertexBuffer;
 		};
 	}
 }

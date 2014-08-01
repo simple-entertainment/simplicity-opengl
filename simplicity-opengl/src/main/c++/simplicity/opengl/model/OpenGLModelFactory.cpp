@@ -23,8 +23,8 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		shared_ptr<MeshBuffer> OpenGLModelFactory::createBuffer(const unsigned int vertexCount, unsigned int indexCount,
-				MeshBuffer::AccessHint accessHint)
+		shared_ptr<MeshBuffer> OpenGLModelFactory::createMeshBuffer(const unsigned int vertexCount,
+				unsigned int indexCount, Buffer::AccessHint accessHint)
 		{
 			return shared_ptr<MeshBuffer>(new OpenGLMeshBuffer(vertexCount, indexCount, accessHint));
 		}

@@ -26,120 +26,89 @@ namespace simplicity
 	namespace opengl
 	{
 		OpenGLMeshBuffer::OpenGLMeshBuffer(const unsigned int vertexCount, unsigned int indexCount,
-			AccessHint accessHint) :
-				accessHint(accessHint),
-				baseIndices(),
-				baseVertices(),
-				ibo(0),
-				indexCounts(),
-				indexed(indexCount > 0),
-				meshData(),
-				nextFreeIndex(0),
-				nextFreeVertex(0),
-				vao(0),
-				vbo(0),
-				vertexCounts()
+				Buffer::AccessHint accessHint) :
+						indexBuffer(nullptr),
+						indexed(indexCount > 0),
+						meshData(),
+						metaData(),
+						primitiveType(PrimitiveType::TRIANGLE_LIST),
+						vaoName(0),
+						vertexBuffer(nullptr)
 		{
-			// The configuration buffer (saves all the following state together).
-			glGenVertexArrays(1, &vao);
+			// The vertex array (saves all the following state together).
+			glGenVertexArrays(1, &vaoName);
 			OpenGL::checkError();
-			glBindVertexArray(vao);
+			glBindVertexArray(vaoName);
 			OpenGL::checkError();
 
-			// The vertex buffer.
-			glGenBuffers(1, &vbo);
-			OpenGL::checkError();
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			OpenGL::checkError();
-			glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * vertexCount, nullptr, GL_STATIC_DRAW);
-			OpenGL::checkError();
+			vertexBuffer.reset(new SimpleOpenGLBuffer(Buffer::DataType::VERTICES, sizeof(Vertex) * vertexCount,
+					nullptr));
 
 			// A vertex format that matches the Vertex struct.
 			glEnableVertexAttribArray(0);
 			OpenGL::checkError();
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 12, 0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
 			OpenGL::checkError();
 			glEnableVertexAttribArray(1);
 			OpenGL::checkError();
-			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 4));
+			glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) (sizeof(float) * 4));
 			OpenGL::checkError();
 			glEnableVertexAttribArray(2);
 			OpenGL::checkError();
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 7));
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) (sizeof(float) * 7));
 			OpenGL::checkError();
 			glEnableVertexAttribArray(3);
 			OpenGL::checkError();
-			glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 12, (const GLvoid*) (sizeof(float) * 10));
+			glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*) (sizeof(float) * 10));
 			OpenGL::checkError();
 
-			// The index buffer.
 			if (indexed)
 			{
-				glGenBuffers(1, &ibo);
-				OpenGL::checkError();
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-				OpenGL::checkError();
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexCount, nullptr, GL_STATIC_DRAW);
-				OpenGL::checkError();
+				indexBuffer.reset(new SimpleOpenGLBuffer(Buffer::DataType::INDICES, sizeof(unsigned int) * indexCount,
+						nullptr));
 			}
 
-			// Make sure the VAO is not changed from outside code
+			// Unbind the vertex array.
 		    glBindVertexArray(0);
+			OpenGL::checkError();
 		}
 
 		OpenGLMeshBuffer::~OpenGLMeshBuffer()
 		{
-			glDeleteVertexArrays(1, &vao);
-			OpenGL::checkError();
-
-			glDeleteBuffers(1, &vbo);
-			OpenGL::checkError();
-			glDeleteBuffers(1, &ibo);
+			glDeleteVertexArrays(1, &vaoName);
 			OpenGL::checkError();
 		}
 
-		MeshBuffer::AccessHint OpenGLMeshBuffer::getAccessHint() const
+		Buffer::AccessHint OpenGLMeshBuffer::getAccessHint() const
 		{
-			return accessHint;
+			return vertexBuffer->getAccessHint();
 		}
 
 		unsigned int OpenGLMeshBuffer::getBaseIndex(const Mesh& mesh) const
 		{
-			return baseIndices[&mesh];
+			return metaData.baseIndices[&mesh];
 		}
 
 		unsigned int OpenGLMeshBuffer::getBaseVertex(const Mesh& mesh) const
 		{
-			return baseVertices[&mesh];
+			return metaData.baseVertices[&mesh];
 		}
 
-		MeshData& OpenGLMeshBuffer::getData(const Mesh& mesh, bool readable, bool writable)
+		MeshData& OpenGLMeshBuffer::getData(const Mesh& mesh, bool readable)
 		{
-			if (baseVertices.find(&mesh) == baseVertices.end())
-			{
-				baseVertices[&mesh] = nextFreeVertex;
-				vertexCounts[&mesh] = 0;
-			}
+			metaData.addMesh(mesh, indexed);
 
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			meshData.vertexCount = vertexCounts[&mesh];
-			GLvoid* vertexDataPointer = glMapBuffer(GL_ARRAY_BUFFER, getOpenGLAccess(readable, writable));
-			OpenGL::checkError();
-			meshData.vertexData = static_cast<Vertex*>(vertexDataPointer) + baseVertices[&mesh];
+			byte* vertexData = vertexBuffer->getData(readable);
+
+			meshData.vertexCount = metaData.vertexCounts[&mesh];
+			meshData.vertexData = reinterpret_cast<Vertex*>(vertexData) + metaData.baseVertices[&mesh];
 
 			if (indexed)
 			{
-				if (baseIndices.find(&mesh) == baseIndices.end())
-				{
-					baseIndices[&mesh] = nextFreeIndex;
-					indexCounts[&mesh] = 0;
-				}
+				byte* indexData = indexBuffer->getData(readable);
 
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-				meshData.indexCount = indexCounts[&mesh];
-				GLvoid* indexDataPointer = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, getOpenGLAccess(readable, writable));
-				OpenGL::checkError();
-				meshData.indexData = static_cast<unsigned int*>(indexDataPointer) + baseIndices[&mesh];
+				meshData.indexCount = metaData.indexCounts[&mesh];
+				meshData.indexData = reinterpret_cast<unsigned int*>(indexData) + metaData.baseIndices[&mesh];
 			}
 
 			return meshData;
@@ -147,31 +116,22 @@ namespace simplicity
 
 		const MeshData& OpenGLMeshBuffer::getData(const Mesh& mesh) const
 		{
-			if (baseVertices.find(&mesh) == baseVertices.end())
-			{
-				baseVertices[&mesh] = nextFreeVertex;
-				vertexCounts[&mesh] = 0;
-			}
+			// Sorry about the const casts!!!
+			// Fear not though, the MeshData object they are being given to is returned as const.
 
-			glBindBuffer(GL_ARRAY_BUFFER, vbo);
-			meshData.vertexCount = vertexCounts[&mesh];
-			GLvoid* vertexDataPointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY);
-			OpenGL::checkError();
-			meshData.vertexData = static_cast<Vertex*>(vertexDataPointer) + baseVertices[&mesh];
+			metaData.addMesh(mesh, indexed);
+
+			byte* vertexData = const_cast<byte*>(vertexBuffer->getData());
+
+			meshData.vertexCount = metaData.vertexCounts[&mesh];
+			meshData.vertexData = reinterpret_cast<Vertex*>(vertexData) + metaData.baseVertices[&mesh];
 
 			if (indexed)
 			{
-				if (baseIndices.find(&mesh) == baseIndices.end())
-				{
-					baseIndices[&mesh] = nextFreeIndex;
-					indexCounts[&mesh] = 0;
-				}
+				byte* indexData = const_cast<byte*>(indexBuffer->getData());
 
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-				meshData.indexCount = indexCounts[&mesh];
-				GLvoid* indexDataPointer = glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_READ_ONLY);
-				OpenGL::checkError();
-				meshData.indexData = static_cast<unsigned int*>(indexDataPointer) + baseIndices[&mesh];
+				meshData.indexCount = metaData.indexCounts[&mesh];
+				meshData.indexData = reinterpret_cast<unsigned int*>(indexData) + metaData.baseIndices[&mesh];
 			}
 
 			return meshData;
@@ -179,35 +139,22 @@ namespace simplicity
 
 		unsigned int OpenGLMeshBuffer::getIndexCount(const Mesh& mesh) const
 		{
-			return indexCounts[&mesh];
+			return metaData.indexCounts[&mesh];
 		}
 
-		GLenum OpenGLMeshBuffer::getOpenGLAccess(bool readable, bool writable) const
+		MeshBuffer::PrimitiveType OpenGLMeshBuffer::getPrimitiveType() const
 		{
-			if (readable && !writable)
-			{
-				return GL_READ_ONLY;
-			}
-			else if (!readable && writable)
-			{
-				return GL_WRITE_ONLY;
-			}
-			else
-			{
-				// Passing false + false to this function is just silly, why would you want data without any access?
-				// Lets ignore that case.
-				return GL_READ_WRITE;
-			}
+			return primitiveType;
 		}
 
-		GLuint OpenGLMeshBuffer::getVAO() const
+		GLuint OpenGLMeshBuffer::getVAOName() const
 		{
-			return vao;
+			return vaoName;
 		}
 
 		unsigned int OpenGLMeshBuffer::getVertexCount(const Mesh& mesh) const
 		{
-			return vertexCounts[&mesh];
+			return metaData.vertexCounts[&mesh];
 		}
 
 		bool OpenGLMeshBuffer::isIndexed() const
@@ -217,10 +164,53 @@ namespace simplicity
 
 		void OpenGLMeshBuffer::releaseData(const Mesh& mesh) const
 		{
-			glUnmapBuffer(GL_ARRAY_BUFFER);
-			OpenGL::checkError();
-			vertexCounts[&mesh] = meshData.vertexCount;
+			vertexBuffer->releaseData();
+			metaData.vertexCounts[&mesh] = meshData.vertexCount;
 
+			if (indexed)
+			{
+				indexBuffer->releaseData();
+				metaData.indexCounts[&mesh] = meshData.indexCount;
+			}
+
+			metaData.updateNextFree(mesh, indexed);
+		}
+
+		void OpenGLMeshBuffer::setPrimitiveType(PrimitiveType primitiveType)
+		{
+			this->primitiveType = primitiveType;
+		}
+
+		OpenGLMeshBuffer::MetaData::MetaData() :
+				baseIndices(),
+				baseVertices(),
+				indexCounts(),
+				nextFreeIndex(0),
+				nextFreeVertex(0),
+				vertexCounts()
+		{
+		}
+
+		void OpenGLMeshBuffer::MetaData::addMesh(const Mesh& mesh, bool indexed)
+		{
+			if (baseVertices.find(&mesh) == baseVertices.end())
+			{
+				baseVertices[&mesh] = nextFreeVertex;
+				vertexCounts[&mesh] = 0;
+			}
+
+			if (indexed)
+			{
+				if (baseIndices.find(&mesh) == baseIndices.end())
+				{
+					baseIndices[&mesh] = nextFreeIndex;
+					indexCounts[&mesh] = 0;
+				}
+			}
+		}
+
+		void OpenGLMeshBuffer::MetaData::updateNextFree(const Mesh& mesh, bool indexed)
+		{
 			unsigned int verticesEnd = baseVertices[&mesh] + vertexCounts[&mesh];
 			if (verticesEnd > nextFreeVertex)
 			{
@@ -229,10 +219,6 @@ namespace simplicity
 
 			if (indexed)
 			{
-				glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-				OpenGL::checkError();
-				indexCounts[&mesh] = meshData.indexCount;
-
 				unsigned int indicesEnd = baseIndices[&mesh] + indexCounts[&mesh];
 				if (indicesEnd > nextFreeIndex)
 				{

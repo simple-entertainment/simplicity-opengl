@@ -14,10 +14,10 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef OPENGLMODELFACTORY_H_
-#define OPENGLMODELFACTORY_H_
+#ifndef SIMPLEOPENGLBUFFER_H_
+#define SIMPLEOPENGLBUFFER_H_
 
-#include <simplicity/model/ModelFactory.h>
+#include "OpenGLBuffer.h"
 
 namespace simplicity
 {
@@ -25,16 +25,39 @@ namespace simplicity
 	{
 		/**
 		 * <p>
-		 * A factory that creates meshes implemented using OpenGL.
+		 * An OpenGL buffer.
 		 * </p>
 		 */
-		class SIMPLE_API OpenGLModelFactory : public ModelFactory
+		class SIMPLE_API SimpleOpenGLBuffer : public OpenGLBuffer
 		{
 			public:
-				std::shared_ptr<MeshBuffer> createMeshBuffer(const unsigned int vertexCount, unsigned int indexCount,
-						Buffer::AccessHint accessHint) override;
+				SimpleOpenGLBuffer(DataType dataType, unsigned int size, const byte* initialData = nullptr,
+						AccessHint accessHint = AccessHint::NONE);
+
+				~SimpleOpenGLBuffer();
+
+				AccessHint getAccessHint() const override;
+
+				byte* getData(bool readable) override;
+
+				const byte* getData() const override;
+
+				DataType getDataType() const override;
+
+				GLuint getName() const override;
+
+				void releaseData() const override;
+
+			private:
+				AccessHint accessHint;
+
+				DataType dataType;
+
+				GLuint name;
+
+				GLenum getOpenGLBufferTarget() const;
 		};
 	}
 }
 
-#endif /* OPENGLMODELFACTORY_H_ */
+#endif /* SIMPLEOPENGLBUFFER_H_ */

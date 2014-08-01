@@ -14,14 +14,28 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+#ifndef OPENGLBUFFER_H_
+#define OPENGLBUFFER_H_
 
-// Model
-#include "model/OpenGLModelFactory.h"
+#include <GL/glew.h>
 
-// Rendering
-#include "rendering/MultiDrawOpenGLRenderer.h"
-#include "rendering/OpenGLPipeline.h"
-#include "rendering/OpenGLRenderingEngine.h"
-#include "rendering/OpenGLRenderingFactory.h"
-#include "rendering/OpenGLShader.h"
-#include "rendering/SimpleOpenGLRenderer.h"
+#include <simplicity/common/Buffer.h>
+
+namespace simplicity
+{
+	namespace opengl
+	{
+		/**
+		 * <p>
+		 * An OpenGL buffer.
+		 * </p>
+		 */
+		class SIMPLE_API OpenGLBuffer : public Buffer
+		{
+			public:
+				virtual GLuint getName() const = 0;
+		};
+	}
+}
+
+#endif /* OPENGLBUFFER_H_ */

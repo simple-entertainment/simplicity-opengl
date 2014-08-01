@@ -19,6 +19,7 @@
 #include <simplicity/messaging/Messages.h>
 #include <simplicity/messaging/Subject.h>
 
+#include "../common/OpenGLBuffer.h"
 #include "OpenGL.h"
 #include "OpenGLPipeline.h"
 
@@ -124,6 +125,18 @@ namespace simplicity
 				Logs::log(Category::ERROR_LOG, "Error linking shader program:");
 				Logs::log(Category::ERROR_LOG, infoLog);
 			}
+		}
+
+		void OpenGLPipeline::set(const string& name, const Buffer& value)
+		{
+			// TODO Only supports a single uniform buffer so far... we could maintain a map of buffers to indexes to
+			// allow redundant setting.
+			glUniformBlockBinding(program, glGetUniformBlockIndex(program, name.data()), 0);
+			OpenGL::checkError();
+
+			const OpenGLBuffer& openGLBuffer = static_cast<const OpenGLBuffer&>(value);
+			glBindBufferBase(GL_UNIFORM_BUFFER, 0, openGLBuffer.getName());
+			OpenGL::checkError();
 		}
 
 		void OpenGLPipeline::set(const string& name, float value)

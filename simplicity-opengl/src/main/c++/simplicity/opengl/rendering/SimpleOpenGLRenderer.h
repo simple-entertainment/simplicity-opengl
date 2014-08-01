@@ -17,7 +17,7 @@
 #ifndef SIMPLEOPENGLRENDER_H_
 #define SIMPLEOPENGLRENDER_H_
 
-#include <simplicity/rendering/Renderer.h>
+#include "AbstractOpenGLRenderer.h"
 
 namespace simplicity
 {
@@ -28,59 +28,11 @@ namespace simplicity
 		 * A renderer implemented using OpenGL.
 		 * </p>
 		 */
-		class SIMPLE_API SimpleOpenGLRenderer : public Renderer
+		class SIMPLE_API SimpleOpenGLRenderer : public AbstractOpenGLRenderer
 		{
 			public:
-				SimpleOpenGLRenderer();
-
-				bool clearsColorBuffer() const override;
-
-				bool clearsDepthBuffer() const override;
-
-				bool clearsStencilBuffer() const override;
-
-				void dispose() override;
-
-				const Vector4& getClearingColor() const override;
-
-				Pipeline* getDefaultPipeline() override;
-
-				void init() override;
-
-				bool isScissorEnabled() const override;
-
 				void render(const MeshBuffer& buffer,
 						const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) override;
-
-				void setClearBuffers(bool clearBuffers) override;
-
-				void setClearColorBuffer(bool clearColorBuffer) override;
-
-				void setClearDepthBuffer(bool clearDepthBuffer) override;
-
-				void setClearingColor(const Vector4& clearingColor) override;
-
-				void setClearStencilBuffer(bool clearStencilBuffer) override;
-
-				void setScissor(const Vector<unsigned int, 2>& topLeft, const Vector<unsigned int, 2>& bottomRight)
-					override;
-
-				void setScissorEnabled(bool scissorEnabled) override;
-
-				void setDefaultPipeline(std::unique_ptr<Pipeline> pipeline) override;
-
-			private:
-				bool clearColorBuffer;
-
-				bool clearDepthBuffer;
-
-				Vector4 clearingColor;
-
-				bool clearStencilBuffer;
-
-				std::unique_ptr<Pipeline> pipeline;
-
-				int getOpenGLDrawingMode(Model::PrimitiveType primitiveType);
 		};
 	}
 }

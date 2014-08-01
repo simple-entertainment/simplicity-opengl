@@ -43,6 +43,8 @@ namespace simplicity
 
 				void apply() override;
 
+				void set(const std::string& name, const Buffer& value) override;
+
 				void set(const std::string& name, float value) override;
 
 				void set(const std::string& name, int value) override;

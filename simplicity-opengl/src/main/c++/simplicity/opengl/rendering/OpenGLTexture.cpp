@@ -16,7 +16,7 @@
  */
 #include "FreeImagePlus.h"
 
-#include "OpenGL.h"
+#include "../common/OpenGL.h"
 #include "OpenGLTexture.h"
 
 using namespace std;

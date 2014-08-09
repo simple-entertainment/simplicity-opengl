@@ -16,7 +16,8 @@
  */
 #include <memory>
 
-#include "../rendering/OpenGL.h"
+#include "../common/OpenGL.h"
+#include "../common/SimpleOpenGLBuffer.h"
 #include "OpenGLMeshBuffer.h"
 
 using namespace std;

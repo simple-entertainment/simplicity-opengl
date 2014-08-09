@@ -21,7 +21,7 @@
 
 #include <simplicity/model/MeshBuffer.h>
 
-#include "../common/SimpleOpenGLBuffer.h"
+#include "../common/OpenGLBuffer.h"
 
 namespace simplicity
 {
@@ -86,7 +86,7 @@ namespace simplicity
 					void updateNextFree(const Mesh& mesh, bool indexed);
 				};
 
-				std::unique_ptr<SimpleOpenGLBuffer> indexBuffer;
+				std::unique_ptr<OpenGLBuffer> indexBuffer;
 
 				bool indexed;
 
@@ -98,7 +98,7 @@ namespace simplicity
 
 				GLuint vaoName;
 
-				std::unique_ptr<SimpleOpenGLBuffer> vertexBuffer;
+				std::unique_ptr<OpenGLBuffer> vertexBuffer;
 		};
 	}
 }

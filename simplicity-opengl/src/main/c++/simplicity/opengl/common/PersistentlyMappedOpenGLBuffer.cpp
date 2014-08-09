@@ -16,7 +16,7 @@
  */
 #include <memory>
 
-#include "../rendering/OpenGL.h"
+#include "OpenGL.h"
 #include "PersistentlyMappedOpenGLBuffer.h"
 
 using namespace std;
@@ -32,7 +32,7 @@ namespace simplicity
 						dataType(dataType),
 						name(0)
 		{
-			GLenum access = GL_MAP_COHERENT_BIT | GL_MAP_PERSISTENT_BIT;
+			GLbitfield access = GL_MAP_COHERENT_BIT | GL_MAP_PERSISTENT_BIT;
 			if (accessHint == AccessHint::READ)
 			{
 				access |= GL_MAP_READ_BIT;
@@ -59,6 +59,10 @@ namespace simplicity
 
 		PersistentlyMappedOpenGLBuffer::~PersistentlyMappedOpenGLBuffer()
 		{
+			glBindBuffer(getOpenGLBufferTarget(), name);
+			OpenGL::checkError();
+		    glUnmapBuffer(getOpenGLBufferTarget());
+			OpenGL::checkError();
 			glDeleteBuffers(1, &name);
 			OpenGL::checkError();
 		}
@@ -70,14 +74,11 @@ namespace simplicity
 
 		byte* PersistentlyMappedOpenGLBuffer::getData(bool /* readable */)
 		{
-			const byte* data = static_cast<const PersistentlyMappedOpenGLBuffer*>(this)->getData();
-			return const_cast<byte*>(data);
+			return data;
 		}
 
 		const byte* PersistentlyMappedOpenGLBuffer::getData() const
 		{
-			// TODO Fencing... ?
-
 			return data;
 		}
 

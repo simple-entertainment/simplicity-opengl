@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef MULTIDRAWOPENGLRENDER_H_
-#define MULTIDRAWOPENGLRENDER_H_
+#ifndef OPENGLFENCE_H_
+#define OPENGLFENCE_H_
 
-#include "../common/OpenGLFence.h"
-#include "../common/PersistentlyMappedOpenGLBuffer.h"
-#include "AbstractOpenGLRenderer.h"
+#include <GL/glew.h>
+
+#include <simplicity/common/Defines.h>
 
 namespace simplicity
 {
@@ -27,26 +27,22 @@ namespace simplicity
 	{
 		/**
 		 * <p>
-		 * A renderer implemented using OpenGL.
+		 * An OpenGL fence.
 		 * </p>
 		 */
-		class SIMPLE_API MultiDrawOpenGLRenderer : public AbstractOpenGLRenderer
+		class SIMPLE_API OpenGLFence
 		{
 			public:
-				MultiDrawOpenGLRenderer();
+				OpenGLFence();
 
-				void render(const MeshBuffer& buffer,
-						const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) override;
+				~OpenGLFence();
+
+				void wait() const;
 
 			private:
-				std::unique_ptr<OpenGLFence> fence;
-
-				PersistentlyMappedOpenGLBuffer worldTransformBuffer;
-
-				void draw(const MeshBuffer& buffer, const std::vector<int>& counts,
-						const std::vector<GLvoid*>& baseIndexLocations, const std::vector<int>& baseVertices);
+				GLsync fence;
 		};
 	}
 }
 
-#endif /* MULTIDRAWOPENGLRENDER_H_ */
+#endif /* OPENGLFENCE_H_ */

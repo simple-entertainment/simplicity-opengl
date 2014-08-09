@@ -16,7 +16,7 @@
  */
 #include <GL/glew.h>
 
-#include "OpenGL.h"
+#include "../common/OpenGL.h"
 #include "AbstractOpenGLRenderer.h"
 
 using namespace std;

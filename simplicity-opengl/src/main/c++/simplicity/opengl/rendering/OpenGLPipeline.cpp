@@ -19,8 +19,8 @@
 #include <simplicity/messaging/Messages.h>
 #include <simplicity/messaging/Subject.h>
 
+#include "../common/OpenGL.h"
 #include "../common/OpenGLBuffer.h"
-#include "OpenGL.h"
 #include "OpenGLPipeline.h"
 
 using namespace std;

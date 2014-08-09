@@ -17,7 +17,7 @@
 #include <simplicity/common/Category.h>
 #include <simplicity/logging/Logs.h>
 
-#include "OpenGL.h"
+#include "../common/OpenGL.h"
 #include "OpenGLShader.h"
 
 using namespace std;

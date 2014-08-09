@@ -25,8 +25,8 @@
 #include <simplicity/rendering/Light.h>
 #include <simplicity/Simplicity.h>
 
+#include "../common/OpenGL.h"
 #include "../model/OpenGLMeshBuffer.h"
-#include "OpenGL.h"
 #include "OpenGLRenderingEngine.h"
 
 using namespace std;

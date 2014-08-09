@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "../rendering/OpenGL.h"
+#include "OpenGL.h"
 #include "SimpleOpenGLBuffer.h"
 
 using namespace std;
@@ -29,11 +29,25 @@ namespace simplicity
 						dataType(dataType),
 						name(0)
 		{
+			GLenum usage = GL_STATIC_DRAW;
+			if (accessHint == AccessHint::READ)
+			{
+				usage = GL_STATIC_READ;
+			}
+			else if (accessHint == AccessHint::READ_WRITE)
+			{
+				usage = GL_DYNAMIC_READ;
+			}
+			else if (accessHint == AccessHint::WRITE)
+			{
+				usage = GL_DYNAMIC_DRAW;
+			}
+
 			glGenBuffers(1, &name);
 			OpenGL::checkError();
 			glBindBuffer(getOpenGLBufferTarget(), name);
 			OpenGL::checkError();
-			glBufferData(getOpenGLBufferTarget(), size, initialData, GL_STATIC_DRAW);
+			glBufferData(getOpenGLBufferTarget(), size, initialData, usage);
 			OpenGL::checkError();
 		}
 

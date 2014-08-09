@@ -14,39 +14,40 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#ifndef MULTIDRAWOPENGLRENDER_H_
-#define MULTIDRAWOPENGLRENDER_H_
+#include "OpenGL.h"
+#include "OpenGLFence.h"
 
-#include "../common/OpenGLFence.h"
-#include "../common/PersistentlyMappedOpenGLBuffer.h"
-#include "AbstractOpenGLRenderer.h"
+const GLuint64 TIMEOUT = 1000000000; // One second.
 
 namespace simplicity
 {
 	namespace opengl
 	{
-		/**
-		 * <p>
-		 * A renderer implemented using OpenGL.
-		 * </p>
-		 */
-		class SIMPLE_API MultiDrawOpenGLRenderer : public AbstractOpenGLRenderer
+		OpenGLFence::OpenGLFence() :
+			fence(glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0))
 		{
-			public:
-				MultiDrawOpenGLRenderer();
+			// Check for an error caused by the call to glFenceSync in the initializer list.
+			OpenGL::checkError();
+		}
 
-				void render(const MeshBuffer& buffer,
-						const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) override;
+		OpenGLFence::~OpenGLFence()
+		{
+			glDeleteSync(fence);
+			OpenGL::checkError();
+		}
 
-			private:
-				std::unique_ptr<OpenGLFence> fence;
+		void OpenGLFence::wait() const
+		{
+			// First do a quick check.
+			GLenum result = glClientWaitSync(fence, 0, 0);
+			OpenGL::checkError();
 
-				PersistentlyMappedOpenGLBuffer worldTransformBuffer;
-
-				void draw(const MeshBuffer& buffer, const std::vector<int>& counts,
-						const std::vector<GLvoid*>& baseIndexLocations, const std::vector<int>& baseVertices);
-		};
+			while (result == GL_TIMEOUT_EXPIRED)
+			{
+				// Now flush and wait...
+				result = glClientWaitSync(fence, GL_SYNC_FLUSH_COMMANDS_BIT, TIMEOUT);
+				OpenGL::checkError();
+			}
+		}
 	}
 }
-
-#endif /* MULTIDRAWOPENGLRENDER_H_ */

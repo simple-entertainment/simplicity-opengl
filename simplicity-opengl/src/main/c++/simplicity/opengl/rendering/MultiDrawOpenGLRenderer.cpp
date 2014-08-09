@@ -18,14 +18,14 @@
 
 #include <GL/glew.h>
 
+#include "../common/OpenGL.h"
 #include "../model/OpenGLMeshBuffer.h"
-#include "OpenGL.h"
 #include "MultiDrawOpenGLRenderer.h"
 
 using namespace std;
 
 // This needs to be small enough for the transform data to fit in the GLSL block as an array.
-// TODO In the future shader storage blocks (GL 4.3 / ARB_shader_storage_buffer_objects) can remove this limitation.
+// TODO SSBOs can remove this limitation.
 const unsigned int MAX_INSTANCES_PER_DRAW = 64;
 
 namespace simplicity
@@ -33,6 +33,7 @@ namespace simplicity
 	namespace opengl
 	{
 		MultiDrawOpenGLRenderer::MultiDrawOpenGLRenderer() :
+				fence(nullptr),
 				worldTransformBuffer(Buffer::DataType::SHADER_DATA, sizeof(Matrix44) * MAX_INSTANCES_PER_DRAW, nullptr,
 						Buffer::AccessHint::WRITE)
 		{
@@ -66,6 +67,12 @@ namespace simplicity
 						counts.size());
 				OpenGL::checkError();
 			}
+
+			glFlush();
+			glFinish();
+			//fence = unique_ptr<OpenGLFence>(new OpenGLFence);
+			//ence->wait();
+			//fence = nullptr;
 		}
 
 		void MultiDrawOpenGLRenderer::render(const MeshBuffer& buffer,

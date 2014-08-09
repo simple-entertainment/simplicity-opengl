@@ -16,8 +16,8 @@
  */
 #include <GL/glew.h>
 
+#include "../common/OpenGL.h"
 #include "../model/OpenGLMeshBuffer.h"
-#include "OpenGL.h"
 #include "SimpleOpenGLRenderer.h"
 
 using namespace std;

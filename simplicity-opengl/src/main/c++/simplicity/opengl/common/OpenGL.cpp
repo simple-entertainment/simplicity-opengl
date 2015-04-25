@@ -32,7 +32,7 @@ namespace simplicity
 
 				if (error != GL_NO_ERROR)
 				{
-					Logs::log(Category::ERROR_LOG, "OpenGL error: %i", error);
+					Logs::log(Category::ERROR_LOG, "OpenGL error %i: %s", error, gluErrorString(error));
 				}
 			}
 		}

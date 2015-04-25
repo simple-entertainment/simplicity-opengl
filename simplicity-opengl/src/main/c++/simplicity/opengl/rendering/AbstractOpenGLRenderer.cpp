@@ -18,6 +18,9 @@
 
 #include "../common/OpenGL.h"
 #include "AbstractOpenGLRenderer.h"
+#include "DefaultShaderSource.h"
+#include "OpenGLPipeline.h"
+#include "OpenGLShader.h"
 
 using namespace std;
 
@@ -110,6 +113,16 @@ namespace simplicity
 			{
 				glClear(GL_STENCIL_BUFFER_BIT);
 				OpenGL::checkError();
+			}
+
+			// Provide the default pipeline.
+			if (pipeline == nullptr)
+			{
+				unique_ptr<OpenGLShader> vertexShader(
+						new OpenGLShader(Shader::Type::VERTEX, defaultVertexShaderSource));
+				unique_ptr<OpenGLShader> fragmentShader(
+						new OpenGLShader(Shader::Type::FRAGMENT, defaultFragmentShaderSource));
+				pipeline = unique_ptr<Pipeline>(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
 			}
 		}
 

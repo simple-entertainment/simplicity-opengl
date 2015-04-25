@@ -33,6 +33,8 @@ namespace simplicity
 			public:
 				OpenGLShader(Type type, Resource& source);
 
+				OpenGLShader(Type type, const std::string& source);
+
 				~OpenGLShader();
 
 				GLuint getShader();

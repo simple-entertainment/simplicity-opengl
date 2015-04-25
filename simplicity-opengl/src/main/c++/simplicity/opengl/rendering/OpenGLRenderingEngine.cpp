@@ -28,6 +28,7 @@
 #include "../common/OpenGL.h"
 #include "../model/OpenGLMeshBuffer.h"
 #include "OpenGLRenderingEngine.h"
+#include "SimpleOpenGLRenderer.h"
 
 using namespace std;
 
@@ -73,6 +74,13 @@ namespace simplicity
 			OpenGL::checkError();
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			OpenGL::checkError();
+
+			// Provide the default renderer.
+			if (!hasRenderers())
+			{
+				unique_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
+				addRenderer(move(renderer));
+			}
 		}
 
 		void OpenGLRenderingEngine::postAdvance()

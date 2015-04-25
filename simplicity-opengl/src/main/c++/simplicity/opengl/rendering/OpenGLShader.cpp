@@ -33,6 +33,13 @@ namespace simplicity
 		{
 		}
 
+		OpenGLShader::OpenGLShader(Type type, const string& source) :
+			shader(0),
+			source(source),
+			type(type)
+		{
+		}
+
 		OpenGLShader::~OpenGLShader()
 		{
 			// TODO Clean up the shader?

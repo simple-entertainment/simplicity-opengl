@@ -48,6 +48,7 @@ namespace simplicity
 				if (mesh->getTexture() != nullptr)
 				{
 					mesh->getTexture()->apply(*getDefaultPipeline());
+					getDefaultPipeline()->set("samplerEnabled", 1);
 				}
 
 				if (buffer.isIndexed())
@@ -68,6 +69,8 @@ namespace simplicity
 							buffer.getVertexCount(*mesh));
 					OpenGL::checkError();
 				}
+
+				getDefaultPipeline()->set("samplerEnabled", 0);
 			}
 		}
 	}

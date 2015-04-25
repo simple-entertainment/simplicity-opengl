@@ -45,6 +45,11 @@ namespace simplicity
 				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
 				getDefaultPipeline()->set("worldTransform", modelAndTransform.second);
 
+				if (mesh->getTexture() != nullptr)
+				{
+					mesh->getTexture()->apply(*getDefaultPipeline());
+				}
+
 				if (buffer.isIndexed())
 				{
 					glDrawElementsBaseVertex(

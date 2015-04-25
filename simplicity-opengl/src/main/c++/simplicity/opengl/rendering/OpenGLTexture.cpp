@@ -25,8 +25,9 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLTexture::OpenGLTexture(const char* data, unsigned int length) :
+		OpenGLTexture::OpenGLTexture(const char* data, unsigned int length, PixelFormat format) :
 			data(data, length),
+			format(format),
 			height(0),
 			initialized(false),
 			rawData(nullptr),
@@ -35,8 +36,9 @@ namespace simplicity
 		{
 		}
 
-		OpenGLTexture::OpenGLTexture(const char* rawData, unsigned int width, unsigned int height) :
+		OpenGLTexture::OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format) :
 			data(),
+			format(format),
 			height(height),
 			initialized(false),
 			rawData(rawData),
@@ -45,8 +47,9 @@ namespace simplicity
 		{
 		}
 
-		OpenGLTexture::OpenGLTexture(Resource& image) :
+		OpenGLTexture::OpenGLTexture(Resource& image, PixelFormat format) :
 			data(image.getData()),
+			format(format),
 			height(0),
 			initialized(false),
 			rawData(nullptr),
@@ -69,12 +72,52 @@ namespace simplicity
 			glBindTexture(GL_TEXTURE_2D, texture);
 			OpenGL::checkError();
 
-			pipeline.set("sampler", 0);
+			pipeline.set("sampler", 0); // i.e. GL_TEXTURE0
 		}
 
 		unsigned int OpenGLTexture::getHeight()
 		{
 			return height;
+		}
+
+		GLenum OpenGLTexture::getOpenGLInternalPixelFormat()
+		{
+			if (format == PixelFormat::BGR || format == PixelFormat::RGB)
+			{
+				return GL_RGB;
+			}
+
+			if (format == PixelFormat::BGRA || format == PixelFormat::RGBA)
+			{
+				return GL_RGBA;
+			}
+
+			return -1;
+		}
+
+		GLenum OpenGLTexture::getOpenGLPixelFormat()
+		{
+			if (format == PixelFormat::BGR)
+			{
+				return GL_BGR;
+			}
+
+			if (format == PixelFormat::BGRA)
+			{
+				return GL_BGRA;
+			}
+
+			if (format == PixelFormat::RGB)
+			{
+				return GL_RGB;
+			}
+
+			if (format == PixelFormat::RGBA)
+			{
+				return GL_RGBA;
+			}
+
+			return -1;
 		}
 
 		unsigned int OpenGLTexture::getWidth()
@@ -86,11 +129,12 @@ namespace simplicity
 		{
 			glGenTextures(1, &texture);
 			OpenGL::checkError();
-			glBindTexture(GL_TEXTURE_2D, texture);
-			OpenGL::checkError();
 
 			if (rawData == nullptr)
 			{
+				glBindTexture(GL_TEXTURE_2D, texture);
+				OpenGL::checkError();
+
 				fipImage image;
 
 				fipMemoryIO memory(reinterpret_cast<BYTE*>(&data[0]), data.size());
@@ -99,15 +143,15 @@ namespace simplicity
 				height = image.getHeight();
 				width = image.getWidth();
 
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.accessPixels());
+				glTexImage2D(GL_TEXTURE_2D, 0, getOpenGLInternalPixelFormat(), width, height, 0,
+						getOpenGLPixelFormat(), GL_UNSIGNED_BYTE, image.accessPixels());
 				OpenGL::checkError();
 
 				data.resize(0);
 			}
 			else
 			{
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, rawData);
-				OpenGL::checkError();
+				setRawData(rawData);
 
 				// libRocket doesn't like this... TODO
 				//delete rawData;
@@ -120,6 +164,16 @@ namespace simplicity
 			OpenGL::checkError();
 
 			initialized = true;
+		}
+
+		void OpenGLTexture::setRawData(const char* rawData)
+		{
+			glBindTexture(GL_TEXTURE_2D, texture);
+			OpenGL::checkError();
+
+			glTexImage2D(GL_TEXTURE_2D, 0, getOpenGLInternalPixelFormat(), width, height, 0, getOpenGLPixelFormat(),
+					GL_UNSIGNED_BYTE, rawData);
+			OpenGL::checkError();
 		}
 	}
 }

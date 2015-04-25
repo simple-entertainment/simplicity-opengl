@@ -21,6 +21,7 @@
 
 #include <GL/glew.h>
 
+#include <simplicity/rendering/PixelFormat.h>
 #include <simplicity/rendering/Texture.h>
 #include <simplicity/resources/Resource.h>
 
@@ -39,20 +40,23 @@ namespace simplicity
 				/**
 				 * @param data The texture data.
 				 * @param length The length of the data.
+				 * @param format The format of the texture.
 				 */
-				OpenGLTexture(const char* data, unsigned int length);
+				OpenGLTexture(const char* data, unsigned int length, PixelFormat format);
 
 				/**
-				 * @param rawData The raw RGBA texture data.
+				 * @param rawData The raw texture data.
 				 * @param width The width of the texture.
 				 * @param height The height of the texture.
+				 * @param format The format of the texture.
 				 */
-				OpenGLTexture(const char* rawData, unsigned int width, unsigned int height);
+				OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format);
 
 				/**
 				 * @param image The image resource.
+				 * @param format The format of the texture.
 				 */
-				OpenGLTexture(Resource& image);
+				OpenGLTexture(Resource& image, PixelFormat format);
 
 				void apply(Pipeline& pipeline) override;
 
@@ -62,8 +66,12 @@ namespace simplicity
 
 				void init() override;
 
+				void setRawData(const char* rawData) override;
+
 			private:
 				std::string data;
+
+				PixelFormat format;
 
 				unsigned int height;
 
@@ -74,6 +82,10 @@ namespace simplicity
 				GLuint texture;
 
 				unsigned int width;
+
+				GLenum getOpenGLInternalPixelFormat();
+
+				GLenum getOpenGLPixelFormat();
 		};
 	}
 }

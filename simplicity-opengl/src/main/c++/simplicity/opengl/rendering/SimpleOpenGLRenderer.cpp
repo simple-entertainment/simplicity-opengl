@@ -47,7 +47,8 @@ namespace simplicity
 
 				if (mesh->getTexture() != nullptr)
 				{
-					mesh->getTexture()->apply(*getDefaultPipeline());
+					mesh->getTexture()->apply();
+					getDefaultPipeline()->set("sampler", 0);
 					getDefaultPipeline()->set("samplerEnabled", 1);
 				}
 

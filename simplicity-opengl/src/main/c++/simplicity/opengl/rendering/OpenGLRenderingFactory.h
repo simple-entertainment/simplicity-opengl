@@ -33,8 +33,8 @@ namespace simplicity
 			public:
 				std::unique_ptr<Texture> createTexture(const char* data, unsigned int length, PixelFormat format) override;
 
-				std::unique_ptr<Texture> createTexture(const char* rawData, unsigned int width,
-					unsigned int height, PixelFormat format) override;
+				std::unique_ptr<Texture> createTexture(char* rawData, unsigned int width, unsigned int height,
+						PixelFormat format) override;
 
 				std::unique_ptr<Texture> createTexture(Resource& image, PixelFormat format) override;
 		};

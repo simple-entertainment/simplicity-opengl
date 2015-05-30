@@ -36,7 +36,7 @@ namespace simplicity
 		{
 		}
 
-		OpenGLTexture::OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format) :
+		OpenGLTexture::OpenGLTexture(char* rawData, unsigned int width, unsigned int height, PixelFormat format) :
 			data(),
 			format(format),
 			height(height),
@@ -58,7 +58,12 @@ namespace simplicity
 		{
 		}
 
-		void OpenGLTexture::apply(Pipeline& pipeline)
+		OpenGLTexture::~OpenGLTexture()
+		{
+			delete[] rawData;
+		}
+
+		void OpenGLTexture::apply()
 		{
 			// Initialization needs to occur after OpenGL is initialized, this might not have happened when the
 			// constructor is called.
@@ -71,16 +76,14 @@ namespace simplicity
 			OpenGL::checkError();
 			glBindTexture(GL_TEXTURE_2D, texture);
 			OpenGL::checkError();
-
-			pipeline.set("sampler", 0); // i.e. GL_TEXTURE0
 		}
 
-		unsigned int OpenGLTexture::getHeight()
+		unsigned int OpenGLTexture::getHeight() const
 		{
 			return height;
 		}
 
-		GLenum OpenGLTexture::getOpenGLInternalPixelFormat()
+		GLenum OpenGLTexture::getOpenGLInternalPixelFormat() const
 		{
 			if (format == PixelFormat::BGR || format == PixelFormat::RGB)
 			{
@@ -95,7 +98,7 @@ namespace simplicity
 			return -1;
 		}
 
-		GLenum OpenGLTexture::getOpenGLPixelFormat()
+		GLenum OpenGLTexture::getOpenGLPixelFormat() const
 		{
 			if (format == PixelFormat::BGR)
 			{
@@ -120,7 +123,23 @@ namespace simplicity
 			return -1;
 		}
 
-		unsigned int OpenGLTexture::getWidth()
+		const char* OpenGLTexture::getRawData() const
+		{
+			glBindTexture(GL_TEXTURE_2D, texture);
+			OpenGL::checkError();
+
+			glGetTexImage(GL_TEXTURE_2D, 0, getOpenGLInternalPixelFormat(), GL_UNSIGNED_BYTE, rawData);
+			OpenGL::checkError();
+
+			return rawData;
+		}
+
+		GLuint OpenGLTexture::getTexture() const
+		{
+			return texture;
+		}
+
+		unsigned int OpenGLTexture::getWidth() const
 		{
 			return width;
 		}
@@ -130,7 +149,7 @@ namespace simplicity
 			glGenTextures(1, &texture);
 			OpenGL::checkError();
 
-			if (rawData == nullptr)
+			if (!data.empty())
 			{
 				glBindTexture(GL_TEXTURE_2D, texture);
 				OpenGL::checkError();
@@ -152,10 +171,6 @@ namespace simplicity
 			else
 			{
 				setRawData(rawData);
-
-				// libRocket doesn't like this... TODO
-				//delete rawData;
-				//rawData = nullptr;
 			}
 
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -166,8 +181,10 @@ namespace simplicity
 			initialized = true;
 		}
 
-		void OpenGLTexture::setRawData(const char* rawData)
+		void OpenGLTexture::setRawData(char* rawData)
 		{
+			this->rawData = rawData;
+
 			glBindTexture(GL_TEXTURE_2D, texture);
 			OpenGL::checkError();
 

@@ -50,7 +50,9 @@ namespace simplicity
 				 * @param height The height of the texture.
 				 * @param format The format of the texture.
 				 */
-				OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format);
+				OpenGLTexture(char* rawData, unsigned int width, unsigned int height, PixelFormat format);
+
+				~OpenGLTexture();
 
 				/**
 				 * @param image The image resource.
@@ -58,15 +60,19 @@ namespace simplicity
 				 */
 				OpenGLTexture(Resource& image, PixelFormat format);
 
-				void apply(Pipeline& pipeline) override;
+				void apply() override;
 
-				unsigned int getHeight() override;
+				unsigned int getHeight() const override;
 
-				unsigned int getWidth() override;
+				const char* getRawData() const override;
+
+				GLuint getTexture() const;
+
+				unsigned int getWidth() const override;
 
 				void init() override;
 
-				void setRawData(const char* rawData) override;
+				void setRawData(char* rawData) override;
 
 			private:
 				std::string data;
@@ -77,15 +83,15 @@ namespace simplicity
 
 				bool initialized;
 
-				const char* rawData;
+				char* rawData;
 
 				GLuint texture;
 
 				unsigned int width;
 
-				GLenum getOpenGLInternalPixelFormat();
+				GLenum getOpenGLInternalPixelFormat() const;
 
-				GLenum getOpenGLPixelFormat();
+				GLenum getOpenGLPixelFormat() const;
 		};
 	}
 }

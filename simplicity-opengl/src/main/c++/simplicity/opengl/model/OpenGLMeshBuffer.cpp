@@ -97,6 +97,9 @@ namespace simplicity
 
 		MeshData& OpenGLMeshBuffer::getData(const Mesh& mesh, bool readable)
 		{
+			glBindVertexArray(vaoName);
+			OpenGL::checkError();
+
 			metaData.addMesh(mesh, indexed);
 
 			byte* vertexData = vertexBuffer->getData(readable);
@@ -117,6 +120,9 @@ namespace simplicity
 
 		const MeshData& OpenGLMeshBuffer::getData(const Mesh& mesh) const
 		{
+			glBindVertexArray(vaoName);
+			OpenGL::checkError();
+
 			// Sorry about the const casts!!!
 			// Fear not though, the MeshData object they are being given to is returned as const.
 
@@ -175,6 +181,10 @@ namespace simplicity
 			}
 
 			metaData.updateNextFree(mesh, indexed);
+
+			// Unbind the vertex array.
+			glBindVertexArray(0);
+			OpenGL::checkError();
 		}
 
 		void OpenGLMeshBuffer::setPrimitiveType(PrimitiveType primitiveType)

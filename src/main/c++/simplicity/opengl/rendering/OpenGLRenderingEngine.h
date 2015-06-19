@@ -19,6 +19,8 @@
 
 #include <simplicity/rendering/AbstractRenderingEngine.h>
 
+#include "OpenGLFrameBuffer.h"
+
 namespace simplicity
 {
 	namespace opengl
@@ -30,7 +32,16 @@ namespace simplicity
 		 */
 		class SIMPLE_API OpenGLRenderingEngine : public AbstractRenderingEngine
 		{
+			public:
+				OpenGLRenderingEngine();
+
+				void setFrameBuffer(std::unique_ptr<OpenGLFrameBuffer> frameBuffer);
+
 			private:
+				std::unique_ptr<OpenGLFrameBuffer> frameBuffer;
+
+				bool frameBufferChanged;
+
 				void dispose() override;
 
 				void init() override;

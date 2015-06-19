@@ -36,6 +36,12 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		OpenGLRenderingEngine::OpenGLRenderingEngine() :
+				frameBuffer(),
+				frameBufferChanged(false)
+		{
+		}
+
 		void OpenGLRenderingEngine::dispose()
 		{
 			// Revert depth test settings.
@@ -91,7 +97,24 @@ namespace simplicity
 		{
 			// If we are using FreeGLUT the window may have been closed during this frame.
 			// This is a bit ugly but we need to check for it since OpenGL would no longer be available.
-			return Simplicity::isPlaying();
+			if (!Simplicity::isPlaying())
+			{
+				//return false;
+			}
+
+			if (frameBufferChanged)
+			{
+				frameBuffer->apply();
+				frameBufferChanged = false;
+			}
+
+			return true;
+		}
+
+		void OpenGLRenderingEngine::setFrameBuffer(unique_ptr<OpenGLFrameBuffer> frameBuffer)
+		{
+			this->frameBuffer = move(frameBuffer);
+			frameBufferChanged= true;
 		}
 	}
 }

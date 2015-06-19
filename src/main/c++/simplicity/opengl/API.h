@@ -20,6 +20,7 @@
 
 // Rendering
 #include "rendering/MultiDrawOpenGLRenderer.h"
+#include "rendering/OpenGLFrameBuffer.h"
 #include "rendering/OpenGLPipeline.h"
 #include "rendering/OpenGLRenderingEngine.h"
 #include "rendering/OpenGLRenderingFactory.h"

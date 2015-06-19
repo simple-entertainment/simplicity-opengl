@@ -86,8 +86,8 @@ namespace simplicity
 				glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
 				OpenGL::checkError();
 
-				Logs::log(Category::ERROR_LOG, "Error compiling shader:");
-				Logs::log(Category::ERROR_LOG, infoLog);
+				Logs::error("simplicity::opengl", "Error compiling shader:");
+				Logs::error("simplicity::opengl", infoLog);
 			}
 		}
 	}

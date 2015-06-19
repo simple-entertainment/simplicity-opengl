@@ -21,6 +21,8 @@ namespace simplicity
 		namespace OpenGL
 		{
 			void checkError();
+
+			void createHeadlessContext();
 		}
 	}
 }

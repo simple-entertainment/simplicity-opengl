@@ -77,8 +77,8 @@ namespace simplicity
 				glGetProgramInfoLog(program, sizeof(infoLog), nullptr, infoLog);
 				OpenGL::checkError();
 
-				Logs::log(Category::ERROR_LOG, "Error validating shader program:");
-				Logs::log(Category::ERROR_LOG, infoLog);
+				Logs::error("simplicity::opengl", "Error validating shader program:");
+				Logs::error("simplicity::opengl", infoLog);
 		    }
 
 			glUseProgram(program);
@@ -122,8 +122,8 @@ namespace simplicity
 				glGetProgramInfoLog(program, sizeof(infoLog), nullptr, infoLog);
 				OpenGL::checkError();
 
-				Logs::log(Category::ERROR_LOG, "Error linking shader program:");
-				Logs::log(Category::ERROR_LOG, infoLog);
+				Logs::error("simplicity::opengl", "Error linking shader program:");
+				Logs::error("simplicity::opengl", infoLog);
 			}
 		}
 

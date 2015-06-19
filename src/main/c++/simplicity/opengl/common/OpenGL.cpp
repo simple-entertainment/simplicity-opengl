@@ -32,8 +32,58 @@ namespace simplicity
 
 				if (error != GL_NO_ERROR)
 				{
-					Logs::log(Category::ERROR_LOG, "OpenGL error %i: %s", error, gluErrorString(error));
+					Logs::error("simplicity::opengl", "OpenGL error %i: %s", error, gluErrorString(error));
 				}
+			}
+
+			void createHeadlessContext()
+			{
+/*#ifdef SIMPLE_LINUX
+				// Taken from here: http://renderingpipeline.com/2012/05/windowless-opengl/
+
+				typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+				typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable, GLXContext);
+				static glXCreateContextAttribsARBProc glXCreateContextAttribsARB = nullptr;
+				static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = nullptr;
+
+				glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc) glXGetProcAddressARB((const GLubyte*) "glXCreateContextAttribsARB");
+				glXMakeContextCurrentARB = (glXMakeContextCurrentARBProc) glXGetProcAddressARB((const GLubyte*) "glXMakeContextCurrent");
+
+				// TODO nullptr checks
+
+				Display* display = XOpenDisplay(nullptr);
+
+				static int visualAttribs[] = { None };
+				int numberOfFramebufferConfigurations = 0;
+				GLXFBConfig* fbConfigs = glXChooseFBConfig(display, DefaultScreen(display), visualAttribs, &numberOfFramebufferConfigurations);
+
+				int context_attribs[] = {
+				    GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+				    GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+				    GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_DEBUG_BIT_ARB,
+				    GLX_CONTEXT_PROFILE_MASK_ARB, GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
+				    None
+				};
+
+				GLXContext openGLContext = glXCreateContextAttribsARB(display, fbConfigs[0], 0, True, context_attribs);
+
+				int pbufferAttribs[] = {
+				    GLX_PBUFFER_WIDTH,  32,
+				    GLX_PBUFFER_HEIGHT, 32,
+				    None
+				};
+
+				GLXPbuffer pbuffer = glXCreatePbuffer(display, fbConfigs[0], pbufferAttribs);
+
+				// clean up:
+				XFree(fbConfigs);
+				XSync(display, False);
+
+				if (!glXMakeContextCurrent(display, pbuffer, pbuffer, openGLContext))
+				{
+				    // something went wrong
+				}
+#endif*/
 			}
 		}
 	}

@@ -60,8 +60,7 @@ namespace simplicity
 
 				void setClearStencilBuffer(bool clearStencilBuffer) override;
 
-				void setScissor(const Vector<unsigned int, 2>& topLeft, const Vector<unsigned int, 2>& bottomRight)
-					override;
+				void setScissor(const Vector2ui& topLeft, const Vector2ui& bottomRight) override;
 
 				void setScissorEnabled(bool scissorEnabled) override;
 

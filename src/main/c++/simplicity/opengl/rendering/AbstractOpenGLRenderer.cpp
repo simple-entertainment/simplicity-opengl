@@ -161,8 +161,7 @@ namespace simplicity
 			this->clearStencilBuffer = clearStencilBuffer;
 		}
 
-		void AbstractOpenGLRenderer::setScissor(const Vector<unsigned int, 2>& topLeft,
-				const Vector<unsigned int, 2>& bottomRight)
+		void AbstractOpenGLRenderer::setScissor(const Vector2ui& topLeft, const Vector2ui& bottomRight)
 		{
 			GLint viewport[4];
 			glGetIntegerv(GL_VIEWPORT, viewport);

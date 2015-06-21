@@ -97,9 +97,9 @@ namespace simplicity
 		{
 			// If we are using FreeGLUT the window may have been closed during this frame.
 			// This is a bit ugly but we need to check for it since OpenGL would no longer be available.
-			if (!Simplicity::isPlaying())
+			if (Simplicity::getState() == Simplicity::State::STOPPING)
 			{
-				//return false;
+				return false;
 			}
 
 			if (frameBufferChanged)

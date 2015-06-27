@@ -1,0 +1,3 @@
+[submodule "lib/glew"]
+	path = lib/glew
+	url = git@github.com:nigels-com/glew.git

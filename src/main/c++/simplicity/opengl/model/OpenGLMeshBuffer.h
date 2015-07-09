@@ -52,6 +52,8 @@ namespace simplicity
 
 				unsigned int getIndexCount(const Mesh& mesh) const override;
 
+				Pipeline* getPipeline() const override;
+
 				PrimitiveType getPrimitiveType() const override;
 
 				GLuint getVAOName() const;
@@ -61,6 +63,8 @@ namespace simplicity
 				bool isIndexed() const override;
 
 				void releaseData(const Mesh& mesh) const override;
+
+				void setPipeline(std::shared_ptr<Pipeline> pipeline) override;
 
 				void setPrimitiveType(PrimitiveType primitiveType) override;
 
@@ -93,6 +97,8 @@ namespace simplicity
 				mutable MeshData meshData;
 
 				mutable MetaData metaData;
+
+				std::shared_ptr<Pipeline> pipeline;
 
 				PrimitiveType primitiveType;
 

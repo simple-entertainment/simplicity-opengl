@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include "FreeImagePlus.h"
+#include <string.h>
+
+#include <FreeImagePlus.h>
 
 #include "../common/OpenGL.h"
 #include "OpenGLTexture.h"
@@ -36,23 +38,29 @@ namespace simplicity
 		{
 		}
 
-		OpenGLTexture::OpenGLTexture(char* rawData, unsigned int width, unsigned int height, PixelFormat format) :
+		OpenGLTexture::OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format) :
 			data(),
+			dirty(false),
 			format(format),
 			height(height),
 			initialized(false),
-			rawData(rawData),
+			rawData(new char[width * height * getPixelDepth(format)]),
 			texture(0),
 			width(width)
 		{
+			if (rawData != nullptr)
+			{
+				memcpy(this->rawData, rawData, width * height * getPixelDepth(format));
+			}
 		}
 
 		OpenGLTexture::OpenGLTexture(Resource& image, PixelFormat format) :
 			data(image.getData()),
+			dirty(true),
 			format(format),
 			height(0),
 			initialized(false),
-			rawData(nullptr),
+			rawData(new char[width * height * getPixelDepth(format)]),
 			texture(0),
 			width(0)
 		{
@@ -123,13 +131,23 @@ namespace simplicity
 			return -1;
 		}
 
+		PixelFormat OpenGLTexture::getPixelFormat() const
+		{
+			return format;
+		}
+
 		const char* OpenGLTexture::getRawData() const
 		{
-			glBindTexture(GL_TEXTURE_2D, texture);
-			OpenGL::checkError();
+			if (dirty)
+			{
+				glBindTexture(GL_TEXTURE_2D, texture);
+				OpenGL::checkError();
 
-			glGetTexImage(GL_TEXTURE_2D, 0, getOpenGLInternalPixelFormat(), GL_UNSIGNED_BYTE, rawData);
-			OpenGL::checkError();
+				glGetTexImage(GL_TEXTURE_2D, 0, getOpenGLInternalPixelFormat(), GL_UNSIGNED_BYTE, rawData);
+				OpenGL::checkError();
+
+				dirty = false;
+			}
 
 			return rawData;
 		}
@@ -181,9 +199,9 @@ namespace simplicity
 			initialized = true;
 		}
 
-		void OpenGLTexture::setRawData(char* rawData)
+		void OpenGLTexture::setRawData(const char* rawData)
 		{
-			this->rawData = rawData;
+			memcpy(this->rawData, rawData, width * height * getPixelDepth(format));
 
 			glBindTexture(GL_TEXTURE_2D, texture);
 			OpenGL::checkError();

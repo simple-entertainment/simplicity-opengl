@@ -16,19 +16,13 @@
  */
 #include <algorithm>
 
-#include <GL/glew.h>
-
-#include <simplicity/common/AddressEquals.h>
-#include <simplicity/math/Intersection.h>
-#include <simplicity/math/MathFunctions.h>
-#include <simplicity/rendering/Camera.h>
-#include <simplicity/rendering/Light.h>
 #include <simplicity/Simplicity.h>
 
 #include "../common/OpenGL.h"
 #include "../model/OpenGLMeshBuffer.h"
+#include "DefaultShaderSource.h"
 #include "OpenGLRenderingEngine.h"
-#include "SimpleOpenGLRenderer.h"
+#include "OpenGLPipeline.h"
 
 using namespace std;
 
@@ -44,6 +38,16 @@ namespace simplicity
 
 		void OpenGLRenderingEngine::dispose()
 		{
+			// Revert blending settings.
+			glBlendFunc(GL_ONE, GL_ZERO);
+			OpenGL::checkError();
+			glDisable(GL_BLEND);
+			OpenGL::checkError();
+
+			// Revert clearing settings.
+			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			OpenGL::checkError();
+
 			// Revert depth test settings.
 			glDepthFunc(GL_LESS);
 			OpenGL::checkError();
@@ -53,12 +57,56 @@ namespace simplicity
 			// Revert face culling settings.
 			glDisable(GL_CULL_FACE);
 			OpenGL::checkError();
+		}
 
-			// Revert blending settings.
-			glBlendFunc(GL_ONE, GL_ZERO);
-			OpenGL::checkError();
-			glDisable(GL_BLEND);
-			OpenGL::checkError();
+		void OpenGLRenderingEngine::draw(const MeshBuffer& buffer, const Mesh& mesh) const
+		{
+			GLenum drawingMode = getOpenGLDrawingMode(buffer.getPrimitiveType());
+
+			if (buffer.isIndexed())
+			{
+				glDrawElementsBaseVertex(
+						drawingMode,
+						buffer.getIndexCount(mesh),
+						GL_UNSIGNED_INT,
+						reinterpret_cast<GLvoid*>(buffer.getBaseIndex(mesh) * sizeof(unsigned int)),
+						buffer.getBaseVertex(mesh));
+				OpenGL::checkError();
+			}
+			else
+			{
+				glDrawArrays(
+						drawingMode,
+						buffer.getBaseVertex(mesh),
+						buffer.getVertexCount(mesh));
+				OpenGL::checkError();
+			}
+		}
+
+		GLenum OpenGLRenderingEngine::getOpenGLDrawingMode(MeshBuffer::PrimitiveType primitiveType) const
+		{
+			if (primitiveType == MeshBuffer::PrimitiveType::POINTS)
+			{
+				return GL_POINTS;
+			}
+			else if (primitiveType == MeshBuffer::PrimitiveType::LINE_LIST)
+			{
+				return GL_LINE;
+			}
+			else if (primitiveType == MeshBuffer::PrimitiveType::LINE_STRIP)
+			{
+				return GL_LINE_STRIP;
+			}
+			else if (primitiveType == MeshBuffer::PrimitiveType::TRIANGLE_LIST)
+			{
+				return GL_TRIANGLES;
+			}
+			else if (primitiveType == MeshBuffer::PrimitiveType::TRIANGLE_STRIP)
+			{
+				return GL_TRIANGLE_STRIP;
+			}
+
+			return GL_TRIANGLES;
 		}
 
 		void OpenGLRenderingEngine::init()
@@ -81,11 +129,15 @@ namespace simplicity
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			OpenGL::checkError();
 
-			// Provide the default renderer.
-			if (!hasRenderers())
+			if (getDefaultPipeline() == nullptr)
 			{
-				unique_ptr<Renderer> renderer(new SimpleOpenGLRenderer);
-				addRenderer(move(renderer));
+				// Provide the default pipeline.
+				unique_ptr<OpenGLShader> vertexShader(
+						new OpenGLShader(Shader::Type::VERTEX, defaultVertexShaderSource));
+				unique_ptr<OpenGLShader> fragmentShader(
+						new OpenGLShader(Shader::Type::FRAGMENT, defaultFragmentShaderSource));
+				unique_ptr<Pipeline> defaultPipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
+				setDefaultPipeline(move(defaultPipeline));
 			}
 		}
 
@@ -108,13 +160,47 @@ namespace simplicity
 				frameBufferChanged = false;
 			}
 
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+			OpenGL::checkError();
+
 			return true;
+		}
+
+		void OpenGLRenderingEngine::render(const MeshBuffer& buffer, Pipeline& pipeline,
+										   const vector<pair<Model*, Matrix44>>& modelsAndTransforms) const
+		{
+			const OpenGLMeshBuffer& openGLBuffer = static_cast<const OpenGLMeshBuffer&>(buffer);
+			glBindVertexArray(openGLBuffer.getVAOName());
+			OpenGL::checkError();
+
+			for (const pair<Model*, Matrix44>& modelAndTransform : modelsAndTransforms)
+			{
+				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
+				{
+					continue;
+				}
+
+				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
+
+				pipeline.set("worldTransform", modelAndTransform.second);
+
+				if (mesh->getTexture() != nullptr)
+				{
+					mesh->getTexture()->apply();
+					pipeline.set("sampler", 0);
+					pipeline.set("samplerEnabled", 1);
+				}
+
+				draw(buffer, *mesh);
+
+				pipeline.set("samplerEnabled", 0);
+			}
 		}
 
 		void OpenGLRenderingEngine::setFrameBuffer(unique_ptr<OpenGLFrameBuffer> frameBuffer)
 		{
 			this->frameBuffer = move(frameBuffer);
-			frameBufferChanged= true;
+			frameBufferChanged = true;
 		}
 	}
 }

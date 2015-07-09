@@ -1,5 +1,4 @@
 #include <simplicity/logging/Logs.h>
-#include <simplicity/resources/Resources.h>
 
 #include "../common/OpenGL.h"
 #include "OpenGLFrameBuffer.h"

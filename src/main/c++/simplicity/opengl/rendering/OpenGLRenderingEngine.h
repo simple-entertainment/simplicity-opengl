@@ -17,6 +17,8 @@
 #ifndef OPENGLRENDERINGENGINE_H_
 #define OPENGLRENDERINGENGINE_H_
 
+#include <GL/glew.h>
+
 #include <simplicity/rendering/AbstractRenderingEngine.h>
 
 #include "OpenGLFrameBuffer.h"
@@ -44,11 +46,18 @@ namespace simplicity
 
 				void dispose() override;
 
+				void draw(const MeshBuffer& buffer, const Mesh& mesh) const;
+
+				GLenum getOpenGLDrawingMode(MeshBuffer::PrimitiveType primitiveType) const;
+
 				void init() override;
 
 				void postAdvance() override;
 
 				bool preAdvance() override;
+
+				void render(const MeshBuffer& buffer, Pipeline& pipeline,
+							const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) const override;
 		};
 	}
 }

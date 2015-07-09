@@ -50,7 +50,7 @@ namespace simplicity
 				 * @param height The height of the texture.
 				 * @param format The format of the texture.
 				 */
-				OpenGLTexture(char* rawData, unsigned int width, unsigned int height, PixelFormat format);
+				OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format);
 
 				~OpenGLTexture();
 
@@ -64,6 +64,8 @@ namespace simplicity
 
 				unsigned int getHeight() const override;
 
+				PixelFormat getPixelFormat() const override;
+
 				const char* getRawData() const override;
 
 				GLuint getTexture() const;
@@ -72,10 +74,12 @@ namespace simplicity
 
 				void init() override;
 
-				void setRawData(char* rawData) override;
+				void setRawData(const char* rawData) override;
 
 			private:
 				std::string data;
+
+				mutable bool dirty;
 
 				PixelFormat format;
 

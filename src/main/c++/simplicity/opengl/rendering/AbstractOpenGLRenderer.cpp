@@ -20,7 +20,6 @@
 #include "AbstractOpenGLRenderer.h"
 #include "DefaultShaderSource.h"
 #include "OpenGLPipeline.h"
-#include "OpenGLShader.h"
 
 using namespace std;
 

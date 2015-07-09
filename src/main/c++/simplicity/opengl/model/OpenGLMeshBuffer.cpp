@@ -27,14 +27,15 @@ namespace simplicity
 	namespace opengl
 	{
 		OpenGLMeshBuffer::OpenGLMeshBuffer(const unsigned int vertexCount, unsigned int indexCount,
-				Buffer::AccessHint accessHint) :
-						indexBuffer(nullptr),
-						indexed(indexCount > 0),
-						meshData(),
-						metaData(),
-						primitiveType(PrimitiveType::TRIANGLE_LIST),
-						vaoName(0),
-						vertexBuffer(nullptr)
+										   Buffer::AccessHint accessHint) :
+				indexBuffer(nullptr),
+				indexed(indexCount > 0),
+				meshData(),
+				metaData(),
+				pipeline(nullptr),
+				primitiveType(PrimitiveType::TRIANGLE_LIST),
+				vaoName(0),
+				vertexBuffer(nullptr)
 		{
 			// The vertex array (saves all the following state together).
 			glGenVertexArrays(1, &vaoName);
@@ -149,6 +150,11 @@ namespace simplicity
 			return metaData.indexCounts[&mesh];
 		}
 
+		Pipeline* OpenGLMeshBuffer::getPipeline() const
+		{
+			return pipeline.get();
+		}
+
 		MeshBuffer::PrimitiveType OpenGLMeshBuffer::getPrimitiveType() const
 		{
 			return primitiveType;
@@ -185,6 +191,11 @@ namespace simplicity
 			// Unbind the vertex array.
 			glBindVertexArray(0);
 			OpenGL::checkError();
+		}
+
+		void OpenGLMeshBuffer::setPipeline(shared_ptr<Pipeline> pipeline)
+		{
+			this->pipeline = pipeline;
 		}
 
 		void OpenGLMeshBuffer::setPrimitiveType(PrimitiveType primitiveType)

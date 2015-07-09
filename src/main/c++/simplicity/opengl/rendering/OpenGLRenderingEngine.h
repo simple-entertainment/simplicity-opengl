@@ -56,8 +56,7 @@ namespace simplicity
 
 				bool preAdvance() override;
 
-				void render(const MeshBuffer& buffer, Pipeline& pipeline,
-							const std::vector<std::pair<Model*, Matrix44>>& modelsAndTransforms) const override;
+				void render(const RenderList& renderList) const override;
 		};
 	}
 }

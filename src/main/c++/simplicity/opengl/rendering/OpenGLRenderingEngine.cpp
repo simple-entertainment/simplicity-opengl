@@ -166,14 +166,13 @@ namespace simplicity
 			return true;
 		}
 
-		void OpenGLRenderingEngine::render(const MeshBuffer& buffer, Pipeline& pipeline,
-										   const vector<pair<Model*, Matrix44>>& modelsAndTransforms) const
+		void OpenGLRenderingEngine::render(const RenderList& renderList) const
 		{
-			const OpenGLMeshBuffer& openGLBuffer = static_cast<const OpenGLMeshBuffer&>(buffer);
-			glBindVertexArray(openGLBuffer.getVAOName());
+			OpenGLMeshBuffer* openGLBuffer = static_cast<OpenGLMeshBuffer*>(renderList.buffer);
+			glBindVertexArray(openGLBuffer->getVAOName());
 			OpenGL::checkError();
 
-			for (const pair<Model*, Matrix44>& modelAndTransform : modelsAndTransforms)
+			for (const pair<Model*, Matrix44>& modelAndTransform : renderList.list)
 			{
 				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
 				{
@@ -182,18 +181,18 @@ namespace simplicity
 
 				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
 
-				pipeline.set("worldTransform", modelAndTransform.second);
+				renderList.pipeline->set("worldTransform", modelAndTransform.second);
 
 				if (mesh->getTexture() != nullptr)
 				{
 					mesh->getTexture()->apply();
-					pipeline.set("sampler", 0);
-					pipeline.set("samplerEnabled", 1);
+					renderList.pipeline->set("sampler", 0);
+					renderList.pipeline->set("samplerEnabled", 1);
 				}
 
-				draw(buffer, *mesh);
+				draw(*renderList.buffer, *mesh);
 
-				pipeline.set("samplerEnabled", 0);
+				renderList.pipeline->set("samplerEnabled", 0);
 			}
 		}
 

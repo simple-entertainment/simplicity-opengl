@@ -16,13 +16,12 @@
  */
 #include <algorithm>
 
+#include <simplicity/rendering/RenderingFactory.h>
 #include <simplicity/Simplicity.h>
 
 #include "../common/OpenGL.h"
 #include "../model/OpenGLMeshBuffer.h"
-#include "DefaultShaderSource.h"
 #include "OpenGLRenderingEngine.h"
-#include "OpenGLPipeline.h"
 
 using namespace std;
 
@@ -30,6 +29,12 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		/* TODO MULTI DRAW!
+
+		// This needs to be small enough for the transform data to fit in the GLSL block as an array.
+		// TODO SSBOs can remove this limitation.
+		const unsigned int MAX_INSTANCES_PER_DRAW = 64;*/
+
 		OpenGLRenderingEngine::OpenGLRenderingEngine() :
 				frameBuffer(),
 				frameBufferChanged(false)
@@ -81,6 +86,40 @@ namespace simplicity
 						buffer.getVertexCount(mesh));
 				OpenGL::checkError();
 			}
+
+			/* TODO MULTI DRAW!
+
+			if (counts.size() == 0)
+			{
+				return;
+			}
+
+			if (buffer.isIndexed())
+			{
+				glMultiDrawElementsBaseVertex(
+						getOpenGLDrawingMode(buffer.getPrimitiveType()),
+						counts.data(),
+						GL_UNSIGNED_INT,
+						baseIndexLocations.data(),
+						counts.size(),
+						baseVertices.data());
+				OpenGL::checkError();
+			}
+			else
+			{
+				glMultiDrawArrays(
+						getOpenGLDrawingMode(buffer.getPrimitiveType()),
+						baseVertices.data(),
+						counts.data(),
+						counts.size());
+				OpenGL::checkError();
+			}
+
+			glFlush();
+			glFinish();
+			//fence = unique_ptr<OpenGLFence>(new OpenGLFence);
+			//ence->wait();
+			//fence = nullptr;*/
 		}
 
 		GLenum OpenGLRenderingEngine::getOpenGLDrawingMode(MeshBuffer::PrimitiveType primitiveType) const
@@ -132,12 +171,8 @@ namespace simplicity
 			if (getDefaultPipeline() == nullptr)
 			{
 				// Provide the default pipeline.
-				unique_ptr<OpenGLShader> vertexShader(
-						new OpenGLShader(Shader::Type::VERTEX, defaultVertexShaderSource));
-				unique_ptr<OpenGLShader> fragmentShader(
-						new OpenGLShader(Shader::Type::FRAGMENT, defaultFragmentShaderSource));
-				unique_ptr<Pipeline> defaultPipeline(new OpenGLPipeline(move(vertexShader), move(fragmentShader)));
-				setDefaultPipeline(move(defaultPipeline));
+				shared_ptr<Pipeline> defaultPipeline = RenderingFactory::getInstance()->createPipeline();
+				setDefaultPipeline(defaultPipeline);
 			}
 		}
 
@@ -166,7 +201,7 @@ namespace simplicity
 			return true;
 		}
 
-		void OpenGLRenderingEngine::render(const RenderList& renderList) const
+		void OpenGLRenderingEngine::render(const RenderList& renderList)
 		{
 			OpenGLMeshBuffer* openGLBuffer = static_cast<OpenGLMeshBuffer*>(renderList.buffer);
 			glBindVertexArray(openGLBuffer->getVAOName());
@@ -194,6 +229,58 @@ namespace simplicity
 
 				renderList.pipeline->set("samplerEnabled", 0);
 			}
+
+			/* TODO MULTI DRAW!
+
+			vector<int> counts;
+			counts.reserve(modelsAndTransforms.size());
+			vector<GLvoid*> baseIndexLocations;
+			baseIndexLocations.reserve(modelsAndTransforms.size());
+			vector<int> baseVertices;
+			baseVertices.reserve(modelsAndTransforms.size());
+
+			getDefaultPipeline()->set("worldTransformBlock", worldTransformBuffer);
+			Matrix44* worldTransforms = reinterpret_cast<Matrix44*>(worldTransformBuffer.getData(false));
+
+			for (const pair<Model*, Matrix44>& modelAndTransform : modelsAndTransforms)
+			{
+				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
+				{
+					continue;
+				}
+
+				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
+				worldTransforms[counts.size()] = modelAndTransform.second;
+
+				if (buffer.isIndexed())
+				{
+					counts.push_back(buffer.getIndexCount(*mesh));
+					baseIndexLocations.push_back(
+							reinterpret_cast<GLvoid*>(buffer.getBaseIndex(*mesh) * sizeof(unsigned int)));
+				}
+				else
+				{
+					counts.push_back(buffer.getVertexCount(*mesh));
+				}
+
+				baseVertices.push_back(buffer.getBaseVertex(*mesh));
+
+				if (counts.size() == MAX_INSTANCES_PER_DRAW)
+				{
+					worldTransformBuffer.releaseData();
+
+					draw(buffer, counts, baseIndexLocations, baseVertices);
+					counts.clear();
+					baseIndexLocations.clear();
+					baseVertices.clear();
+
+					worldTransforms = reinterpret_cast<Matrix44*>(worldTransformBuffer.getData(false));
+				}
+			}
+
+			worldTransformBuffer.releaseData();
+
+			draw(buffer, counts, baseIndexLocations, baseVertices);*/
 		}
 
 		void OpenGLRenderingEngine::setFrameBuffer(unique_ptr<OpenGLFrameBuffer> frameBuffer)

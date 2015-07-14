@@ -31,7 +31,7 @@ namespace simplicity
 		class SIMPLE_API OpenGLShader : public Shader
 		{
 			public:
-				OpenGLShader(Type type, Resource& source);
+				OpenGLShader(Type type, const Resource& source);
 
 				OpenGLShader(Type type, const std::string& source);
 

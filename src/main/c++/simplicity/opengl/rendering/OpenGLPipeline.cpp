@@ -14,14 +14,13 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
-#include <simplicity/common/Category.h>
 #include <simplicity/logging/Logs.h>
 #include <simplicity/messaging/Messages.h>
-#include <simplicity/messaging/Subject.h>
 
 #include "../common/OpenGL.h"
 #include "../common/OpenGLBuffer.h"
 #include "OpenGLPipeline.h"
+#include "OpenGLShader.h"
 
 using namespace std;
 
@@ -29,19 +28,8 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLPipeline::OpenGLPipeline(unique_ptr<OpenGLShader> vertexShader,
-				unique_ptr<OpenGLShader> fragmentShader) :
-			fragmentShader(move(fragmentShader)),
-			geometryShader(),
-			initialized(false),
-			program(0),
-			vertexShader(move(vertexShader))
-		{
-		}
-
-		OpenGLPipeline::OpenGLPipeline(unique_ptr<OpenGLShader> vertexShader,
-				unique_ptr<OpenGLShader> geometryShader,
-				unique_ptr<OpenGLShader> fragmentShader) :
+		OpenGLPipeline::OpenGLPipeline(unique_ptr<Shader> vertexShader, unique_ptr<Shader> geometryShader,
+				unique_ptr<Shader> fragmentShader) :
 			fragmentShader(move(fragmentShader)),
 			geometryShader(move(geometryShader)),
 			initialized(false),
@@ -52,7 +40,10 @@ namespace simplicity
 
 		OpenGLPipeline::~OpenGLPipeline()
 		{
-			// TODO Clean up the program?
+			if (program != 0)
+			{
+				glDeleteProgram(program);
+			}
 		}
 
 		void OpenGLPipeline::apply()
@@ -91,22 +82,22 @@ namespace simplicity
 
 			if (vertexShader != nullptr)
 			{
-				vertexShader->init();
-				glAttachShader(program, vertexShader->getShader());
+				static_cast<OpenGLShader&>(*vertexShader).init();
+				glAttachShader(program, static_cast<OpenGLShader&>(*vertexShader).getShader());
 				OpenGL::checkError();
 			}
 
 			if (geometryShader != nullptr)
 			{
-				geometryShader->init();
-				glAttachShader(program, geometryShader->getShader());
+				static_cast<OpenGLShader&>(*geometryShader).init();
+				glAttachShader(program, static_cast<OpenGLShader&>(*geometryShader).getShader());
 				OpenGL::checkError();
 			}
 
 			if (fragmentShader != nullptr)
 			{
-				fragmentShader->init();
-				glAttachShader(program, fragmentShader->getShader());
+				static_cast<OpenGLShader&>(*fragmentShader).init();
+				glAttachShader(program, static_cast<OpenGLShader&>(*fragmentShader).getShader());
 				OpenGL::checkError();
 			}
 

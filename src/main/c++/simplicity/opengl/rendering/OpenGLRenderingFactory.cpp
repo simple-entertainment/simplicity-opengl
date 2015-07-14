@@ -14,8 +14,11 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+#include "OpenGLPipeline.h"
 #include "OpenGLRenderingFactory.h"
+#include "OpenGLShader.h"
 #include "OpenGLTexture.h"
+#include "ShaderSource.h"
 
 using namespace std;
 
@@ -23,7 +26,61 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		shared_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int length, PixelFormat format)
+		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipeline(const string& name)
+		{
+			if (name == "simple")
+			{
+				unique_ptr<Shader> vertexShader = createShader(Shader::Type::VERTEX, "simple");
+				unique_ptr<Shader> geometryShader = createShader(Shader::Type::GEOMETRY, "simple");
+				unique_ptr<Shader> fragmentShader = createShader(Shader::Type::FRAGMENT, "simple");
+
+				return createPipeline(move(vertexShader), move(geometryShader), move(fragmentShader));
+			}
+
+			return nullptr;
+		}
+
+		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipeline(unique_ptr<Shader> vertexShader,
+																	unique_ptr<Shader> geometryShader,
+																	unique_ptr<Shader> fragmentShader)
+		{
+			return shared_ptr<Pipeline>(new OpenGLPipeline(move(vertexShader), move(geometryShader),
+														   move(fragmentShader)));
+		}
+
+		unique_ptr<Shader> OpenGLRenderingFactory::createShader(Shader::Type type, const Resource& resource)
+		{
+			return unique_ptr<Shader>(new OpenGLShader(type, resource));
+		}
+
+		unique_ptr<Shader> OpenGLRenderingFactory::createShader(Shader::Type type, const string& name)
+		{
+			if (type == Shader::Type::VERTEX)
+			{
+				if (name == "clip")
+				{
+					return unique_ptr<Shader>(new OpenGLShader(type, ShaderSource::vertexClip));
+				}
+
+				if (name == "simple")
+				{
+					return unique_ptr<Shader>(new OpenGLShader(type, ShaderSource::vertexSimple));
+				}
+			}
+
+			if (type == Shader::Type::FRAGMENT)
+			{
+				if (name == "simple")
+				{
+					return unique_ptr<Shader>(new OpenGLShader(type, ShaderSource::fragmentSimple));
+				}
+			}
+
+			return nullptr;
+		}
+
+		shared_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int length,
+																  PixelFormat format)
 		{
 			return shared_ptr<Texture>(new OpenGLTexture(data, length, format));
 		}

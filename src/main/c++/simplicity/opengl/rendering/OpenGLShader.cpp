@@ -26,7 +26,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLShader::OpenGLShader(Type type, Resource& source) :
+		OpenGLShader::OpenGLShader(Type type, const Resource& source) :
 			shader(0),
 			source(source.getData()),
 			type(type)

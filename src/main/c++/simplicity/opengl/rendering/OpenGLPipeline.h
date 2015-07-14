@@ -22,8 +22,7 @@
 #include <GL/glew.h>
 
 #include <simplicity/rendering/Pipeline.h>
-
-#include "OpenGLShader.h"
+#include <simplicity/rendering/Shader.h>
 
 namespace simplicity
 {
@@ -32,12 +31,8 @@ namespace simplicity
 		class SIMPLE_API OpenGLPipeline : public Pipeline
 		{
 			public:
-				OpenGLPipeline(std::unique_ptr<OpenGLShader> vertexShader,
-						std::unique_ptr<OpenGLShader> fragmentShader);
-
-				OpenGLPipeline(std::unique_ptr<OpenGLShader> vertexShader,
-						std::unique_ptr<OpenGLShader> geometryShader,
-						std::unique_ptr<OpenGLShader> fragmentShader);
+				OpenGLPipeline(std::unique_ptr<Shader> vertexShader, std::unique_ptr<Shader> geometryShader,
+						std::unique_ptr<Shader> fragmentShader);
 
 				~OpenGLPipeline();
 
@@ -70,15 +65,15 @@ namespace simplicity
 				void set(const std::string& structName, const std::string& name, const Vector4& value) override;
 
 			private:
-				std::unique_ptr<OpenGLShader> fragmentShader;
+				std::unique_ptr<Shader> fragmentShader;
 
-				std::unique_ptr<OpenGLShader> geometryShader;
+				std::unique_ptr<Shader> geometryShader;
 
 				bool initialized;
 
 				GLuint program;
 
-				std::unique_ptr<OpenGLShader> vertexShader;
+				std::unique_ptr<Shader> vertexShader;
 
 				void init();
 		};

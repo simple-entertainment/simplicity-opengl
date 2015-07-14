@@ -78,7 +78,7 @@ namespace simplicity
 
 				bool clearStencilBuffer;
 
-				std::unique_ptr<Pipeline> pipeline;
+				std::shared_ptr<Pipeline> pipeline;
 		};
 	}
 }

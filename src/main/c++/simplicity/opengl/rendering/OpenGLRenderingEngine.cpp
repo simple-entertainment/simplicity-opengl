@@ -148,6 +148,16 @@ namespace simplicity
 			return GL_TRIANGLES;
 		}
 
+		void OpenGLRenderingEngine::glewInit()
+		{
+			glewExperimental = GL_TRUE;
+			::glewInit();
+
+			// Sometimes glewInit() gives false negatives. Lets clear the OpenGL error so it doesn't confuse us
+			// elsewhere.
+			glGetError();
+		}
+
 		void OpenGLRenderingEngine::init()
 		{
 			// Ensure objects further from the viewpoint are not drawn over the top of closer objects. To assist multi

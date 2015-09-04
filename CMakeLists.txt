@@ -35,7 +35,7 @@ file(GLOB_RECURSE SRC_FILES src/main/c++/*.cpp src/main/c++/*.h)
 
 # Target
 #########################
-add_library(simplicity-opengl STATIC ${SRC_FILES})
+add_library(simplicity-opengl ${SIMPLE_LINK_TYPE} ${SRC_FILES})
 target_include_directories(simplicity-opengl PUBLIC src/main/c++)
 
 # Target Dependencies

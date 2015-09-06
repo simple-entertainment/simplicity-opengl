@@ -39,6 +39,12 @@ namespace simplicity
 				frameBuffer(),
 				frameBufferChanged(false)
 		{
+			glewExperimental = GL_TRUE;
+			glewInit();
+
+			// Sometimes glewInit() gives false negatives. Lets clear the OpenGL error so it doesn't confuse us
+			// elsewhere.
+			glGetError();
 		}
 
 		void OpenGLRenderingEngine::dispose()
@@ -146,16 +152,6 @@ namespace simplicity
 			}
 
 			return GL_TRIANGLES;
-		}
-
-		void OpenGLRenderingEngine::glewInit()
-		{
-			glewExperimental = GL_TRUE;
-			::glewInit();
-
-			// Sometimes glewInit() gives false negatives. Lets clear the OpenGL error so it doesn't confuse us
-			// elsewhere.
-			glGetError();
 		}
 
 		void OpenGLRenderingEngine::init()

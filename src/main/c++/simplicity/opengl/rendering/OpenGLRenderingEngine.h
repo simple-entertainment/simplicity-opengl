@@ -37,8 +37,6 @@ namespace simplicity
 			public:
 				OpenGLRenderingEngine();
 
-				void glewInit();
-
 				void setFrameBuffer(std::unique_ptr<OpenGLFrameBuffer> frameBuffer);
 
 			private:

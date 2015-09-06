@@ -31,8 +31,9 @@ namespace simplicity
 		class SIMPLE_API OpenGLModelFactory : public ModelFactory
 		{
 			public:
-				std::shared_ptr<MeshBuffer> createMeshBuffer(const unsigned int vertexCount, unsigned int indexCount,
-						Buffer::AccessHint accessHint) override;
+				std::shared_ptr<MeshBuffer> createMeshBufferInternal(const unsigned int vertexCount,
+																	 unsigned int indexCount,
+																	 Buffer::AccessHint accessHint) override;
 		};
 	}
 }

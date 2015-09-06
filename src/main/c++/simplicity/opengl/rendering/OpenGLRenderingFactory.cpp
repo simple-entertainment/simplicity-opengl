@@ -26,7 +26,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipeline(const string& name)
+		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipelineInternal(const string& name)
 		{
 			if (name == "simple")
 			{
@@ -40,20 +40,20 @@ namespace simplicity
 			return nullptr;
 		}
 
-		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipeline(unique_ptr<Shader> vertexShader,
-																	unique_ptr<Shader> geometryShader,
-																	unique_ptr<Shader> fragmentShader)
+		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipelineInternal(unique_ptr<Shader> vertexShader,
+																			unique_ptr<Shader> geometryShader,
+																			unique_ptr<Shader> fragmentShader)
 		{
 			return shared_ptr<Pipeline>(new OpenGLPipeline(move(vertexShader), move(geometryShader),
 														   move(fragmentShader)));
 		}
 
-		unique_ptr<Shader> OpenGLRenderingFactory::createShader(Shader::Type type, const Resource& resource)
+		unique_ptr<Shader> OpenGLRenderingFactory::createShaderInternal(Shader::Type type, const Resource& resource)
 		{
 			return unique_ptr<Shader>(new OpenGLShader(type, resource));
 		}
 
-		unique_ptr<Shader> OpenGLRenderingFactory::createShader(Shader::Type type, const string& name)
+		unique_ptr<Shader> OpenGLRenderingFactory::createShaderInternal(Shader::Type type, const string& name)
 		{
 			if (type == Shader::Type::VERTEX)
 			{
@@ -79,19 +79,19 @@ namespace simplicity
 			return nullptr;
 		}
 
-		shared_ptr<Texture> OpenGLRenderingFactory::createTexture(const char* data, unsigned int length,
-																  PixelFormat format)
+		shared_ptr<Texture> OpenGLRenderingFactory::createTextureInternal(const char* data, unsigned int length,
+																		  PixelFormat format)
 		{
 			return shared_ptr<Texture>(new OpenGLTexture(data, length, format));
 		}
 
-		shared_ptr<Texture> OpenGLRenderingFactory::createTexture(char* rawData, unsigned int width,
-				unsigned int height, PixelFormat format)
+		shared_ptr<Texture> OpenGLRenderingFactory::createTextureInternal(char* rawData, unsigned int width,
+																		  unsigned int height, PixelFormat format)
 		{
 			return shared_ptr<Texture>(new OpenGLTexture(rawData, width, height, format));
 		}
 
-		shared_ptr<Texture> OpenGLRenderingFactory::createTexture(Resource& image, PixelFormat format)
+		shared_ptr<Texture> OpenGLRenderingFactory::createTextureInternal(Resource& image, PixelFormat format)
 		{
 			return shared_ptr<Texture>(new OpenGLTexture(image, format));
 		}

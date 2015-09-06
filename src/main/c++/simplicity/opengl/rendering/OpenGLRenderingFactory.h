@@ -31,23 +31,23 @@ namespace simplicity
 		class SIMPLE_API OpenGLRenderingFactory : public RenderingFactory
 		{
 			public:
-				std::shared_ptr<Pipeline> createPipeline(const std::string& name) override;
+				std::shared_ptr<Pipeline> createPipelineInternal(const std::string& name) override;
 
-				std::shared_ptr<Pipeline> createPipeline(std::unique_ptr<Shader> vertexShader,
-															 std::unique_ptr<Shader> geometryShader,
-															 std::unique_ptr<Shader> fragmentShader) override;
+				std::shared_ptr<Pipeline> createPipelineInternal(std::unique_ptr<Shader> vertexShader,
+															 	 std::unique_ptr<Shader> geometryShader,
+															 	 std::unique_ptr<Shader> fragmentShader) override;
 
-				std::unique_ptr<Shader> createShader(Shader::Type type, const Resource& resource) override;
+				std::unique_ptr<Shader> createShaderInternal(Shader::Type type, const Resource& resource) override;
 
-				std::unique_ptr<Shader> createShader(Shader::Type type, const std::string& name) override;
+				std::unique_ptr<Shader> createShaderInternal(Shader::Type type, const std::string& name) override;
 
-				std::shared_ptr<Texture> createTexture(const char* data, unsigned int length,
-													   PixelFormat format) override;
+				std::shared_ptr<Texture> createTextureInternal(const char* data, unsigned int length,
+															   PixelFormat format) override;
 
-				std::shared_ptr<Texture> createTexture(char* rawData, unsigned int width, unsigned int height,
-						PixelFormat format) override;
+				std::shared_ptr<Texture> createTextureInternal(char* rawData, unsigned int width, unsigned int height,
+															   PixelFormat format) override;
 
-				std::shared_ptr<Texture> createTexture(Resource& image, PixelFormat format) override;
+				std::shared_ptr<Texture> createTextureInternal(Resource& image, PixelFormat format) override;
 		};
 	}
 }

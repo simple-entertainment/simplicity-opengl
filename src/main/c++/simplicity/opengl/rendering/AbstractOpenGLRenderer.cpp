@@ -118,7 +118,7 @@ namespace simplicity
 			// Provide the default pipeline.
 			if (pipeline == nullptr)
 			{
-				pipeline = RenderingFactory::getInstance()->createPipeline();
+				pipeline = RenderingFactory::createPipeline();
 			}
 		}
 

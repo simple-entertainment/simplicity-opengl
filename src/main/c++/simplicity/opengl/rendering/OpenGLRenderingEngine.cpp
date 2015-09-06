@@ -177,7 +177,7 @@ namespace simplicity
 			if (getDefaultPipeline() == nullptr)
 			{
 				// Provide the default pipeline.
-				shared_ptr<Pipeline> defaultPipeline = RenderingFactory::getInstance()->createPipeline();
+				shared_ptr<Pipeline> defaultPipeline = RenderingFactory::createPipeline();
 				setDefaultPipeline(defaultPipeline);
 			}
 		}

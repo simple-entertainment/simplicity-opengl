@@ -37,17 +37,12 @@ namespace simplicity
 
 			for (const pair<Model*, Matrix44>& modelAndTransform : modelsAndTransforms)
 			{
-				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
-				{
-					continue;
-				}
-
-				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
+				const Model* model = modelAndTransform.first;
 				getDefaultPipeline()->set("worldTransform", modelAndTransform.second);
 
-				if (mesh->getTexture() != nullptr)
+				if (model->getTexture() != nullptr)
 				{
-					mesh->getTexture()->apply();
+					model->getTexture()->apply();
 					getDefaultPipeline()->set("sampler", 0);
 					getDefaultPipeline()->set("samplerEnabled", 1);
 				}
@@ -56,18 +51,18 @@ namespace simplicity
 				{
 					glDrawElementsBaseVertex(
 							drawingMode,
-							buffer.getIndexCount(*mesh),
+							buffer.getIndexCount(*model->getMesh()),
 							GL_UNSIGNED_INT,
-							reinterpret_cast<GLvoid*>(buffer.getBaseIndex(*mesh) * sizeof(unsigned int)),
-							buffer.getBaseVertex(*mesh));
+							reinterpret_cast<GLvoid*>(buffer.getBaseIndex(*model->getMesh()) * sizeof(unsigned int)),
+							buffer.getBaseVertex(*model->getMesh()));
 					OpenGL::checkError();
 				}
 				else
 				{
 					glDrawArrays(
 							drawingMode,
-							buffer.getBaseVertex(*mesh),
-							buffer.getVertexCount(*mesh));
+							buffer.getBaseVertex(*model->getMesh()),
+							buffer.getVertexCount(*model->getMesh()));
 					OpenGL::checkError();
 				}
 

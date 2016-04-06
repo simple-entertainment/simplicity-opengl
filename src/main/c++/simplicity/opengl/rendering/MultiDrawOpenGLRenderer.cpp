@@ -94,26 +94,21 @@ namespace simplicity
 
 			for (const pair<Model*, Matrix44>& modelAndTransform : modelsAndTransforms)
 			{
-				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
-				{
-					continue;
-				}
-
-				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
+				const Model* model = modelAndTransform.first;
 				worldTransforms[counts.size()] = modelAndTransform.second;
 
 				if (buffer.isIndexed())
 				{
-					counts.push_back(buffer.getIndexCount(*mesh));
+					counts.push_back(buffer.getIndexCount(*model->getMesh()));
 					baseIndexLocations.push_back(
-							reinterpret_cast<GLvoid*>(buffer.getBaseIndex(*mesh) * sizeof(unsigned int)));
+							reinterpret_cast<GLvoid*>(buffer.getBaseIndex(*model->getMesh()) * sizeof(unsigned int)));
 				}
 				else
 				{
-					counts.push_back(buffer.getVertexCount(*mesh));
+					counts.push_back(buffer.getVertexCount(*model->getMesh()));
 				}
 
-				baseVertices.push_back(buffer.getBaseVertex(*mesh));
+				baseVertices.push_back(buffer.getBaseVertex(*model->getMesh()));
 
 				if (counts.size() == MAX_INSTANCES_PER_DRAW)
 				{

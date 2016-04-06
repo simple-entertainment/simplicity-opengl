@@ -215,23 +215,18 @@ namespace simplicity
 
 			for (const pair<Model*, Matrix44>& modelAndTransform : renderList.list)
 			{
-				if (modelAndTransform.first->getTypeID() != Mesh::TYPE_ID)
-				{
-					continue;
-				}
-
-				const Mesh* mesh = static_cast<const Mesh*>(modelAndTransform.first);
+				const Model* model = modelAndTransform.first;
 
 				renderList.pipeline->set("worldTransform", modelAndTransform.second);
 
-				if (mesh->getTexture() != nullptr)
+				if (model->getTexture() != nullptr)
 				{
-					mesh->getTexture()->apply();
+					model->getTexture()->apply();
 					renderList.pipeline->set("sampler", 0);
 					renderList.pipeline->set("samplerEnabled", 1);
 				}
 
-				draw(*renderList.buffer, *mesh);
+				draw(*renderList.buffer, *model->getMesh());
 
 				renderList.pipeline->set("samplerEnabled", 0);
 			}

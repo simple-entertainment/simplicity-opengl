@@ -21,8 +21,6 @@
 
 #include <simplicity/rendering/AbstractRenderingEngine.h>
 
-#include "OpenGLFrameBuffer.h"
-
 namespace simplicity
 {
 	namespace opengl
@@ -37,12 +35,20 @@ namespace simplicity
 			public:
 				OpenGLRenderingEngine();
 
-				void setFrameBuffer(std::unique_ptr<OpenGLFrameBuffer> frameBuffer);
+				FrameBuffer* getFrameBuffer() override;
+
+				void render(const RenderList& renderList) override;
+
+				void setFrameBuffer(std::unique_ptr<FrameBuffer> frameBuffer) override;
+
+				void setPostProcessor(std::unique_ptr<PostProcessor> postProcessor) override;
 
 			private:
-				std::unique_ptr<OpenGLFrameBuffer> frameBuffer;
+				std::unique_ptr<FrameBuffer> frameBuffer;
 
 				bool frameBufferChanged;
+
+				std::unique_ptr<PostProcessor> postProcessor;
 
 				void dispose() override;
 
@@ -55,8 +61,6 @@ namespace simplicity
 				void postAdvance() override;
 
 				bool preAdvance() override;
-
-				void render(const RenderList& renderList) override;
 		};
 	}
 }

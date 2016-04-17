@@ -98,9 +98,19 @@ namespace simplicity
 				return GL_RGB;
 			}
 
+			if (format == PixelFormat::BGR_HDR || format == PixelFormat::RGB_HDR)
+			{
+				return GL_RGB16F;
+			}
+
 			if (format == PixelFormat::BGRA || format == PixelFormat::RGBA)
 			{
 				return GL_RGBA;
+			}
+
+			if (format == PixelFormat::BGRA_HDR || format == PixelFormat::RGBA_HDR)
+			{
+				return GL_RGBA16F;
 			}
 
 			return -1;
@@ -108,22 +118,22 @@ namespace simplicity
 
 		GLenum OpenGLTexture::getOpenGLPixelFormat() const
 		{
-			if (format == PixelFormat::BGR)
+			if (format == PixelFormat::BGR || format == PixelFormat::BGR_HDR)
 			{
 				return GL_BGR;
 			}
 
-			if (format == PixelFormat::BGRA)
+			if (format == PixelFormat::BGRA || format == PixelFormat::BGRA_HDR)
 			{
 				return GL_BGRA;
 			}
 
-			if (format == PixelFormat::RGB)
+			if (format == PixelFormat::RGB || format == PixelFormat::RGB_HDR)
 			{
 				return GL_RGB;
 			}
 
-			if (format == PixelFormat::RGBA)
+			if (format == PixelFormat::RGBA || format == PixelFormat::RGBA_HDR)
 			{
 				return GL_RGBA;
 			}

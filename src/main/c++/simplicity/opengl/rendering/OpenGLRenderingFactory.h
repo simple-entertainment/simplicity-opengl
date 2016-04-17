@@ -31,6 +31,9 @@ namespace simplicity
 		class SIMPLE_API OpenGLRenderingFactory : public RenderingFactory
 		{
 			public:
+				std::unique_ptr<FrameBuffer> createFrameBufferInternal(std::vector<std::shared_ptr<Texture>> textures,
+																	   bool hasDepth) override;
+
 				std::shared_ptr<Pipeline> createPipelineInternal(const std::string& name) override;
 
 				std::shared_ptr<Pipeline> createPipelineInternal(std::unique_ptr<Shader> vertexShader,

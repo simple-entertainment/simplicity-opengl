@@ -1,31 +1,35 @@
 #ifndef OPENGLFRAMEBUFFER_H_
 #define OPENGLFRAMEBUFFER_H_
 
-#include "OpenGLTexture.h"
+#include <GL/glew.h>
+
+#include <simplicity/rendering/FrameBuffer.h>
 
 namespace simplicity
 {
 	namespace opengl
 	{
-		class SIMPLE_API OpenGLFrameBuffer
+		class SIMPLE_API OpenGLFrameBuffer : public FrameBuffer
 		{
 			public:
-				OpenGLFrameBuffer(std::unique_ptr<OpenGLTexture> texture);
+				OpenGLFrameBuffer(std::vector<std::shared_ptr<Texture>> textures, bool hasDepth);
 
-				~OpenGLFrameBuffer();
+				void apply() override;
 
-				void apply();
+				std::vector<std::shared_ptr<Texture>>& getTextures() override;
 
 				void init();
 
 			private:
 				GLuint depthBufferName;
 
+				bool hasDepth;
+
 				bool initialized;
 
 				GLuint name;
 
-				std::unique_ptr<OpenGLTexture> texture;
+				std::vector<std::shared_ptr<Texture>> textures;
 		};
 	}
 }

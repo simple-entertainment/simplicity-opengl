@@ -52,13 +52,13 @@ namespace simplicity
 				 */
 				OpenGLTexture(const char* rawData, unsigned int width, unsigned int height, PixelFormat format);
 
-				~OpenGLTexture();
-
 				/**
 				 * @param image The image resource.
 				 * @param format The format of the texture.
 				 */
 				OpenGLTexture(Resource& image, PixelFormat format);
+
+				~OpenGLTexture();
 
 				void apply() override;
 

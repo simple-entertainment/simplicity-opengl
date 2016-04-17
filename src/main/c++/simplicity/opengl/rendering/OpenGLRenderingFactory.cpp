@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License along with The Simplicity Engine. If not, see
  * <http://www.gnu.org/licenses/>.
  */
+#include "OpenGLFrameBuffer.h"
 #include "OpenGLPipeline.h"
 #include "OpenGLRenderingFactory.h"
 #include "OpenGLShader.h"
@@ -26,6 +27,12 @@ namespace simplicity
 {
 	namespace opengl
 	{
+		unique_ptr<FrameBuffer> OpenGLRenderingFactory::createFrameBufferInternal(vector<shared_ptr<Texture>> textures,
+																				  bool hasDepth)
+		{
+			return unique_ptr<FrameBuffer>(new OpenGLFrameBuffer(textures, hasDepth));
+		}
+
 		shared_ptr<Pipeline> OpenGLRenderingFactory::createPipelineInternal(const string& name)
 		{
 			if (name == "simple")

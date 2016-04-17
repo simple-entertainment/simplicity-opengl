@@ -50,7 +50,8 @@ namespace simplicity
 					"uniform sampler2D sampler;\n"
 					"uniform int samplerEnabled;\n"
 
-					"out vec4 color;\n"
+					"layout(location = 0) out vec4 color;\n"
+					"layout(location = 1) out vec4 color2;\n"
 
 					"// /////////////////////////\n"
 					"// Shader\n"
@@ -66,6 +67,8 @@ namespace simplicity
 					"	{\n"
 					"		color = point.color;\n"
 					"	}\n"
+
+					"	color2 = vec4(0.0, 0.0, 0.0, 1.0);\n"
 					"}";
 
 			std::string vertexClip =

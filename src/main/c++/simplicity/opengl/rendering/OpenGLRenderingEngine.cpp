@@ -16,7 +16,9 @@
  */
 #include <algorithm>
 
+#include <simplicity/model/ModelFactory.h>
 #include <simplicity/rendering/RenderingFactory.h>
+#include <simplicity/resources/Resources.h>
 #include <simplicity/Simplicity.h>
 
 #include "../common/OpenGL.h"
@@ -36,8 +38,9 @@ namespace simplicity
 		const unsigned int MAX_INSTANCES_PER_DRAW = 64;*/
 
 		OpenGLRenderingEngine::OpenGLRenderingEngine() :
-				frameBuffer(),
-				frameBufferChanged(false)
+			frameBuffer(nullptr),
+			frameBufferChanged(false),
+			postProcessor(nullptr)
 		{
 			glewExperimental = GL_TRUE;
 			glewInit();
@@ -128,6 +131,11 @@ namespace simplicity
 			//fence = nullptr;*/
 		}
 
+		FrameBuffer* OpenGLRenderingEngine::getFrameBuffer()
+		{
+			return frameBuffer.get();
+		}
+
 		GLenum OpenGLRenderingEngine::getOpenGLDrawingMode(MeshBuffer::PrimitiveType primitiveType) const
 		{
 			if (primitiveType == MeshBuffer::PrimitiveType::POINTS)
@@ -184,6 +192,10 @@ namespace simplicity
 
 		void OpenGLRenderingEngine::postAdvance()
 		{
+			if (postProcessor != nullptr)
+			{
+				postProcessor->process(*this);
+			}
 		}
 
 		bool OpenGLRenderingEngine::preAdvance()
@@ -195,9 +207,20 @@ namespace simplicity
 				return false;
 			}
 
-			if (frameBufferChanged)
+			if (frameBufferChanged || postProcessor != nullptr)
 			{
-				frameBuffer->apply();
+				if (frameBuffer == nullptr)
+				{
+					glBindFramebuffer(GL_FRAMEBUFFER, 0);
+					OpenGL::checkError();
+					glViewport(0, 0, getWidth(), getHeight());
+					OpenGL::checkError();
+				}
+				else
+				{
+					frameBuffer->apply();
+				}
+
 				frameBufferChanged = false;
 			}
 
@@ -284,10 +307,15 @@ namespace simplicity
 			draw(buffer, counts, baseIndexLocations, baseVertices);*/
 		}
 
-		void OpenGLRenderingEngine::setFrameBuffer(unique_ptr<OpenGLFrameBuffer> frameBuffer)
+		void OpenGLRenderingEngine::setFrameBuffer(unique_ptr<FrameBuffer> frameBuffer)
 		{
 			this->frameBuffer = move(frameBuffer);
 			frameBufferChanged = true;
+		}
+
+		void OpenGLRenderingEngine::setPostProcessor(std::unique_ptr<PostProcessor> postProcessor)
+		{
+			this->postProcessor = move(postProcessor);
 		}
 	}
 }

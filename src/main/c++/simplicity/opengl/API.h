@@ -19,6 +19,7 @@
 #include "model/OpenGLModelFactory.h"
 
 // Rendering
+#include "rendering/BloomPostProcessor.h"
 #include "rendering/MultiDrawOpenGLRenderer.h"
 #include "rendering/OpenGLFrameBuffer.h"
 #include "rendering/OpenGLPipeline.h"

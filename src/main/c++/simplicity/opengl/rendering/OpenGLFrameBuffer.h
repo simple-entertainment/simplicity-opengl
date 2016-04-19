@@ -12,7 +12,7 @@ namespace simplicity
 		class SIMPLE_API OpenGLFrameBuffer : public FrameBuffer
 		{
 			public:
-				OpenGLFrameBuffer(std::vector<std::shared_ptr<Texture>> textures, bool hasDepth);
+				OpenGLFrameBuffer(const std::vector<std::shared_ptr<Texture>>& textures, bool hasDepth);
 
 				void apply() override;
 

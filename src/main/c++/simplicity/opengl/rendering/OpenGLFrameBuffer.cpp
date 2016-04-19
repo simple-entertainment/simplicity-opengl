@@ -10,7 +10,7 @@ namespace simplicity
 {
 	namespace opengl
 	{
-		OpenGLFrameBuffer::OpenGLFrameBuffer(vector<shared_ptr<Texture>> textures, bool hasDepth) :
+		OpenGLFrameBuffer::OpenGLFrameBuffer(const vector<shared_ptr<Texture>>& textures, bool hasDepth) :
 			depthBufferName(0),
 			hasDepth(hasDepth),
 			initialized(false),
